@@ -1,0 +1,99 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+# event trigger
+on:
+  push:
+    branches: [ "main", develop ]
+  pull_request:
+    branches: [ "main", develop ]
+
+permissions:
+  contents: read
+
+# 환경변수 설정
+env:
+  RESOURCE_PATH: ./src/main/resources/application.yml
+  PROJECT_NAME: testproject
+  # Database
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USERNAME: ${{ secrets.DB_NAME }}
+  DB_PASSWORD: ${{ secrets.DB_PW }}
+  # AWS S3
+  ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  S3_BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+  S3_REGION: ${{ secrets.S3_REGION }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    
+    # 그래들 캐싱
+    - name: Gradle Caching
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+            
+    - name: Generate Environment Variables File for Properties
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ${{ env.RESOURCE_PATH }}
+      env:
+        spring.datasource.url: ${{ env.DB_URL }}
+        spring.datasource.username: ${{ env.DB_USERNAME }}
+        spring.datasource.password: ${{ env.DB_PASSWORD }}
+        cloud.aws.credentials.access-key: ${{ env.ACCESS_KEY }}
+        cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
+        cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
+        cloud.aws.region.static: ${{ env.S3_REGION }}
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Build
+    - name: Build with Gradle
+      run: ./gradlew clean build
+
+    # Spring app Docker Image 빌드
+    - name: Build Docker Image For Spring
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+
+    # 서버에서 Docker 이미지 실행
+    - name: EC2 Docker Run
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        password: ${{ secrets.EC2_KEY }} # ec2 비밀번호 바꿔야 함.
+        port: ${{ secrets.PORT }}
+        script: |
+          docker-compose down
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+          docker-compose up
+          docker image prune -f
