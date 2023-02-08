@@ -1,5 +1,12 @@
 spring:
+  profiles:
+    include: secret
+
   datasource:
+    url:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username:
+    password:
 
   jpa:
     generate-ddl: true
@@ -7,17 +14,17 @@ spring:
       ddl-auto: update
     show-sql: true
 
-    mvc:
-      pathmatch:
-        matching-strategy: ant_path_matcher
+  # 이미지 용량
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
-    # 이미지 용량
-    servlet:
-      multipart:
-        max-file-size: 10MB
-        max-request-size: 10MB
+  jwt:
+    token:
+      secret-key:
 
- #S3
+  #S3
 cloud:
   aws:
     credentials:
