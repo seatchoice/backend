@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Member extends BaseEntity {
 
-	private String qauthId;
+	private String oauthId;
 	private String nickname;
 	private String email;
 
