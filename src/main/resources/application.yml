@@ -6,3 +6,26 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+    mvc:
+      pathmatch:
+        matching-strategy: ant_path_matcher
+
+    # 이미지 용량
+    servlet:
+      multipart:
+        max-file-size: 10MB
+        max-request-size: 10MB
+
+ #S3
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+    region:
+      static:
+    s3:
+      bucket:
+    stack:
+      auto: false
