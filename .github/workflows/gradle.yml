@@ -94,7 +94,7 @@ jobs:
           docker-compose up -d
           docker image prune -f
 
-  ## slack
+  ## Connect to Slack
   action-slack:
     needs: build
     runs-on: ubuntu-latest
