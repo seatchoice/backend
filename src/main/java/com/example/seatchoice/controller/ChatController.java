@@ -18,7 +18,7 @@ public class ChatController {
     private final KafkaSender kafkaSender;
     private static String KAFKA_TOPIC = "kafka-chatting"; // kafka 내부 topic
 
-    // "/api/chat-room/{roomId}"로 들어오는 메시지를 "/api/topic/chat-room/{roomId}"을 구독하고있는 사람들에게 송신
+    // "/api/send/{roomId}"로 들어오는 메시지를 "/api/chat/{roomId}"을 구독하고있는 사람들에게 송신
     @MessageMapping("/{roomId}")
     public void sendMessage(@DestinationVariable Long roomId, ChattingMessageParam message) {
 
