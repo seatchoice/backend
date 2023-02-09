@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +21,5 @@ public class Image extends BaseEntity {
 	@JoinColumn(name = "review_id")
 	private Review review;
 
-	@NotNull
 	private String url;
 }

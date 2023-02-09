@@ -23,8 +23,8 @@ public class Review extends BaseEntity {
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "theater_id")
-	private Theater theater;
+	@JoinColumn(name = "theater_seat_id")
+	private TheaterSeat theaterSeat;
 
 	@NotNull
 	private String content;
