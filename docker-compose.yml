@@ -16,8 +16,8 @@ services:
     container_name: kafka
     image: wurstmeister/kafka:2.13-2.8.1
     environment:
-      KAFKA_ADVERTISED_LISTENERS: 43.200.67.139 # 외부에서 받는 주소.
-      KAFKA_LISTENERS: 43.200.67.139
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://43.200.67.139:9092 # 외부에서 받는 주소.
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_HOST_NAME: 43.200.67.139
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
