@@ -26,5 +26,5 @@ public class Theater extends BaseEntity {
 	private String name;
 
 	@NotNull
-	private Integer SeatCnt;
+	private Integer seatCnt;
 }
