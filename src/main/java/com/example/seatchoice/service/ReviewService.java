@@ -35,7 +35,7 @@ public class ReviewService {
 
 		List<String> images = s3Service.uploadImage(files);
 
-		String thumbnail = "";
+		String thumbnail = null;
 		if (!CollectionUtils.isEmpty(images)) {
 			thumbnail = images.get(0);
 		}
