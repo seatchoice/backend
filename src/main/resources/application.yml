@@ -25,6 +25,11 @@ spring:
     token:
       secret-key:
 
+  redis:
+    host:
+    port:
+    password:
+
   #S3
 cloud:
   aws:
