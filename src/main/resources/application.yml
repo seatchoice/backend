@@ -48,6 +48,7 @@ oauth:
 elasticsearch:
   host:
   port:
+
 logging:
   level:
     org:
