@@ -28,7 +28,7 @@ public class TheaterSeat extends BaseEntity {
 	private String section;
 
 	@NotNull
-	private String seat_row;
+	private String seatRow;
 
 	@NotNull
 	private Integer number;

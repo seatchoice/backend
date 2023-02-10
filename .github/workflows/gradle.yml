@@ -18,6 +18,10 @@ env:
   DB_URL: ${{ secrets.DB_URL }}
   DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PW }}
+  # Redis
+  REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  REDIS_PASSWORD: ${{ secrets.REDIS_PW }}
   # JWT
   JWT_SECRET_KEY: ${{ secrets.JWT }}
   # AWS S3
@@ -25,6 +29,9 @@ env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   S3_BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
   S3_REGION: ${{ secrets.S3_REGION }}
+  # oauth
+  KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+  KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
 
 jobs:
   build:
@@ -58,12 +65,17 @@ jobs:
         spring.datasource.url: ${{ env.DB_URL }}
         spring.datasource.username: ${{ env.DB_USERNAME }}
         spring.datasource.password: ${{ env.DB_PASSWORD }}
+        spring.redis.host: ${{ env.REDIS_HOST }}
+        spring.redis.port: ${{ env.REDIS_PORT }}
+        spring.redis.password: ${{ env.REDIS_PASSWORD }}
         spring.jwt.token.secret-key: ${{ env.JWT_SECRET_KEY }}
         cloud.aws.credentials.access-key: ${{ env.ACCESS_KEY }}
         cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
         cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
         cloud.aws.region.static: ${{ env.S3_REGION }}
-        
+        oauth.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
+        oauth.kakao.redirect-url: ${{ env.KAKAO_REDIRECT_URL }}
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
