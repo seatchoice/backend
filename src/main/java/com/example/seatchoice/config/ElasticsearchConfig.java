@@ -18,6 +18,7 @@ public class ElasticsearchConfig extends AbstractElasticsearchConfiguration {
 	@Value("${elasticsearch.port}")
 	private int port;
 
+
 	@Override
 	public RestHighLevelClient elasticsearchClient() {
 		ClientConfiguration clientConfiguration = ClientConfiguration.builder()
