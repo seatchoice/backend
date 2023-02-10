@@ -27,6 +27,15 @@ services:
     depends_on:
       - zookeeper
 
+  redis:
+    container_name: redis
+    image: redis:7.0.8
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD --port 6379"
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+
   app:
     image: sunju5402/seatchoice
     container_name: seatchoice
@@ -34,4 +43,5 @@ services:
       - "8081:8080"
     depends_on:
       - kafka
+      - redis
     restart: always
