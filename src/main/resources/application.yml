@@ -4,7 +4,7 @@ spring:
 
   datasource:
     url:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name:
     username:
     password:
 
@@ -24,11 +24,6 @@ spring:
     token:
       secret-key:
 
-  redis:
-    host:
-    port:
-    password:
-
   #S3
 cloud:
   aws:
@@ -36,7 +31,7 @@ cloud:
       access-key:
       secret-key:
     region:
-      static:
+       static:
     s3:
       bucket:
     stack:
@@ -46,5 +41,22 @@ oauth:
   kakao:
     client-id:
     redirect-uri:
-    token-uri: https://kauth.kakao.com/oauth/token
-    user-info-uri: https://kapi.kakao.com/v2/user/me
+    token-uri:
+    user-info-uri:
+
+elasticsearch:
+  host:
+  port:
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          elasticsearch:
+            client:
+              WIRE: trace
+
+kopis:
+  api:
+    url:
+    key:

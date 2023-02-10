@@ -32,6 +32,12 @@ env:
   # oauth
   KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
   KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
+  # elasticSearch
+  ELASTIC_SEATCH_HOST: ${{ secrets.ELASTIC_SEARCH_HOST }}
+  ELASTIC_SEATCH_PORT: ${{ secrets.ELASTIC_SEARCH_PORT }}
+  # kopis
+  KOPIS_API_URL: ${{ secrets.KOPIS_URL }}
+  KOPIS_API_KEY: ${{ secrets.KOPIS_KEY }}
 
 jobs:
   build:
@@ -75,6 +81,10 @@ jobs:
         cloud.aws.region.static: ${{ env.S3_REGION }}
         oauth.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
         oauth.kakao.redirect-url: ${{ env.KAKAO_REDIRECT_URL }}
+        elasticsearch.host: ${{ env.ELASTIC_SEATCH_HOST }}
+        elasticsearch.port: ${{ env.ELASTIC_SEATCH_PORT }}
+        kopis.api.url: ${{ env.KOPIS_API_URL }}
+        kopis.api.key: ${{ env.KOPIS_API_KEY }}
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
