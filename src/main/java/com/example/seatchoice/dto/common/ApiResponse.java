@@ -8,7 +8,6 @@ import org.springframework.lang.Nullable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class ApiResponse<T> {
 
 	@Nullable
