@@ -9,6 +9,8 @@ services:
     image: wurstmeister/zookeeper:3.4.6
     ports:
       - "2181:2181"
+    networks:
+      - elastic
 
   # wurstmeister/kafka:2.13-2.8.1 
   kafka:
@@ -26,6 +28,8 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
+    networks:
+      - elastic
 
   redis:
     container_name: redis
@@ -35,6 +39,23 @@ services:
       - .env
     ports:
       - "6379:6379"
+    networks:
+      - elastic
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "network.host=0.0.0.0"
+      - "http.host=0.0.0.0"
+      - "transport.host=0.0.0.0"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
 
   app:
     image: sunju5402/seatchoice
@@ -45,3 +66,7 @@ services:
       - kafka
       - redis
     restart: always
+
+networks:
+  elastic:
+    driver: bridge
