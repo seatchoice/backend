@@ -37,9 +37,9 @@ spring:
           kakao:
             client-id:
             client-secret:
+            redirect-uri:
             clientAuthenticationMethod: post
             authorizationGrantType: authorization_code
-            redirect-uri:
             scope:
               - profile_nickname
               - account_email
