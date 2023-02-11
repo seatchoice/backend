@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewInfoCond {
+	private Long userId;
 	private String nickname;
 	private LocalDateTime createdAt;
 	private Integer floor;
@@ -28,6 +29,7 @@ public class ReviewInfoCond {
 	public static ReviewInfoCond from(Review review, Double rating,
 		Integer likeAmount, List<String> images) {
 		return ReviewInfoCond.builder()
+			.userId(review.getMember().getId())
 			.nickname(review.getMember().getNickname())
 			.createdAt(review.getMember().getCreatedAt())
 			.floor(review.getTheaterSeat().getFloor())
