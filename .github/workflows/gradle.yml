@@ -109,11 +109,10 @@ jobs:
         password: ${{ secrets.EC2_PW }} 
         port: ${{ secrets.PORT }}
         script: |
-          docker-compose down
           sudo docker rm -f $(docker ps -qa)
           sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-          docker-compose up -d
+          nohup docker-compose up -d
           docker image prune -f
 
   ## Connect to Slack
