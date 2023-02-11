@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Entity
 public class Member extends BaseEntity {
@@ -32,4 +30,18 @@ public class Member extends BaseEntity {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private LoginType loginType;
+
+	public Member(
+		String oauthId,
+		String nickname,
+		String email,
+		MemberRole memberRole,
+		LoginType loginType
+	) {
+		this.oauthId = oauthId;
+		this.nickname = nickname;
+		this.email = email != null ? email : "NO_EMAIL";
+		this.role = memberRole;
+		this.loginType = loginType;
+	}
 }
