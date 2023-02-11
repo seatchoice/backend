@@ -89,6 +89,7 @@ public class ReviewService {
 			getLikeAmount(reviewId), images);
 	}
 
+	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
 	public TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewParam request) {
 		for (TheaterSeat seat : theaterSeats) {
 			if (seat.getFloor() == request.getFloor() &&
