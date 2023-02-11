@@ -64,11 +64,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authenticationEntryPoint(new RestAuthenticationEntryPoint())
 			.accessDeniedHandler(tokenAccessDeniedHandler)
 			.and()
+
 			.authorizeRequests()
 			.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 			.antMatchers("/api/**").hasAnyAuthority(MemberRole.USER.getCode())
 			.antMatchers("/api/**/admin/**").hasAnyAuthority(MemberRole.ADMIN.getCode())
 			.anyRequest().authenticated()
+			
 			.and()
 			.oauth2Login()
 			.authorizationEndpoint()
