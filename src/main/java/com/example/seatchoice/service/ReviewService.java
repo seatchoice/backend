@@ -108,6 +108,7 @@ public class ReviewService {
 		throw new CustomException(ErrorCode.NOT_FOUND_SEAT, HttpStatus.BAD_REQUEST);
 	}
 
+	// 좌석 평점
 	public Double getReviewRating(Long theaterSeatId) {
 		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(theaterSeatId);
 		Double total = 0.0;
@@ -117,6 +118,7 @@ public class ReviewService {
 		return Math.round((total / reviews.size()) * 10) / 10.0;
 	}
 
+	// 좌석 좋아요 개수
 	public Integer getLikeAmount(Long reviewId) {
 		List<ReviewLike> reviewLikes = reviewLikeRepository.findAllByReviewId(reviewId);
 		if (CollectionUtils.isEmpty(reviewLikes)) return 0;
