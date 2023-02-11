@@ -31,6 +31,7 @@ env:
   S3_REGION: ${{ secrets.S3_REGION }}
   # oauth
   KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+  KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
   KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
   # elasticSearch
   ELASTIC_SEARCH_HOST: ${{ secrets.ELASTIC_SEARCH_HOST }}
@@ -38,6 +39,13 @@ env:
   # kopis
   KOPIS_API_URL: ${{ secrets.KOPIS_URL }}
   KOPIS_API_KEY: ${{ secrets.KOPIS_KEY }}
+  # cors
+  CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+  # token
+  AUTH_TOKEN_SECRET: ${{ secrets.AUTH_TOKEN_SECRET }}
+  AUTH_TOKEN_EXPIRY: ${{ secrets.AUTH_TOKEN_EXPIRY }}
+  AUTH_REFRESH_TOKEN_EXPIRY: ${{ secrets.AUTH_REFRESH_TOKEN_EXPIRY }}
+  AUTHORIZED_REDIRECT_URI: ${{ secrets.AUTHORIZED_REDIRECT_URI }}
 
 jobs:
   build:
@@ -79,12 +87,18 @@ jobs:
         cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
         cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
         cloud.aws.region.static: ${{ env.S3_REGION }}
-        oauth.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
-        oauth.kakao.redirect-url: ${{ env.KAKAO_REDIRECT_URL }}
+        spring.oauth2.client.registration.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
+        spring.oauth2.client.registration.kakao.client-secret: ${{ env.KAKAO_CLIENT_SECRET }}
+        spring.oauth2.client.registration.kakao.redirect-url: ${{ env.KAKAO_REDIRECT_URL }}
         elasticsearch.host: ${{ env.ELASTIC_SEARCH_HOST }}
         elasticsearch.port: ${{ env.ELASTIC_SEARCH_PORT }}
         kopis.api.url: ${{ env.KOPIS_API_URL }}
         kopis.api.key: ${{ env.KOPIS_API_KEY }}
+        cors.allowed-origins: ${{ env.CORS_ORIGIN }}
+        token.auth.tokenSecret: ${{ env.AUTH_TOKEN_SECRET }}
+        token.auth.tokenExpiry: ${{ env.AUTH_TOKEN_EXPIRY }}
+        token.auth.refreshTokenExpiry: ${{ env.AUTH_REFRESH_TOKEN_EXPIRY }}
+        token.oauth2.authorizedRedirectUris: ${{ env.AUTHORIZED_REDIRECT_URI }}
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew

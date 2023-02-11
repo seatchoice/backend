@@ -30,6 +30,27 @@ spring:
     port:
     password:
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id:
+            client-secret:
+            clientAuthenticationMethod: post
+            authorizationGrantType: authorization_code
+            redirect-uri:
+            scope:
+              - profile_nickname
+              - account_email
+            clientName: Kakao
+        provider:
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
+
   #S3
 cloud:
   aws:
@@ -42,13 +63,6 @@ cloud:
       bucket:
     stack:
       auto: false
-
-oauth:
-  kakao:
-    client-id:
-    redirect-uri:
-    token-uri: https://kauth.kakao.com/oauth/token
-    user-info-uri: https://kapi.kakao.com/v2/user/me
 
 elasticsearch:
   host:
@@ -67,3 +81,17 @@ kopis:
   api:
     url:
     key:
+
+cors:
+  allowed-origins:
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: '*'
+  max-age: 3600
+
+app:
+  auth:
+    tokenSecret:
+    tokenExpiry:
+    refreshTokenExpiry:
+  oauth2:
+    authorizedRedirectUris:
