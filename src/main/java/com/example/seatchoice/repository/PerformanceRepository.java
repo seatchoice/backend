@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
 
 	@Modifying
-	@Query("DELETE FROM Performance p WHERE p.prfpdto > :nowDate")
+	@Query("DELETE FROM Performance p WHERE p.prfpdto < :nowDate")
 	void deleteByEndDate(@Param("nowDate") LocalDate nowDate);
+
+	boolean existsByMt20id(String mt20id);
 }
