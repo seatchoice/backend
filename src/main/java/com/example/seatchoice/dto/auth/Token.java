@@ -1,12 +1,19 @@
 package com.example.seatchoice.dto.auth;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
 public class Token {
 
-	private String accessToken;
+	@Getter
+	@AllArgsConstructor
+	public static class AccessToken {
+		private String accessToken;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class RefreshToken {
+		private String refreshToken;
+	}
 }
