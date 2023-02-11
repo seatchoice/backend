@@ -18,11 +18,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
@@ -85,6 +87,18 @@ public class ReviewService {
 
 		return ReviewInfoCond.from(review, getReviewRating(review.getTheaterSeat().getId()),
 			getLikeAmount(reviewId), images);
+	}
+
+	// 리뷰 삭제
+	public void deleteReview(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(
+				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
+
+		reviewRepository.deleteCommentById(reviewId);
+		reviewRepository.deleteImageById(reviewId);
+		reviewRepository.deleteReviewRikeById(reviewId);
+		reviewRepository.delete(review);
 	}
 
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기

@@ -8,6 +8,7 @@ import com.example.seatchoice.service.ReviewService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,5 +44,11 @@ public class ReviewController {
 	@GetMapping("/reviews/{reviewId}")
 	public ApiResponse<ReviewInfoCond> getReview(@PathVariable Long reviewId) {
 		return new ApiResponse<>(reviewService.getReview(reviewId));
+	}
+
+	@DeleteMapping("/reviews/{reviewId}")
+	public ApiResponse<?> deleteReview(@PathVariable Long reviewId) {
+		reviewService.deleteReview(reviewId);
+		return new ApiResponse<>(null);
 	}
 }
