@@ -88,7 +88,7 @@ cors:
   allowed-headers: '*'
   max-age: 3600
 
-app:
+token:
   auth:
     tokenSecret:
     tokenExpiry:
