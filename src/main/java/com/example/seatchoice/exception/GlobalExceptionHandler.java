@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import com.example.seatchoice.dto.common.ErrorResponse;
+import com.example.seatchoice.dto.validation.ValidErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,9 +24,10 @@ public class GlobalExceptionHandler {
 
 	// 발생되는 예외 예시, 밑으로 추가
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+	public ResponseEntity<ValidErrorResponse> handleMethodArgumentNotValidException(
 		MethodArgumentNotValidException e) {
-		return ErrorResponse.from(METHOD_ARGUMENT_NOT_VALID, BAD_REQUEST);
+		return ValidErrorResponse.from(METHOD_ARGUMENT_NOT_VALID, e.getFieldError().getField(),
+			e.getFieldError().getDefaultMessage(), BAD_REQUEST);
 	}
 
 	@ResponseStatus(INTERNAL_SERVER_ERROR)

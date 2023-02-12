@@ -1,45 +1,55 @@
 package com.example.seatchoice.dto.cond;
 
 import com.example.seatchoice.entity.Review;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewInfoCond {
+	private Long reviewId;
 	private Long userId;
-	private String nickname;
-	private LocalDateTime createdAt;
 	private Integer floor;
 	private String section;
 	private String row;
 	private Integer seatNumber;
 	private Double rating; // 평점
-	private Integer likeAmount; // 좋아요 개수
+	private Long likeAmount; // 좋아요 개수
 	private String content;
-	private List<String> images;
+	private String thumbnail;
+	private Long commentAmount;
 
-
-	public static ReviewInfoCond from(Review review, Double rating,
-		Integer likeAmount, List<String> images) {
+	public static ReviewInfoCond from(Review review) {
 		return ReviewInfoCond.builder()
+			.reviewId(review.getId())
 			.userId(review.getMember().getId())
-			.nickname(review.getMember().getNickname())
-			.createdAt(review.getMember().getCreatedAt())
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.row(review.getTheaterSeat().getSeatRow())
 			.seatNumber(review.getTheaterSeat().getNumber())
-			.rating(rating)
-			.likeAmount(likeAmount)
+			.rating(null)
+			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
-			.images(images)
+			.thumbnail(review.getThumbnailUrl())
+			.commentAmount(review.getCommentAmount())
 			.build();
+	}
+
+	public static List<ReviewInfoCond> of(List<Review> reviews) {
+		if (CollectionUtils.isEmpty(reviews)) {
+			return null;
+		}
+		return reviews.stream()
+			.map(ReviewInfoCond::from)
+			.collect(Collectors.toList());
 	}
 }
