@@ -80,9 +80,9 @@ jobs:
         cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
         cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
         cloud.aws.region.static: ${{ env.S3_REGION }}
-        security.oauth2.client.kakao.registration.client-id: ${{ env.KAKAO_CLIENT_ID }}
-        security.oauth2.client.kakao.registration.client-secret: ${{ env.KAKAO_CLIENT_SECRET }}
-        security.oauth2.client.kakao.registration.redirect-uri: ${{ env.KAKAO_REDIRECT_URI }}
+        spring.security.oauth2.client.kakao.registration.client-id: ${{ env.KAKAO_CLIENT_ID }}
+        spring.security.oauth2.client.kakao.registration.client-secret: ${{ env.KAKAO_CLIENT_SECRET }}
+        spring.security.oauth2.client.kakao.registration.redirect-uri: ${{ env.KAKAO_REDIRECT_URI }}
         elasticsearch.host: ${{ env.ELASTIC_SEARCH_HOST }}
         elasticsearch.port: ${{ env.ELASTIC_SEARCH_PORT }}
         kopis.api.url: ${{ env.KOPIS_API_URL }}
