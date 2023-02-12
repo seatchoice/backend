@@ -30,8 +30,10 @@ public class SecurityConfig {
 			.formLogin().disable()
 			.authorizeRequests()
 			.antMatchers(
-				"/",
-				"/api/**"
+				"/"
+			).permitAll()
+			.antMatchers(
+				"/api/reissue/refresh-token"
 			).permitAll()
 			.and()
 			.oauth2Login()
