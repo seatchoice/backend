@@ -3,13 +3,11 @@ package com.example.seatchoice.service;
 import com.example.seatchoice.dto.cond.ReviewCond;
 import com.example.seatchoice.dto.cond.ReviewDetailCond;
 import com.example.seatchoice.dto.param.ReviewParam;
-import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.ReviewLike;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.exception.CustomException;
-import com.example.seatchoice.repository.CommentRepository;
 import com.example.seatchoice.repository.ImageRepository;
 import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
@@ -33,7 +31,6 @@ public class ReviewService {
 	private final ImageRepository imageRepository;
 	private final TheaterSeatRepository theaterSeatRepository;
 	private final ReviewLikeRepository reviewLikeRepository;
-	private final CommentRepository commentRepository;
 	private final ImageService s3Service;
 
 
