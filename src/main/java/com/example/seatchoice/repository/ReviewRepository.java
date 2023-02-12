@@ -17,7 +17,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 	@Modifying
 	@Query("delete from ReviewLike rl where rl.review.id =:id ")
-	void deleteReviewRikeById(Long id);
+	void deleteReviewLikeById(Long id);
 
 	@Modifying
 	@Query("delete from Image im where im.review.id =:id ")
