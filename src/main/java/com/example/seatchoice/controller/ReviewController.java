@@ -48,12 +48,6 @@ public class ReviewController {
 		return new ApiResponse<>(reviewService.getReview(reviewId));
 	}
 
-	// 리뷰 목록 조회
-	@GetMapping("/reviews")
-	public ApiResponse<List<ReviewInfoCond>> getReviews(@RequestParam Long seatId) {
-		return new ApiResponse<>(reviewService.getReviews(seatId));
-	}
-
 	// 리뷰 삭제
 	@DeleteMapping("/reviews/{reviewId}")
 	public ApiResponse<Void> deleteReview(@PathVariable Long reviewId) {
