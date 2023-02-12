@@ -31,7 +31,7 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers(
 				"/",
-				"/api/reissue/refresh-token"
+				"/api/**"
 			).permitAll()
 			.and()
 			.oauth2Login()

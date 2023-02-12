@@ -31,7 +31,8 @@ env:
   S3_REGION: ${{ secrets.S3_REGION }}
   # oauth
   KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-  KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
+  KAKAO_CLIENT_SECRET : ${{ secrets.KAKAO_CLIENT_SECRET }}
+  KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
   # elasticSearch
   ELASTIC_SEARCH_HOST: ${{ secrets.ELASTIC_SEARCH_HOST }}
   ELASTIC_SEARCH_PORT: ${{ secrets.ELASTIC_SEARCH_PORT }}
@@ -79,8 +80,9 @@ jobs:
         cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
         cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
         cloud.aws.region.static: ${{ env.S3_REGION }}
-        oauth.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
-        oauth.kakao.redirect-url: ${{ env.KAKAO_REDIRECT_URL }}
+        security.oauth2.client.kakao.registration.client-id: ${{ env.KAKAO_CLIENT_ID }}
+        security.oauth2.client.kakao.registration.client-secret: ${{ env.KAKAO_CLIENT_SECRET }}
+        security.oauth2.client.kakao.registration.redirect-uri: ${{ env.KAKAO_REDIRECT_URI }}
         elasticsearch.host: ${{ env.ELASTIC_SEARCH_HOST }}
         elasticsearch.port: ${{ env.ELASTIC_SEARCH_PORT }}
         kopis.api.url: ${{ env.KOPIS_API_URL }}
@@ -109,11 +111,10 @@ jobs:
         password: ${{ secrets.EC2_PW }} 
         port: ${{ secrets.PORT }}
         script: |
-          docker-compose down
           sudo docker rm -f $(docker ps -qa)
           sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-          docker-compose up -d
+          nohup docker-compose up -d
           docker image prune -f
 
   ## Connect to Slack
