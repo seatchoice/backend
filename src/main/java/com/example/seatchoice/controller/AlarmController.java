@@ -25,15 +25,13 @@ public class AlarmController {
     // 알림 리스트 가져오기
     @GetMapping("/list/{memberId}")
     public ApiResponse<Page<AlarmCond>> getAlarmList(@PathVariable Long memberId, Pageable pageable) {
-        Page<AlarmCond> alarmList = alarmService.getAlarmList(memberId, pageable);
-        return new ApiResponse<>(alarmList);
+        return new ApiResponse<>(alarmService.getAlarmList(memberId, pageable));
     }
 
     // 알림 조회
     @GetMapping("/{alarmId}")
     public ApiResponse<AlarmCond> getAlarm(@PathVariable Long alarmId) {
-        AlarmCond alarm = alarmService.getAlarm(alarmId);
-        return new ApiResponse<>(alarm);
+        return new ApiResponse<>(alarmService.getAlarm(alarmId));
     }
 
     // 읽지 않은 알림 전체 읽기
@@ -46,10 +44,9 @@ public class AlarmController {
     // 알림 생성
     @PostMapping
     public ApiResponse<AlarmCond> createAlarm(@RequestBody AlarmCreateParam alarmCreateParam) {
-        AlarmCond alarm = alarmService.createAlarm(alarmCreateParam.getMemberId(),
-                                                   alarmCreateParam.getType(),
-                                                   alarmCreateParam.getUrl());
-        return new ApiResponse<>(alarm);
+        return new ApiResponse<>(alarmService.createAlarm(alarmCreateParam.getMemberId(),
+                                                          alarmCreateParam.getType(),
+                                                          alarmCreateParam.getUrl()));
     }
 
     // 알림 삭제
