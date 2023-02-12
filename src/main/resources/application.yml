@@ -52,6 +52,12 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
   #S3
 cloud:
   aws:
