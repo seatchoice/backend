@@ -37,3 +37,4 @@ application-secret.yml
 
 ### VS Code ###
 .vscode/
+.env

@@ -2,14 +2,14 @@ package com.example.seatchoice.controller;
 
 import static org.springframework.http.HttpStatus.OK;
 
+import com.example.seatchoice.config.jwt.TokenService;
+import com.example.seatchoice.dto.auth.Token.AccessToken;
 import com.example.seatchoice.dto.common.ApiResponse;
-import com.example.seatchoice.dto.auth.Token;
-import com.example.seatchoice.service.MemberService;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.parser.ParseException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,13 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
 
-	private final MemberService memberService;
+	private final TokenService tokenService;
 
-	@PostMapping("/api/auth/login")
+	@GetMapping("/api/reissue/refresh-token")
 	@ResponseStatus(OK)
-	public ApiResponse<Token> oAuthLogin(@RequestParam String code) throws IOException, ParseException {
-		Token token = memberService.oAuthLogin(code);
+	public ApiResponse<AccessToken> reissueAccessToken(
+		@AuthenticationPrincipal OAuth2User oAuth2User, @RequestHeader(value = "refreshToken") String refreshToken) {
 
-		return new ApiResponse(token);
+		AccessToken accessToken = tokenService.reissueAccessToken(oAuth2User, refreshToken);
+
+		return new ApiResponse(accessToken);
 	}
 }

@@ -31,7 +31,8 @@ env:
   S3_REGION: ${{ secrets.S3_REGION }}
   # oauth
   KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-  KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
+  KAKAO_CLIENT_SECRET : ${{ secrets.KAKAO_CLIENT_SECRET }}
+  KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
   # elasticSearch
   ELASTIC_SEARCH_HOST: ${{ secrets.ELASTIC_SEARCH_HOST }}
   ELASTIC_SEARCH_PORT: ${{ secrets.ELASTIC_SEARCH_PORT }}
@@ -79,8 +80,9 @@ jobs:
         cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
         cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
         cloud.aws.region.static: ${{ env.S3_REGION }}
-        oauth.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
-        oauth.kakao.redirect-url: ${{ env.KAKAO_REDIRECT_URL }}
+        spring.security.oauth2.client.registration.kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
+        spring.security.oauth2.client.registration.kakao.client-secret: ${{ env.KAKAO_CLIENT_SECRET }}
+        spring.security.oauth2.client.registration.kakao.redirect-uri: ${{ env.KAKAO_REDIRECT_URI }}
         elasticsearch.host: ${{ env.ELASTIC_SEARCH_HOST }}
         elasticsearch.port: ${{ env.ELASTIC_SEARCH_PORT }}
         kopis.api.url: ${{ env.KOPIS_API_URL }}
