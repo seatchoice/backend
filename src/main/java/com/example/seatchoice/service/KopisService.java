@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KopisService {
 
-	@Value("${kopis.key}")
+	@Value("${kopis.api.key}")
 	private String kopisKey;
 	private final KopisClient kopisClient;
 
