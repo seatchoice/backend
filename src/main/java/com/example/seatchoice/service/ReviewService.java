@@ -1,13 +1,15 @@
 package com.example.seatchoice.service;
 
 import com.example.seatchoice.dto.cond.ReviewCond;
-import com.example.seatchoice.dto.cond.ReviewInfoCond;
+import com.example.seatchoice.dto.cond.ReviewDetailCond;
 import com.example.seatchoice.dto.param.ReviewParam;
+import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.ReviewLike;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.exception.CustomException;
+import com.example.seatchoice.repository.CommentRepository;
 import com.example.seatchoice.repository.ImageRepository;
 import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
@@ -31,6 +33,7 @@ public class ReviewService {
 	private final ImageRepository imageRepository;
 	private final TheaterSeatRepository theaterSeatRepository;
 	private final ReviewLikeRepository reviewLikeRepository;
+	private final CommentRepository commentRepository;
 	private final ImageService s3Service;
 
 
@@ -43,7 +46,9 @@ public class ReviewService {
 
 		List<String> images = s3Service.uploadImage(files);
 		String thumbnail = null;
-		if (!CollectionUtils.isEmpty(images)) {
+		if (CollectionUtils.isEmpty(images)) {
+			images = null;
+		} else {
 			thumbnail = images.get(0);
 		}
 
@@ -70,7 +75,7 @@ public class ReviewService {
 	}
 
 	// 리뷰 상세 조회
-	public ReviewInfoCond getReview(Long reviewId) {
+	public ReviewDetailCond getReview(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
@@ -82,10 +87,13 @@ public class ReviewService {
 				images.add(imageList.get(i).getUrl());
 			}
 		} else {
-			imageList = null;
+			images = null;
 		}
 
-		return ReviewInfoCond.from(review, getReviewRating(review.getTheaterSeat().getId()),
+		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(
+			review.getTheaterSeat().getId());
+
+		return ReviewDetailCond.from(review, getReviewRating(reviews),
 			getLikeAmount(reviewId), images);
 	}
 
@@ -97,9 +105,10 @@ public class ReviewService {
 
 		reviewRepository.deleteCommentById(reviewId);
 		reviewRepository.deleteImageById(reviewId);
-		reviewRepository.deleteReviewRikeById(reviewId);
+		reviewRepository.deleteReviewLikeById(reviewId);
 		reviewRepository.delete(review);
 	}
+
 
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
 	public TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewParam request) {
@@ -122,8 +131,7 @@ public class ReviewService {
 	}
 
 	// 좌석 평점
-	public Double getReviewRating(Long theaterSeatId) {
-		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(theaterSeatId);
+	public Double getReviewRating(List<Review> reviews) {
 		Double total = 0.0;
 		for (int i = 0; i < reviews.size(); i++) {
 			total += reviews.get(i).getRating();
@@ -134,7 +142,9 @@ public class ReviewService {
 	// 좌석 좋아요 개수
 	public Integer getLikeAmount(Long reviewId) {
 		List<ReviewLike> reviewLikes = reviewLikeRepository.findAllByReviewId(reviewId);
-		if (CollectionUtils.isEmpty(reviewLikes)) return 0;
+		if (CollectionUtils.isEmpty(reviewLikes)) {
+			return 0;
+		}
 		return reviewLikes.size();
 	}
 }
