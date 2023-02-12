@@ -19,6 +19,7 @@ import com.example.seatchoice.type.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
@@ -43,6 +45,9 @@ public class ReviewService {
 	// 리뷰 등록
 	public ReviewCond createReview(Long theaterId, List<MultipartFile> files, ReviewParam request) {
 		// TODO 로그인 된 유저 검증
+
+		// 별점 표시 안 할 경우 0점으로 처리
+		if (request.getRating() == null) request.setRating(0);
 
 		List<TheaterSeat> theaterSeats = theaterSeatRepository.findAllByTheaterId(theaterId);
 		TheaterSeat theaterSeat = getTheaterSeat(theaterSeats, request);

@@ -7,6 +7,7 @@ import com.example.seatchoice.dto.cond.ReviewInfoCond;
 import com.example.seatchoice.dto.param.ReviewParam;
 import com.example.seatchoice.service.ReviewService;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public class ReviewController {
 	public ApiResponse<ReviewCond> createReview(
 		@PathVariable Long theaterId,
 		@RequestPart(value = "image", required = false) List<MultipartFile> files,
-		@RequestPart("data") ReviewParam request) {
+		@Valid @RequestPart("data") ReviewParam request) {
 
 		// image file을 선택하지 않았을 때
 		if (files.get(0).getSize() == 0) files = null;
