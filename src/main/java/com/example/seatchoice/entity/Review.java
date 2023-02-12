@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @NoArgsConstructor
@@ -33,4 +34,10 @@ public class Review extends BaseEntity {
 
 	@NotNull
 	private Integer rating;
+
+	@ColumnDefault("0")
+	private Long likeAmount;
+
+	@ColumnDefault("0")
+	private Long commentAmount;
 }

@@ -23,10 +23,10 @@ public class ReviewInfoCond {
 	private String row;
 	private Integer seatNumber;
 	private Double rating; // 평점
-	private Integer likeAmount; // 좋아요 개수
+	private Long likeAmount; // 좋아요 개수
 	private String content;
 	private String thumbnail;
-	private Integer commentAmount;
+	private Long commentAmount;
 
 	public static ReviewInfoCond from(Review review) {
 		return ReviewInfoCond.builder()
@@ -37,10 +37,10 @@ public class ReviewInfoCond {
 			.row(review.getTheaterSeat().getSeatRow())
 			.seatNumber(review.getTheaterSeat().getNumber())
 			.rating(null)
-			.likeAmount(null)
+			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
 			.thumbnail(review.getThumbnailUrl())
-			.commentAmount(null)
+			.commentAmount(review.getCommentAmount())
 			.build();
 	}
 
