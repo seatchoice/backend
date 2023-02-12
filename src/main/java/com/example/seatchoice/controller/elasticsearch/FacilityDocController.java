@@ -1,10 +1,10 @@
 package com.example.seatchoice.controller.elasticsearch;
 
+import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.entity.document.FacilityDoc;
 import com.example.seatchoice.service.elasticsearch.FacilityDocService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +19,16 @@ public class FacilityDocController {
 	private final FacilityDocService facilityDocService;
 
 	@GetMapping("/search/facility")
-	public ResponseEntity<List<FacilityDoc>> searchFacility(@RequestParam String name,
+	public ApiResponse<List<FacilityDoc>> searchFacility(@RequestParam String name,
 		@RequestParam(required = false) Long after, @RequestParam int size) {
 		List<FacilityDoc> results = facilityDocService.searchFacility(name, after, size);
-		return ResponseEntity.ok(results);
+		return new ApiResponse(results);
 	}
 
 	@PostMapping("/save/facility")
-	public ResponseEntity<Void> saveFacilityDoc(){
+	public ApiResponse<Void> saveFacilityDoc(){
 		facilityDocService.saveFacilities();
-		return ResponseEntity.ok().build();
+		return new ApiResponse<>();
 	}
 
 }
