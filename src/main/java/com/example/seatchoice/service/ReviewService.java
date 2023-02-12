@@ -2,12 +2,15 @@ package com.example.seatchoice.service;
 
 import com.example.seatchoice.dto.cond.ReviewCond;
 import com.example.seatchoice.dto.cond.ReviewDetailCond;
+import com.example.seatchoice.dto.cond.ReviewInfoCond;
 import com.example.seatchoice.dto.param.ReviewParam;
+import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.ReviewLike;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.exception.CustomException;
+import com.example.seatchoice.repository.CommentRepository;
 import com.example.seatchoice.repository.ImageRepository;
 import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
@@ -16,6 +19,8 @@ import com.example.seatchoice.type.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +36,7 @@ public class ReviewService {
 	private final ImageRepository imageRepository;
 	private final TheaterSeatRepository theaterSeatRepository;
 	private final ReviewLikeRepository reviewLikeRepository;
+	private final CommentRepository commentRepository;
 	private final ImageService s3Service;
 
 
@@ -87,11 +93,33 @@ public class ReviewService {
 			images = null;
 		}
 
-		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(
-			review.getTheaterSeat().getId());
+		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(review.getTheaterSeat().getId());
 
 		return ReviewDetailCond.from(review, getReviewRating(reviews),
 			getLikeAmount(reviewId), images);
+	}
+
+	// 리뷰 목록 조회
+	public Slice<ReviewInfoCond> getReviews(Long lastReviewId, Long seatId, Pageable pageable) {
+		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(seatId);
+
+		Double rating = getReviewRating(reviews);
+
+		// 리뷰가 없을 때, null 반환
+		if (CollectionUtils.isEmpty(reviews)) return null;
+
+		// 요청이 처음일 때
+		if (lastReviewId == null) lastReviewId = reviews.get(reviews.size() - 1).getId();
+		Slice<ReviewInfoCond> reviewInfoConds = reviewRepository
+			.searchBySlice(lastReviewId, pageable);
+
+		for (ReviewInfoCond reviewInfoCond : reviewInfoConds) {
+			reviewInfoCond.setRating(rating);
+			reviewInfoCond.setLikeAmount(getLikeAmount(reviewInfoCond.getReviewId()));
+			reviewInfoCond.setCommentAmount(getCommentAmount(reviewInfoCond.getReviewId()));
+		}
+
+		return reviewInfoConds;
 	}
 
 	// 리뷰 삭제
@@ -139,9 +167,13 @@ public class ReviewService {
 	// 좌석 좋아요 개수
 	public Integer getLikeAmount(Long reviewId) {
 		List<ReviewLike> reviewLikes = reviewLikeRepository.findAllByReviewId(reviewId);
-		if (CollectionUtils.isEmpty(reviewLikes)) {
-			return 0;
-		}
+		if (CollectionUtils.isEmpty(reviewLikes)) return 0;
 		return reviewLikes.size();
+	}
+
+	public Integer getCommentAmount(Long reviewId) {
+		List<Comment> comments = commentRepository.findAllByReviewId(reviewId);
+		if (CollectionUtils.isEmpty(comments)) return 0;
+		return comments.size();
 	}
 }

@@ -3,16 +3,20 @@ package com.example.seatchoice.controller;
 import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.dto.cond.ReviewCond;
 import com.example.seatchoice.dto.cond.ReviewDetailCond;
+import com.example.seatchoice.dto.cond.ReviewInfoCond;
 import com.example.seatchoice.dto.param.ReviewParam;
 import com.example.seatchoice.service.ReviewService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +48,14 @@ public class ReviewController {
 	@GetMapping("/reviews/{reviewId}")
 	public ApiResponse<ReviewDetailCond> getReview(@PathVariable Long reviewId) {
 		return new ApiResponse<>(reviewService.getReview(reviewId));
+	}
+
+	// 리뷰 목록 조회 (무한스크롤)
+	@GetMapping("/reviews")
+	public ApiResponse<Slice<ReviewInfoCond>> getReviews(
+		@RequestParam(required = false) Long lastReviewId,
+		@RequestParam Long seatId, Pageable pageable) {
+		return new ApiResponse<>(reviewService.getReviews(lastReviewId, seatId, pageable));
 	}
 
 	// 리뷰 삭제
