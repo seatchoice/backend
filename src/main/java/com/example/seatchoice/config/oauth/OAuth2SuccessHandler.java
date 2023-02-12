@@ -37,6 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		response.setContentType("application/json;charset=UTF-8");
 		response.setStatus(httpStatus.value());
 		Cookie cookie = new Cookie("refreshToken", refreshToken);
+		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 
 		JSONObject responseJson = new JSONObject();
