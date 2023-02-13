@@ -64,7 +64,7 @@ class CommentServiceTest {
 		CommentParam.Create param = new Create(1L, 2L, "댓글");
 		Member member = Member.builder().build();
 		member.setId(1L);
-		Review review = Review.builder().build();
+		Review review = Review.builder().commentAmount(1L).build();
 		review.setId(2L);
 
 		given(memberRepository.findById(anyLong()))
@@ -80,6 +80,7 @@ class CommentServiceTest {
 
 		// then
 		verify(commentRepository, times(1)).save(captor.capture());
+		assertEquals(review.getCommentAmount(), 2L);
 	}
 
 	@Test
@@ -210,6 +211,7 @@ class CommentServiceTest {
 		Member member = Member.builder().build();
 		Comment comment = Comment.builder()
 			.member(member)
+			.review(Review.builder().commentAmount(1L).build())
 			.build();
 
 		given(memberRepository.findById(anyLong()))
@@ -223,7 +225,7 @@ class CommentServiceTest {
 
 		// then
 		verify(commentRepository, times(1)).delete(captor.capture());
-
+		assertEquals(0, comment.getReview().getCommentAmount());
 	}
 
 	@DisplayName("댓글 삭제 실패 - 해당 유저 없음")

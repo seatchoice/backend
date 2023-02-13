@@ -43,6 +43,8 @@ public class CommentService {
 		commentRepository.save(
 			Comment.of(review, member, commentParam.getContent()));
 
+		review.addCommentAmount();
+
 		String commentsUrl =
 			"localhost:8080/api/review/" + review.getId() + "/comments";
 
@@ -78,6 +80,9 @@ public class CommentService {
 		}
 
 		commentRepository.delete(comment);
+
+		comment.getReview().minusCommentAmount();
+
 	}
 
 	public List<CommentCond> list(Long reviewId) {
