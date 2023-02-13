@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,4 +30,12 @@ public class Comment extends BaseEntity {
 
 	@NotNull
 	private String content;
+
+	public static Comment of(Review review, Member member, String content) {
+		return Comment.builder()
+			.review(review)
+			.member(member)
+			.content(content)
+			.build();
+	}
 }

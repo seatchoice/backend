@@ -19,9 +19,11 @@ public enum ErrorCode {
 	NOT_FOUND_SEAT("해당 공연좌석이 존재하지 않습니다."),
 	NOT_FOUND_ALARM("해당 알림이 존재하지 않습니다."),
 	NOT_FOUND_REVIEW("해당 리뷰가 존재하지 않습니다."),
+	NOT_FOUND_COMMENT("해당 댓글이 존재하지 않습니다."),
 	IMAGE_UPLOAD_FAIL("이미지 업로드에 실패했습니다."),
 	WRONG_FILE_FORM("잘못된 형식의 파일입니다."),
-	ERROR_CODE_500("서버 에러. 문의가 필요합니다.")
+	ERROR_CODE_500("서버 에러. 문의가 필요합니다."),
+	NOT_AUTHORITY_COMMENT("댓글을 수정하거나 삭제할 권한이 없습니다.")
 	;
 
 	private final String message;
