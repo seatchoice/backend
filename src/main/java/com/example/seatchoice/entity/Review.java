@@ -40,4 +40,16 @@ public class Review extends BaseEntity {
 
 	@ColumnDefault("0")
 	private Long commentAmount;
+
+	public void addCommentAmount() {
+		if (commentAmount >= 0) {
+			this.commentAmount++;
+		}
+	}
+
+	public void minusCommentAmount() {
+		if (commentAmount > 0) {
+			this.commentAmount--;
+		}
+	}
 }
