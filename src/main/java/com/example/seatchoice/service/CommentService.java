@@ -32,9 +32,9 @@ public class CommentService {
 	private final AlarmService alarmService;
 
 	@Transactional
-	public void create(CommentParam.Create commentParam) {
+	public void create(Long memberId, CommentParam.Create commentParam) {
 
-		Member member = memberRepository.findById(commentParam.getMemberId())
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
 		Review review = reviewRepository.findById(commentParam.getReviewId())
@@ -46,15 +46,15 @@ public class CommentService {
 		review.addCommentAmount();
 
 		String commentsUrl =
-			"localhost:8080/api/review/" + review.getId() + "/comments";
+			"https://43.200.67.139:8080/api/review/" + review.getId() + "/comments";
 
 		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
 
 	}
 
 	@Transactional
-	public void modify(Long commentId, CommentParam.Modify commentParam) {
-		Member member = memberRepository.findById(commentParam.getMemberId())
+	public void modify(Long memberId, Long commentId, CommentParam.Modify commentParam) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
 		Comment comment = commentRepository.findById(commentId)
@@ -68,8 +68,8 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void delete(Long commentId, CommentParam.Delete commentParam) {
-		Member member = memberRepository.findById(commentParam.getMemberId())
+	public void delete(Long memberId, Long commentId) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
 		Comment comment = commentRepository.findById(commentId)

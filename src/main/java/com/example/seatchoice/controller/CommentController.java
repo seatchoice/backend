@@ -7,6 +7,8 @@ import com.example.seatchoice.service.CommentService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,27 +25,33 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@GetMapping("/comment")
-	public ApiResponse<Void> create(@RequestBody @Valid CommentParam.Create commentParam) {
+	public ApiResponse<Void> create(@RequestBody @Valid CommentParam.Create commentParam,
+		@AuthenticationPrincipal OAuth2User oAuth2User) {
+		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
 
-		commentService.create(commentParam);
+		commentService.create(memberId, commentParam);
 
 		return new ApiResponse<>();
 	}
 
 	@PutMapping("/comment/{commentId}")
 	public ApiResponse<Void> modify(@PathVariable Long commentId,
-		@RequestBody @Valid CommentParam.Modify commentParam) {
+		@RequestBody @Valid CommentParam.Modify commentParam,
+		@AuthenticationPrincipal OAuth2User oAuth2User) {
 
-		commentService.modify(commentId, commentParam);
+		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
+
+		commentService.modify(memberId, commentId, commentParam);
 
 		return new ApiResponse<>();
 	}
 
 	@DeleteMapping("/comment/{commentId}")
 	public ApiResponse<Void> delete(@PathVariable Long commentId,
-		@RequestBody @Valid CommentParam.Delete commentParam) {
+		@AuthenticationPrincipal OAuth2User oAuth2User) {
+		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
 
-		commentService.delete(commentId, commentParam);
+		commentService.delete(memberId, commentId);
 
 		return new ApiResponse<>();
 	}

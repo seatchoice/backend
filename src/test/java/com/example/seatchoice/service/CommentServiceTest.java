@@ -17,7 +17,6 @@ import com.example.seatchoice.dto.cond.AlarmCond;
 import com.example.seatchoice.dto.cond.CommentCond;
 import com.example.seatchoice.dto.param.CommentParam;
 import com.example.seatchoice.dto.param.CommentParam.Create;
-import com.example.seatchoice.dto.param.CommentParam.Delete;
 import com.example.seatchoice.dto.param.CommentParam.Modify;
 import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Member;
@@ -61,7 +60,7 @@ class CommentServiceTest {
 	@DisplayName("댓글 작성 성공")
 	void createSuccess() {
 		// given
-		CommentParam.Create param = new Create(1L, 2L, "댓글");
+		CommentParam.Create param = new Create(2L, "댓글");
 		Member member = Member.builder().build();
 		member.setId(1L);
 		Review review = Review.builder().commentAmount(1L).build();
@@ -76,7 +75,7 @@ class CommentServiceTest {
 			.willReturn(AlarmCond.builder().build());
 
 		// when
-		commentService.create(param);
+		commentService.create(1L, param);
 
 		// then
 		verify(commentRepository, times(1)).save(captor.capture());
@@ -87,14 +86,14 @@ class CommentServiceTest {
 	@DisplayName("댓글 작성 실패 - 해당 유저 없음")
 	void createFail_notFoundMember() {
 		// given
-		CommentParam.Create param = new Create(1L, 2L, "댓글");
+		CommentParam.Create param = new Create(2L, "댓글");
 
 		given(memberRepository.findById(anyLong()))
 			.willReturn(Optional.empty());
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.create(param));
+			() -> commentService.create(1L, param));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_FOUND_MEMBER);
@@ -104,7 +103,7 @@ class CommentServiceTest {
 	@DisplayName("댓글 작성 실패 - 해당 리뷰 없음")
 	void createFail_notFoundReview() {
 		// given
-		CommentParam.Create param = new Create(1L, 2L, "댓글");
+		CommentParam.Create param = new Create(2L, "댓글");
 		Member member = Member.builder().build();
 
 		given(memberRepository.findById(anyLong()))
@@ -114,7 +113,7 @@ class CommentServiceTest {
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.create(param));
+			() -> commentService.create(1L, param));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_FOUND_REVIEW);
@@ -124,7 +123,7 @@ class CommentServiceTest {
 	@DisplayName("댓글 수정 성공")
 	void modifySuccess() {
 		// given
-		CommentParam.Modify param = new Modify(1L, "수정 댓글");
+		CommentParam.Modify param = new Modify("수정 댓글");
 		Member member = Member.builder().build();
 		Comment comment = Comment.builder()
 			.member(member)
@@ -137,7 +136,7 @@ class CommentServiceTest {
 			.willReturn(Optional.of(comment));
 
 		// when
-		commentService.modify(1L, param);
+		commentService.modify(1L, 1L, param);
 
 		// then
 		assertEquals(comment.getContent(), "수정 댓글");
@@ -146,14 +145,14 @@ class CommentServiceTest {
 	@DisplayName("댓글 수정 실패 - 해당 유저 없음")
 	void modifyFail_notFoundMember() {
 		// given
-		CommentParam.Modify param = new Modify(1L, "수정 댓글");
+		CommentParam.Modify param = new Modify("수정 댓글");
 
 		given(memberRepository.findById(anyLong()))
 			.willReturn(Optional.empty());
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.modify(1L, param));
+			() -> commentService.modify(1L, 1L, param));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_FOUND_MEMBER);
@@ -162,7 +161,7 @@ class CommentServiceTest {
 	@DisplayName("댓글 수정 실패 - 해당 리뷰 없음")
 	void modifyFail_notFoundReview() {
 		// given
-		CommentParam.Modify param = new Modify(1L, "수정 댓글");
+		CommentParam.Modify param = new Modify("수정 댓글");
 		Member member = Member.builder().build();
 
 		given(memberRepository.findById(anyLong()))
@@ -172,7 +171,7 @@ class CommentServiceTest {
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.modify(1L, param));
+			() -> commentService.modify(1L, 1L, param));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_FOUND_REVIEW);
@@ -182,7 +181,7 @@ class CommentServiceTest {
 	@DisplayName("댓글 수정 실패 - 수정권한이 없습니다.")
 	void modifyFail_notAuthorityComment() {
 		// given
-		CommentParam.Modify param = new Modify(1L, "수정 댓글");
+		CommentParam.Modify param = new Modify("수정 댓글");
 		Member member = Member.builder().build();
 		Member member2 = Member.builder().build();
 		Comment comment = Comment.builder()
@@ -197,7 +196,7 @@ class CommentServiceTest {
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.modify(1L, param));
+			() -> commentService.modify(1L, 1L, param));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_AUTHORITY_COMMENT);
@@ -207,7 +206,6 @@ class CommentServiceTest {
 	@DisplayName("댓글 삭제 성공")
 	void deleteSuccess() {
 		// given
-		CommentParam.Delete param = new Delete(1L);
 		Member member = Member.builder().build();
 		Comment comment = Comment.builder()
 			.member(member)
@@ -221,7 +219,7 @@ class CommentServiceTest {
 		ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
 
 		// when
-		commentService.delete(1L, param);
+		commentService.delete(1L, 1L);
 
 		// then
 		verify(commentRepository, times(1)).delete(captor.capture());
@@ -231,14 +229,12 @@ class CommentServiceTest {
 	@DisplayName("댓글 삭제 실패 - 해당 유저 없음")
 	void deleteFail_notFoundMember() {
 		// given
-		CommentParam.Delete param = new Delete(1L);
-
 		given(memberRepository.findById(anyLong()))
 			.willReturn(Optional.empty());
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.delete(1L, param));
+			() -> commentService.delete(1L, 1L));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_FOUND_MEMBER);
@@ -247,7 +243,6 @@ class CommentServiceTest {
 	@DisplayName("댓글 삭제 실패 - 해당 댓글 없음")
 	void deleteFail_notFoundContent() {
 		// given
-		CommentParam.Delete param = new Delete(1L);
 		Member member = Member.builder().build();
 
 		given(memberRepository.findById(anyLong()))
@@ -257,7 +252,7 @@ class CommentServiceTest {
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.delete(1L, param));
+			() -> commentService.delete(1L, 1L));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_FOUND_COMMENT);
@@ -267,7 +262,6 @@ class CommentServiceTest {
 	@DisplayName("댓글 삭제 실패 - 삭제권한이 없습니다.")
 	void deleteFail_notAuthority() {
 		// given
-		CommentParam.Delete param = new Delete(1L);
 		Member member = Member.builder().build();
 		Member member2 = Member.builder().build();
 		Comment comment = Comment.builder()
@@ -281,7 +275,7 @@ class CommentServiceTest {
 
 		// when
 		CustomException exception = assertThrows(CustomException.class,
-			() -> commentService.delete(1L, param));
+			() -> commentService.delete(1L, 1L));
 
 		// then
 		assertEquals(exception.getErrorCode(), NOT_AUTHORITY_COMMENT);

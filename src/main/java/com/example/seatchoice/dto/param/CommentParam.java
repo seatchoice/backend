@@ -1,7 +1,7 @@
 package com.example.seatchoice.dto.param;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,32 +10,20 @@ public class CommentParam {
 	@Getter
 	@AllArgsConstructor
 	public static class Create {
-		@NotNull(message = "유저 id를 입력해주세요.")
-		private Long memberId;
 
 		@NotNull(message = "필수 입력입니다.")
 		private Long reviewId;
 
-		@NotBlank(message = "댓글을 작성해 주세요.")
+		@Pattern(regexp = "^\\S{5,}", message = "공백으로 시작하지 않고, 5자 이상 댓글을 작성해 주세요.")
 		private String content;
 	}
 
 	@AllArgsConstructor
 	@Getter
 	public static class Modify {
-		@NotNull(message = "유저 id를 입력해주세요.")
-		private Long memberId;
 
-		@NotBlank(message = "댓글을 작성해 주세요.")
+		@Pattern(regexp = "^\\S{5,}", message = "공백으로 시작하지 않고, 5자 이상 댓글을 작성해 주세요.")
 		private String content;
-	}
-
-	@Getter
-	@AllArgsConstructor
-	public static class Delete {
-		@NotNull(message = "유저 id를 입력해주세요.")
-		private Long memberId;
-
 	}
 
 }
