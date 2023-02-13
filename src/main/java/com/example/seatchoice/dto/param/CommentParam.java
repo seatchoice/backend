@@ -2,11 +2,13 @@ package com.example.seatchoice.dto.param;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class CommentParam {
 
 	@Getter
+	@AllArgsConstructor
 	public static class Create {
 		@NotNull(message = "유저 id를 입력해주세요.")
 		private Long memberId;
@@ -18,6 +20,7 @@ public class CommentParam {
 		private String content;
 	}
 
+	@AllArgsConstructor
 	@Getter
 	public static class Modify {
 		@NotNull(message = "유저 id를 입력해주세요.")
@@ -28,6 +31,7 @@ public class CommentParam {
 	}
 
 	@Getter
+	@AllArgsConstructor
 	public static class Delete {
 		@NotNull(message = "유저 id를 입력해주세요.")
 		private Long memberId;
