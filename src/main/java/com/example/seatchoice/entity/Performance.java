@@ -1,5 +1,6 @@
 package com.example.seatchoice.entity;
 
+import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
 import com.example.seatchoice.entity.common.BaseEntity;
 import java.time.LocalDate;
 import javax.persistence.Entity;
@@ -42,4 +43,17 @@ public class Performance extends BaseEntity {
 
 	@NotNull
 	private LocalDate prfpdto;
+
+	public static Performance of(Prf prf, Theater theater, LocalDate from, LocalDate to) {
+		return Performance.builder()
+			.mt20id(prf.getMt20id())
+			.theater(theater)
+			.prfnm(prf.getPrfnm())
+			.prfpdfrom(from)
+			.prfpdto(to)
+			.poster(prf.getPoster())
+			.genrenm(prf.getGenrenm())
+			.openrun(prf.getOpenrun().equals("Y"))
+			.build();
+	}
 }
