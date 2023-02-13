@@ -4,6 +4,8 @@ import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.dto.cond.ReviewCond;
 import com.example.seatchoice.dto.cond.ReviewDetailCond;
 import com.example.seatchoice.dto.cond.ReviewInfoCond;
+import com.example.seatchoice.dto.cond.ReviewModifyCond;
+import com.example.seatchoice.dto.param.ReviewModifyParam;
 import com.example.seatchoice.dto.param.ReviewParam;
 import com.example.seatchoice.service.ReviewService;
 import java.util.List;
@@ -41,8 +43,7 @@ public class ReviewController {
 
 		// image file을 선택하지 않았을 때
 		if (files.get(0).getSize() == 0) files = null;
-		ReviewCond reviewCond = reviewService.createReview(theaterId, files, request);
-		return new ApiResponse<>(reviewCond);
+		return new ApiResponse<>(reviewService.createReview(theaterId, files, request));
 	}
 
 	// 리뷰 상세보기
@@ -57,6 +58,19 @@ public class ReviewController {
 		@RequestParam(required = false) Long lastReviewId,
 		@RequestParam Long seatId, Pageable pageable) {
 		return new ApiResponse<>(reviewService.getReviews(lastReviewId, seatId, pageable));
+	}
+
+	// 리뷰 수정
+	@PostMapping("/reviews/{reviewId}")
+	public ApiResponse<ReviewModifyCond> createReview(
+		@PathVariable Long reviewId,
+		@RequestPart(value = "image", required = false) List<MultipartFile> files,
+		@Valid @RequestPart(value = "data", required = false) ReviewModifyParam request,
+		@RequestParam(value = "deleteImages", required = false) List<String> deleteImages) {
+
+		// image file을 선택하지 않았을 때
+		if (files.get(0).getSize() == 0) files = null;
+		return new ApiResponse<>(reviewService.updateReview(reviewId, files, request, deleteImages));
 	}
 
 	// 리뷰 삭제

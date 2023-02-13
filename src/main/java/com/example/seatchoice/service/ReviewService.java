@@ -3,6 +3,8 @@ package com.example.seatchoice.service;
 import com.example.seatchoice.dto.cond.ReviewCond;
 import com.example.seatchoice.dto.cond.ReviewDetailCond;
 import com.example.seatchoice.dto.cond.ReviewInfoCond;
+import com.example.seatchoice.dto.cond.ReviewModifyCond;
+import com.example.seatchoice.dto.param.ReviewModifyParam;
 import com.example.seatchoice.dto.param.ReviewParam;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;
@@ -64,13 +66,7 @@ public class ReviewService {
 		);
 
 		if (thumbnail != null) {
-			for (String img : images) {
-				imageRepository.save(
-					Image.builder()
-						.review(review)
-						.url(img)
-						.build());
-			}
+			saveImages(review, images);
 		}
 
 		return ReviewCond.from(review, images);
@@ -118,6 +114,63 @@ public class ReviewService {
 		return reviewInfoConds;
 	}
 
+	// 리뷰 수정
+	public ReviewModifyCond updateReview(Long reviewId, List<MultipartFile> files,
+		ReviewModifyParam request, List<String> deleteImages) {
+		Review review = reviewRepository.findById(reviewId)
+			.orElseThrow(
+				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
+		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(review.getTheaterSeat().getId());
+
+		// 별점 표시 안 할 경우 0점으로 처리
+		if (request.getRating() == null) request.setRating(0);
+
+		List<String> uploadImages = s3Service.uploadImage(files);
+		List<Image> savedImages = new ArrayList<>();
+		if (CollectionUtils.isEmpty(deleteImages)) { // 썸네일이 바뀌지 않는 경우
+			if (CollectionUtils.isEmpty(uploadImages)) { // 이미지 수정 안 했을 경우
+				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				log.info("이미지 수정 안 했을 경우");
+			} else { // 이미지 삭제없이 추가만 한 경우
+				savedImages = imageRepository.findAllByReviewId(reviewId);
+				if (CollectionUtils.isEmpty(savedImages)) { // 기존 이미지가 없던 경우는 썸네일 추가
+					review.setThumbnailUrl(uploadImages.get(0));
+				}
+				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				saveImages(review, uploadImages);
+				log.info("이미지 삭제없이 추가만 한 경우");
+			}
+
+			savedImages = imageRepository.findAllByReviewId(reviewId);
+		} else {
+			for (String url : deleteImages) {
+				imageRepository.deleteByUrl(url);
+			}
+			savedImages = imageRepository.findAllByReviewId(reviewId); // 저장된 리뷰에 대한 이미지 불러옴
+
+			if (CollectionUtils.isEmpty(uploadImages)) { // 이미지 삭제만 한 경우
+				if (CollectionUtils.isEmpty(savedImages)) { // 리뷰에 대한 모든 이미지가 삭제된 경우
+					review.setThumbnailUrl(null);
+					log.info("리뷰에 대한 모든 이미지가 삭제된 경우");
+				} else {
+					review.setThumbnailUrl(savedImages.get(0).getUrl());
+					log.info("리뷰에 대한 모든 이미지가 삭제된 경우가 아닌 경우");
+				}
+				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+			} else { // 삭제한 이미지도 있고, 업로드한 이미지도 있는 경우
+				review.setThumbnailUrl(getModifiedThumbnailUrl(savedImages, uploadImages));
+				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				saveImages(review, uploadImages);
+				savedImages = imageRepository.findAllByReviewId(reviewId);
+				log.info("삭제한 이미지도 있고, 업로드한 이미지도 있는 경우");
+			}
+
+			s3Service.deleteImage(deleteImages);
+		}
+
+		return ReviewModifyCond.from(review, getReviewRating(reviews), savedImages);
+	}
+
 	// 리뷰 삭제
 	public void deleteReview(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
@@ -148,6 +201,30 @@ public class ReviewService {
 
 		// 해당 좌석이 없을 때
 		throw new CustomException(ErrorCode.NOT_FOUND_SEAT, HttpStatus.BAD_REQUEST);
+	}
+
+	public Review updateReviewByContentAndRating(Review review, String content, Integer rating) {
+		review.setContent(content);
+		review.setRating(rating);
+		return reviewRepository.save(review);
+	}
+
+	// 이미지 저장
+	public void saveImages(Review review, List<String> images) {
+		for (String img : images) {
+			imageRepository.save(
+				Image.builder()
+					.review(review)
+					.url(img)
+					.build());
+		}
+	}
+
+	public String getModifiedThumbnailUrl(List<Image> savedImages, List<String> uploadImages) {
+		if (CollectionUtils.isEmpty(savedImages)) {
+			return uploadImages.get(0);
+		}
+		return savedImages.get(0).getUrl();
 	}
 
 	// 좌석 평점
