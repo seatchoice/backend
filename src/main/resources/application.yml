@@ -24,6 +24,7 @@ spring:
   jwt:
     token:
       secret-key:
+      refresh-secret-key:
 
   redis:
     host:
