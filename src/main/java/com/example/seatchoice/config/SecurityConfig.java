@@ -1,9 +1,6 @@
 package com.example.seatchoice.config;
 
-import com.example.seatchoice.config.jwt.JwtAuthenticationFilter;
-import com.example.seatchoice.config.jwt.TokenService;
-import com.example.seatchoice.config.oauth.CustomOAuth2UserService;
-import com.example.seatchoice.config.oauth.OAuth2SuccessHandler;
+import com.example.seatchoice.service.oauth.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-	private final OAuth2SuccessHandler oAuth2SuccessHandler;
-	private final CustomOAuth2UserService customOAuth2UserService;
 	private final TokenService tokenService;
 
 	@Bean
@@ -31,16 +26,17 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers(
 				"/",
-				"/api/**",
-				"/api/reissue/refresh-token"
-
+				"/api/**", // 임시 설정
+				"/api/reissue/refresh-token",
+				"/api/oauth/{provider}/login"
 			).permitAll()
-			.and()
-			.oauth2Login()
-			.successHandler(oAuth2SuccessHandler)
-			.userInfoEndpoint().userService(customOAuth2UserService);
+			// 유저 권한이 필요한 api 추가
+			.antMatchers(
+				"/test"
+			).hasRole("USER");
 
 		http.addFilterBefore(new JwtAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+		http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
 		return http.build();
 	}

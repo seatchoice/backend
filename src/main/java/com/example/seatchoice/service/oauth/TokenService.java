@@ -1,13 +1,14 @@
-package com.example.seatchoice.config.jwt;
+package com.example.seatchoice.service.oauth;
 
-import static com.example.seatchoice.type.ErrorCode.EXPIRED_TOKEN;
+import static com.example.seatchoice.type.ErrorCode.AUTHORIZATION_KEY_DOES_NOT_EXIST;
+import static com.example.seatchoice.type.ErrorCode.EXPIRED_REFRESH_TOKEN;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_MEMBER;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.example.seatchoice.dto.auth.Token.AccessToken;
-import com.example.seatchoice.dto.auth.Token.RefreshToken;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.repository.MemberRepository;
@@ -39,19 +40,24 @@ public class TokenService{
 	@Value("${spring.jwt.token.secret-key")
 	private String secretKey;
 
+	@Value("${spring.jwt.token.refresh-secret-key")
+	private String refreshSecretKey;
+
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<Long, Object> redisTemplate;
 	private final long TOKEN_PERIOD = 30 * 60 * 1000L;
-	private final long REFRESH_PERIOD = 6 * 60 * 60 * 1000L;
+	private final long REFRESH_PERIOD = 14 * 24 * 60 * 60 * 1000L;
+	private final String REDIS_REFRESH_TOKEN_KEY = "refreshToken";
 
 	@PostConstruct
 	protected void init() {
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+		refreshSecretKey = Base64.getEncoder().encodeToString(refreshSecretKey.getBytes());
 	}
 
-	public AccessToken createToken(OAuth2User oAuth2User) {
-		Object id = oAuth2User.getAttributes().get("id");
-		Object nickname = oAuth2User.getAttributes().get("nickname");
+	public String createToken(Member member) {
+		Object id = member.getId();
+		Object nickname = member.getNickname();
 
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("id", id);
@@ -67,12 +73,12 @@ public class TokenService{
 			.compact();
 
 
-		return new AccessToken(accessToken);
+		return accessToken;
 	}
 
-	public RefreshToken createRefreshToken(OAuth2User oAuth2User) {
-		Object id = oAuth2User.getAttributes().get("id");
-		Object nickname = oAuth2User.getAttributes().get("nickname");
+	public String createRefreshToken(Member member) {
+		Object id = member.getId();
+		Object nickname = member.getNickname();
 
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("id", id);
@@ -84,27 +90,27 @@ public class TokenService{
 			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + REFRESH_PERIOD))
-			.signWith(SignatureAlgorithm.HS256, secretKey)
+			.signWith(SignatureAlgorithm.HS256, refreshSecretKey)
 			.compact();
 
 		// redis refreshToken 저장
 		Long memberId = Long.valueOf(id.toString());
 		HashOperations<Long, Object, Object> hashOperations = redisTemplate.opsForHash();
-		hashOperations.put(memberId, "refreshToken", refreshToken);
+		hashOperations.put(memberId, REDIS_REFRESH_TOKEN_KEY, refreshToken);
 		redisTemplate.expire(memberId, REFRESH_PERIOD, MILLISECONDS);
 
-		return new RefreshToken(refreshToken);
+		return refreshToken;
 	}
 
 	public Authentication getAuthentication(String token) {
 		Long memberId = getMemberId(token);
 
+		Member member = memberRepository.findById(memberId).orElseThrow(
+			() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
+
 		Map<String, Object> memberInfo = new HashMap<>();
 		memberInfo.put("id", memberId);
 		memberInfo.put("nickname", getNickname(token));
-
-		Member member = memberRepository.findById(memberId).orElseThrow(
-			() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
 
 		OAuth2User oAuth2User = new DefaultOAuth2User(
 			Collections.singleton(new SimpleGrantedAuthority(member.getRole().name())), memberInfo, "id");
@@ -113,34 +119,44 @@ public class TokenService{
 			oAuth2User, "", oAuth2User.getAuthorities());
 	}
 
+	public String resolveToken(HttpServletRequest request) {
+		String accessToken = request.getHeader("Authorization");
+
+		if (accessToken == null) {
+			throw new CustomException(AUTHORIZATION_KEY_DOES_NOT_EXIST, BAD_REQUEST);
+		}
+
+		return accessToken;
+	}
+
+	public boolean validateToken(String token) {
+		Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+		return claims.getExpiration().after(new Date());
+	}
+
+	public AccessToken reissueAccessToken(HttpServletRequest request, String refreshToken) {
+		String token = resolveToken(request);
+		Long memberId = getMemberId(token);
+		String redisRefreshToken = redisTemplate.opsForHash().get(memberId, REDIS_REFRESH_TOKEN_KEY).toString();
+
+		Member member = memberRepository.findById(memberId).orElseThrow(
+			() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
+
+		if (!redisRefreshToken.equals(refreshToken)) {
+			throw new CustomException(EXPIRED_REFRESH_TOKEN, UNAUTHORIZED);
+		}
+
+		String accessToken = createToken(member);
+
+		return new AccessToken(accessToken);
+	}
+
 	public Long getMemberId(String token) {
 		String memberId = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("id").toString();
-
 		return Long.valueOf(memberId);
 	}
 
 	public Object getNickname(String token) {
 		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("nickname");
-	}
-
-	public String resolveToken(HttpServletRequest request) {
-		return request.getHeader("Authorization");
-	}
-
-	public boolean validateToken(String token) {
-		Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-
-		return claims.getExpiration().after(new Date());
-	}
-
-	public AccessToken reissueAccessToken(OAuth2User oAuth2User, String refreshToken) {
-		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
-		String redisRefreshToken = redisTemplate.opsForHash().get(memberId, "refreshToken").toString();
-
-		if (!redisRefreshToken.equals(refreshToken)) {
-			throw new CustomException(EXPIRED_TOKEN, UNAUTHORIZED);
-		}
-
-		return createToken(oAuth2User);
 	}
 }
