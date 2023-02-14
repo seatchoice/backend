@@ -2,6 +2,7 @@ package com.example.seatchoice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.seatchoice.exception.CustomException;
@@ -51,6 +52,15 @@ public class ImageService {
 
 		return fileUrlList;
 	}
+
+	public void deleteImage(List<String> images) {
+		String fileName = "";
+		for (String url : images) {
+			fileName = url.split("/")[3];
+		}
+		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+	}
+
 
 	private String createFileName(String fileName) {
 		return UUID.randomUUID().toString().concat(getFileExtension(fileName));
