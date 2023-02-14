@@ -44,7 +44,7 @@ public class CommentService {
 		review.addCommentAmount();
 
 		String commentsUrl =
-			"https://seatchoice.site:8080/api/review/" + review.getId() + "/comments";
+			"https://seatchoice.site/api/review/" + review.getId() + "/comments";
 		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
 
 	}
