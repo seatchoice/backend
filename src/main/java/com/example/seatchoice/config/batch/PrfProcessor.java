@@ -28,11 +28,12 @@ public class PrfProcessor implements ItemProcessor<Prf, Performance> {
 		String theaterName = "";
 		try {
 			theaterName = getTheaterName(item.getMt20id());
-		} catch (Exception e) {
-			return null;
-		}
 
-		if (Objects.equals(theaterName, "")) {
+			if (Objects.equals(theaterName, "")) {
+				return null;
+			}
+
+		} catch (Exception e) {
 			return null;
 		}
 
