@@ -16,7 +16,7 @@ public class KafkaReceiver {
 
     private final SimpMessagingTemplate template;
 
-    @KafkaListener(id = "main-listener", topics = "kafka-chatting")
+    @KafkaListener(groupId = "seatChoice", topics = "kafka-chatting")
     public void receive(ChattingMessageParam message) throws Exception {
 
         log.info("message='{}'", message);
