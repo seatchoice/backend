@@ -22,10 +22,6 @@ public class PerformanceResponse {
 		return prfList;
 	}
 
-	public void setPrfList(List<Prf> prfList) {
-		this.prfList = prfList;
-	}
-
 	@Getter
 	@Builder
 	@NoArgsConstructor

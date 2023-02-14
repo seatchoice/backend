@@ -21,13 +21,15 @@ public class FacilityDocController {
 	@GetMapping("/search/facility")
 	public ApiResponse<List<FacilityDoc>> searchFacility(@RequestParam String name,
 		@RequestParam(required = false) Long after, @RequestParam int size) {
-		List<FacilityDoc> results = facilityDocService.searchFacility(name, after, size);
-		return new ApiResponse(results);
+
+		return new ApiResponse<>(facilityDocService.searchFacility(name, after, size));
 	}
 
 	@PostMapping("/save/facility")
 	public ApiResponse<Void> saveFacilityDoc(){
+
 		facilityDocService.saveFacilities();
+
 		return new ApiResponse<>();
 	}
 
