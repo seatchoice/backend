@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.type.ErrorCode;
 import java.io.IOException;
@@ -59,6 +60,14 @@ public class ImageService {
 			fileName = url.split("/")[3];
 		}
 		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+	}
+
+	public void deleteImageFromObject(List<Image> images) {
+		String fileName = "";
+		for (Image img: images) {
+			fileName = img.getUrl().split("/")[3];
+			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+		}
 	}
 
 

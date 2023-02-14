@@ -180,6 +180,7 @@ public class ReviewService {
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
 		Integer rating = review.getRating();
 		TheaterSeat theaterSeat = review.getTheaterSeat();
+		List<Image> images = imageRepository.findAllByReviewId(reviewId);
 
 		reviewRepository.deleteCommentById(reviewId);
 		reviewRepository.deleteImageById(reviewId);
@@ -188,6 +189,11 @@ public class ReviewService {
 
 		// 좌석 평점 수정
 		saveSeatRating(theaterSeat, delete, rating, 0);
+
+		// s3에서 이미지 삭제
+		if (!CollectionUtils.isEmpty(images)) {
+			s3Service.deleteImageFromObject(images);
+		}
 	}
 
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
