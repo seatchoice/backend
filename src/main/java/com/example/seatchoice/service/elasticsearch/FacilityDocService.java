@@ -4,7 +4,6 @@ import com.example.seatchoice.entity.Facility;
 import com.example.seatchoice.entity.document.FacilityDoc;
 import com.example.seatchoice.repository.FacilityRepository;
 import com.example.seatchoice.repository.elasticsearch.FacilityDocRepository;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class FacilityDocService {
 
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 		if (after != null) {
-			queryBuilder.withSearchAfter(Arrays.asList(after));
+			queryBuilder.withSearchAfter(List.of(after));
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
@@ -44,11 +43,9 @@ public class FacilityDocService {
 			.build();
 
 		SearchHits<FacilityDoc> searchHits = elasticsearchOperations.search(searchQuery, FacilityDoc.class);
-		List<FacilityDoc> results = searchHits.stream()
+		return searchHits.stream()
 			.map(SearchHit::getContent)
 			.collect(Collectors.toList());
-
-		return results;
 	}
 
 	/**

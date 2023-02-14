@@ -1,10 +1,10 @@
 package com.example.seatchoice.controller.elasticsearch;
 
+import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.entity.document.PerformanceDoc;
 import com.example.seatchoice.service.elasticsearch.PerformanceDocService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +19,18 @@ public class PerformanceDocController {
 	private final PerformanceDocService performanceDocService;
 
 	@GetMapping("/search/performance")
-	public ResponseEntity<List<PerformanceDoc>> searchPerformance(@RequestParam String name,
+	public ApiResponse<List<PerformanceDoc>> searchPerformance(@RequestParam String name,
 		@RequestParam(required = false) Long after, @RequestParam int size) {
-		List<PerformanceDoc> results = performanceDocService.searchPerformance(name, after, size);
-		return ResponseEntity.ok(results);
+
+		return new ApiResponse<>(performanceDocService.searchPerformance(name, after, size));
 	}
 
 	@PostMapping("/save/performance")
-	public ResponseEntity<Void> savePerformanceDoc(){
+	public ApiResponse<Void> savePerformanceDoc(){
+
 		performanceDocService.savePerformances();
-		return ResponseEntity.ok().build();
+
+		return new ApiResponse<>();
 	}
 
 }
