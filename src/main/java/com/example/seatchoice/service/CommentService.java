@@ -40,14 +40,11 @@ public class CommentService {
 		Review review = reviewRepository.findById(commentParam.getReviewId())
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
 
-		commentRepository.save(
-			Comment.of(review, member, commentParam.getContent()));
-
+		commentRepository.save(Comment.of(review, member, commentParam.getContent()));
 		review.addCommentAmount();
 
 		String commentsUrl =
-			"https://43.200.67.139:8080/api/review/" + review.getId() + "/comments";
-
+			"https://seatchoice.site:8080/api/review/" + review.getId() + "/comments";
 		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
 
 	}
@@ -80,7 +77,6 @@ public class CommentService {
 		}
 
 		commentRepository.delete(comment);
-
 		comment.getReview().minusCommentAmount();
 
 	}

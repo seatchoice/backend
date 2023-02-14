@@ -27,7 +27,8 @@ public enum ErrorCode {
 	WRONG_FILE_FORM("잘못된 형식의 파일입니다."),
 	ERROR_CODE_500("서버 에러. 문의가 필요합니다."),
 	NOT_AUTHORITY_COMMENT("댓글을 수정하거나 삭제할 권한이 없습니다."),
-	NO_REVIEW_DATA("더이상 조회할 리뷰가 없습니다.")
+	NO_REVIEW_DATA("더이상 조회할 리뷰가 없습니다."),
+	CANNOT_NEGATIVE_COMMENT_AMOUNT("commentAmount는 음수가 될 수 없습니다.")
 	;
 
 	private final String message;
