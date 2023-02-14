@@ -10,8 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -32,4 +35,10 @@ public class TheaterSeat extends BaseEntity {
 
 	@NotNull
 	private Integer number;
+
+	@ColumnDefault("0")
+	private Long reviewAmount;
+
+	@ColumnDefault("0.0")
+	private Double rating;
 }

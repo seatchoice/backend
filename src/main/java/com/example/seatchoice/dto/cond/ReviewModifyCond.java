@@ -23,13 +23,13 @@ public class ReviewModifyCond {
 	private String section;
 	private String row;
 	private Integer seatNumber;
-	private Double rating; // 평점
+	private Integer rating; // 평점
 	private Long likeAmount; // 좋아요 개수
 	private String content;
 	private List<String> images;
 
 
-	public static ReviewModifyCond from(Review review, Double rating, List<Image> images) {
+	public static ReviewModifyCond from(Review review, List<Image> images) {
 		return ReviewModifyCond.builder()
 			.userId(review.getMember().getId())
 			.nickname(review.getMember().getNickname())
@@ -38,7 +38,7 @@ public class ReviewModifyCond {
 			.section(review.getTheaterSeat().getSection())
 			.row(review.getTheaterSeat().getSeatRow())
 			.seatNumber(review.getTheaterSeat().getNumber())
-			.rating(rating)
+			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
 			.images(getImages(images))

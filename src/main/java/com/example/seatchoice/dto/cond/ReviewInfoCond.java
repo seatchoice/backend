@@ -16,13 +16,14 @@ import org.springframework.util.CollectionUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewInfoCond {
+	private Double seatRating; // 좌석 평점
 	private Long reviewId;
 	private Long userId;
 	private Integer floor;
 	private String section;
 	private String row;
 	private Integer seatNumber;
-	private Double rating; // 평점
+	private Integer rating; // 개인 평점
 	private Long likeAmount; // 좋아요 개수
 	private String content;
 	private String thumbnail;
@@ -30,13 +31,14 @@ public class ReviewInfoCond {
 
 	public static ReviewInfoCond from(Review review) {
 		return ReviewInfoCond.builder()
+			.seatRating(review.getTheaterSeat().getRating())
 			.reviewId(review.getId())
 			.userId(review.getMember().getId())
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.row(review.getTheaterSeat().getSeatRow())
 			.seatNumber(review.getTheaterSeat().getNumber())
-			.rating(null)
+			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
 			.thumbnail(review.getThumbnailUrl())
