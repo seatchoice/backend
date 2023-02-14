@@ -6,11 +6,15 @@ import java.util.Date;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
