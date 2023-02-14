@@ -7,6 +7,7 @@ import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.repository.MemberRepository;
 import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
+import com.example.seatchoice.type.AlarmType;
 import com.example.seatchoice.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class ReviewLikeService {
 	private final ReviewLikeRepository reviewLikeRepository;
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
+	private final AlarmService alarmService;
 
 	public void createLike(Long memberId, Long reviewId) {
 		Member member = memberRepository.getReferenceById(memberId);
@@ -39,6 +41,10 @@ public class ReviewLikeService {
 
 		review.setLikeAmount(review.getLikeAmount() + 1);
 		reviewRepository.save(review);
+
+		// 알람 생성
+		String url = "https://seatchoice.site/api/reviews/" + reviewId;
+		alarmService.createAlarm(memberId, AlarmType.LIKE, url);
 	}
 
 	public void deleteLike(Long memberId, Long reviewId) {
