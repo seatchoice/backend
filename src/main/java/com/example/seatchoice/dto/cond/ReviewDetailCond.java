@@ -20,13 +20,13 @@ public class ReviewDetailCond {
 	private String section;
 	private String row;
 	private Integer seatNumber;
-	private Double rating; // 평점
+	private Integer rating; // 평점
 	private Long likeAmount; // 좋아요 개수
 	private String content;
 	private List<String> images;
 
 
-	public static ReviewDetailCond from(Review review, Double rating, List<String> images) {
+	public static ReviewDetailCond from(Review review, List<String> images) {
 		return ReviewDetailCond.builder()
 			.userId(review.getMember().getId())
 			.nickname(review.getMember().getNickname())
@@ -35,7 +35,7 @@ public class ReviewDetailCond {
 			.section(review.getTheaterSeat().getSection())
 			.row(review.getTheaterSeat().getSeatRow())
 			.seatNumber(review.getTheaterSeat().getNumber())
-			.rating(rating)
+			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
 			.images(images)

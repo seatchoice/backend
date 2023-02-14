@@ -36,6 +36,9 @@ public class ReviewService {
 	private final ImageRepository imageRepository;
 	private final TheaterSeatRepository theaterSeatRepository;
 	private final ImageService s3Service;
+	private final String create = "CREATE";
+	private final String update = "UPDATE";
+	private final String delete = "DELETE";
 
 
 	// 리뷰 등록
@@ -69,6 +72,8 @@ public class ReviewService {
 			saveImages(review, images);
 		}
 
+		saveSeatRating(theaterSeat, create, request.getRating(), 0);
+
 		return ReviewCond.from(review, images);
 	}
 
@@ -90,14 +95,12 @@ public class ReviewService {
 
 		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(review.getTheaterSeat().getId());
 
-		return ReviewDetailCond.from(review, getReviewRating(reviews), images);
+		return ReviewDetailCond.from(review, images);
 	}
 
 	// 리뷰 목록 조회
 	public Slice<ReviewInfoCond> getReviews(Long lastReviewId, Long seatId, Pageable pageable) {
 		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(seatId);
-
-		Double rating = getReviewRating(reviews);
 
 		// 리뷰가 없을 때, null 반환
 		if (CollectionUtils.isEmpty(reviews)) return null;
@@ -106,10 +109,6 @@ public class ReviewService {
 		if (lastReviewId == null) lastReviewId = reviews.get(reviews.size() - 1).getId();
 		Slice<ReviewInfoCond> reviewInfoConds = reviewRepository
 			.searchBySlice(lastReviewId, pageable);
-
-		for (ReviewInfoCond reviewInfoCond : reviewInfoConds) {
-			reviewInfoCond.setRating(rating);
-		}
 
 		return reviewInfoConds;
 	}
@@ -121,6 +120,7 @@ public class ReviewService {
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
 		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(review.getTheaterSeat().getId());
+		Integer oldReviewRating = review.getRating();
 
 		// 별점 표시 안 할 경우 0점으로 처리
 		if (request.getRating() == null) request.setRating(0);
@@ -168,7 +168,9 @@ public class ReviewService {
 			s3Service.deleteImage(deleteImages);
 		}
 
-		return ReviewModifyCond.from(review, getReviewRating(reviews), savedImages);
+		saveSeatRating(review.getTheaterSeat(), update, oldReviewRating, review.getRating());
+
+		return ReviewModifyCond.from(review, savedImages);
 	}
 
 	// 리뷰 삭제
@@ -176,11 +178,16 @@ public class ReviewService {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
+		Integer rating = review.getRating();
+		TheaterSeat theaterSeat = review.getTheaterSeat();
 
 		reviewRepository.deleteCommentById(reviewId);
 		reviewRepository.deleteImageById(reviewId);
 		reviewRepository.deleteReviewLikeById(reviewId);
 		reviewRepository.delete(review);
+
+		// 좌석 평점 수정
+		saveSeatRating(theaterSeat, delete, rating, 0);
 	}
 
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
@@ -227,12 +234,24 @@ public class ReviewService {
 		return savedImages.get(0).getUrl();
 	}
 
-	// 좌석 평점
-	public Double getReviewRating(List<Review> reviews) {
-		Double total = 0.0;
-		for (int i = 0; i < reviews.size(); i++) {
-			total += reviews.get(i).getRating();
+	// 좌석 평점 저장
+	public void saveSeatRating(TheaterSeat theaterSeat, String status,
+		Integer rating, Integer updateRating) {
+		Double total = theaterSeat.getRating() * theaterSeat.getReviewAmount();
+		Long reviewAmount = theaterSeat.getReviewAmount();
+		if (status.equals("CREATE")) {
+			total += rating;
+			reviewAmount += 1;
+			theaterSeat.setReviewAmount(reviewAmount);
+		} else if (status.equals("UPDATE")) {
+			total -= rating;
+			total += updateRating;
+		} else {
+			total -= rating;
+			reviewAmount = reviewAmount - 1 >= 0 ? reviewAmount - 1 : 0;
+			theaterSeat.setReviewAmount(theaterSeat.getReviewAmount() - 1);
 		}
-		return Math.round((total / reviews.size()) * 10) / 10.0;
+		theaterSeat.setRating(Math.round(total / reviewAmount * 10) / 10.0);
+		theaterSeatRepository.save(theaterSeat);
 	}
 }
