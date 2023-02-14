@@ -30,7 +30,6 @@ public enum ErrorCode {
 	NOT_AUTHORITY_COMMENT("댓글을 수정하거나 삭제할 권한이 없습니다."),
 	NO_REVIEW_DATA("더이상 조회할 리뷰가 없습니다."),
 	DOUBLE_CHECKED_LIKE("이미 좋아요를 눌렀습니다."),
-	NO_AUTHORITY_LIKE("좋아요에 대한 권한이 없습니다. 로그인 하시기 바랍니다.")
 	;
 
 	private final String message;
