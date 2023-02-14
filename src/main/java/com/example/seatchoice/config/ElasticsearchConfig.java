@@ -1,6 +1,5 @@
 package com.example.seatchoice.config;
 
-import java.time.Duration;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -23,10 +22,7 @@ public class ElasticsearchConfig extends AbstractElasticsearchConfiguration {
 	@Override
 	public RestHighLevelClient elasticsearchClient() {
 		ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-			.connectedTo(host + ":" + port)
-			.withConnectTimeout(Duration.ofSeconds(30))
-			.withSocketTimeout(Duration.ofSeconds(60))
-			.build();
+			.connectedTo(host + ":" + port).build();
 		return RestClients.create(clientConfiguration).rest();
 	}
 

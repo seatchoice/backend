@@ -4,6 +4,7 @@ import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.document.PerformanceDoc;
 import com.example.seatchoice.repository.PerformanceRepository;
 import com.example.seatchoice.repository.elasticsearch.PerformanceDocRepository;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class PerformanceDocService {
 
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 		if (after != null) {
-			queryBuilder.withSearchAfter(List.of(after));
+			queryBuilder.withSearchAfter(Arrays.asList(after));
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
@@ -43,9 +44,11 @@ public class PerformanceDocService {
 			.build();
 
 		SearchHits<PerformanceDoc> searchHits = elasticsearchOperations.search(searchQuery, PerformanceDoc.class);
-		return searchHits.stream()
+		List<PerformanceDoc> results = searchHits.stream()
 			.map(SearchHit::getContent)
 			.collect(Collectors.toList());
+
+		return results;
 	}
 
 	/**
