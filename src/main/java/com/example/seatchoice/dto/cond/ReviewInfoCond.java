@@ -37,7 +37,7 @@ public class ReviewInfoCond {
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.row(review.getTheaterSeat().getSeatRow())
-			.seatNumber(review.getTheaterSeat().getNumber()) // 바꾼 부분
+			.seatNumber(review.getTheaterSeat().getNumber())
 			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
