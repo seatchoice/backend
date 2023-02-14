@@ -1,7 +1,9 @@
 package com.example.seatchoice.config.kafka;
 
+import static org.apache.kafka.clients.consumer.ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
@@ -47,6 +49,7 @@ public class KafkaConfig {
         configurations.put(BOOTSTRAP_SERVERS_CONFIG, "43.200.67.139:9092");
         configurations.put(KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         configurations.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configurations.put(GROUP_ID_CONFIG, "seatChoice");
         return configurations;
     }
 
@@ -72,6 +75,8 @@ public class KafkaConfig {
         configurations.put(KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         configurations.put(VALUE_DESERIALIZER_CLASS_CONFIG,  JsonDeserializer.class);
         configurations.put(ENABLE_AUTO_COMMIT_CONFIG, false);
+        configurations.put(ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
+        configurations.put(GROUP_ID_CONFIG, "seatChoice");
         return configurations;
     }
 }
