@@ -48,6 +48,9 @@ public class ReviewService {
 	// 리뷰 등록
 	public ReviewCond createReview(Long memberId, Long theaterId, List<MultipartFile> files,
 		ReviewParam request) {
+		// image file을 선택하지 않았을 때
+		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) files = null;
+
 		// 별점 표시 안 할 경우 0점으로 처리
 		if (request.getRating() == null) request.setRating(0);
 
@@ -131,6 +134,9 @@ public class ReviewService {
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
 		Integer oldReviewRating = review.getRating();
+
+		// image file을 선택하지 않았을 때
+		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) files = null;
 
 		// 별점 표시 안 할 경우 0점으로 처리
 		if (request.getRating() == null) request.setRating(0);
