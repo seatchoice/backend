@@ -24,9 +24,10 @@ public class ReviewDetailCond {
 	private Long likeAmount; // 좋아요 개수
 	private String content;
 	private List<String> images;
+	private Boolean likeChecked;
 
 
-	public static ReviewDetailCond from(Review review, List<String> images) {
+	public static ReviewDetailCond from(Review review, List<String> images, Boolean likeChecked) {
 		return ReviewDetailCond.builder()
 			.userId(review.getMember().getId())
 			.nickname(review.getMember().getNickname())
@@ -39,6 +40,7 @@ public class ReviewDetailCond {
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
 			.images(images)
+			.likeChecked(likeChecked)
 			.build();
 	}
 }

@@ -18,10 +18,6 @@ public class PerformanceDetailResponse {
 		return prfDetail;
 	}
 
-	public void setPrfDetail(PrfDetail prfDetail) {
-		this.prfDetail = prfDetail;
-	}
-
 	@Getter
 	@Builder
 	@NoArgsConstructor

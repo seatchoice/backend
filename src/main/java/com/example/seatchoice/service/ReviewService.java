@@ -11,6 +11,8 @@ import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.repository.ImageRepository;
+import com.example.seatchoice.repository.MemberRepository;
+import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import com.example.seatchoice.type.ErrorCode;
@@ -33,8 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
+	private final MemberRepository memberRepository;
 	private final ImageRepository imageRepository;
 	private final TheaterSeatRepository theaterSeatRepository;
+	private final ReviewLikeRepository reviewLikeRepository;
 	private final ImageService s3Service;
 	private final String create = "CREATE";
 	private final String update = "UPDATE";
@@ -42,9 +46,8 @@ public class ReviewService {
 
 
 	// 리뷰 등록
-	public ReviewCond createReview(Long theaterId, List<MultipartFile> files, ReviewParam request) {
-		// TODO 로그인 된 유저 검증
-
+	public ReviewCond createReview(Long memberId, Long theaterId, List<MultipartFile> files,
+		ReviewParam request) {
 		// 별점 표시 안 할 경우 0점으로 처리
 		if (request.getRating() == null) request.setRating(0);
 
@@ -61,10 +64,13 @@ public class ReviewService {
 
 		Review review = reviewRepository.save(
 			Review.builder()
+				.member(memberRepository.getReferenceById(memberId))
 				.theaterSeat(theaterSeat)
 				.content(request.getContent())
 				.thumbnailUrl(thumbnail)
 				.rating(request.getRating())
+				.commentAmount(0L)
+				.likeAmount(0L)
 				.build()
 		);
 
@@ -78,7 +84,7 @@ public class ReviewService {
 	}
 
 	// 리뷰 상세 조회
-	public ReviewDetailCond getReview(Long reviewId) {
+	public ReviewDetailCond getReview(Long memberId, Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
@@ -93,9 +99,14 @@ public class ReviewService {
 			images = null;
 		}
 
-		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(review.getTheaterSeat().getId());
+		// 로그인 하지 않은 user는 좋아요 non-checked
+		// 로그인 -> 리뷰 상세 보기 -> 그 리뷰에 대해 이미 좋아요를 눌렀다면 checked
+		Boolean likeChecked = false;
+		if (reviewLikeRepository.existsByMemberIdAndReviewId(memberId, reviewId)) {
+			likeChecked = true;
+		}
 
-		return ReviewDetailCond.from(review, images);
+		return ReviewDetailCond.from(review, images, likeChecked);
 	}
 
 	// 리뷰 목록 조회
@@ -119,7 +130,6 @@ public class ReviewService {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
-		List<Review> reviews = reviewRepository.findAllByTheaterSeatId(review.getTheaterSeat().getId());
 		Integer oldReviewRating = review.getRating();
 
 		// 별점 표시 안 할 경우 0점으로 처리
