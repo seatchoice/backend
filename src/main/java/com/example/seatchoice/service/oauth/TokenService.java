@@ -13,24 +13,25 @@ import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -56,13 +57,7 @@ public class TokenService{
 	}
 
 	public String createToken(Member member) {
-		Object id = member.getId();
-		Object nickname = member.getNickname();
-
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("id", id);
-		claims.put("nickname", nickname);
-
+		Claims claims = Jwts.claims().setSubject(String.valueOf(member.getId()));
 		Date now = new Date();
 
 		String accessToken = Jwts.builder()
@@ -77,13 +72,8 @@ public class TokenService{
 	}
 
 	public String createRefreshToken(Member member) {
-		Object id = member.getId();
-		Object nickname = member.getNickname();
-
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("id", id);
-		claims.put("nickname", nickname);
-
+		Long memberId = member.getId();
+		Claims claims = Jwts.claims().setSubject(String.valueOf(memberId));
 		Date now = new Date();
 
 		String refreshToken =  Jwts.builder()
@@ -94,7 +84,6 @@ public class TokenService{
 			.compact();
 
 		// redis refreshToken 저장
-		Long memberId = Long.valueOf(id.toString());
 		HashOperations<Long, Object, Object> hashOperations = redisTemplate.opsForHash();
 		hashOperations.put(memberId, REDIS_REFRESH_TOKEN_KEY, refreshToken);
 		redisTemplate.expire(memberId, REFRESH_PERIOD, MILLISECONDS);
@@ -108,15 +97,10 @@ public class TokenService{
 		Member member = memberRepository.findById(memberId).orElseThrow(
 			() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
 
-		Map<String, Object> memberInfo = new HashMap<>();
-		memberInfo.put("id", memberId);
-		memberInfo.put("nickname", getNickname(token));
+		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+		grantedAuthorities.add(new SimpleGrantedAuthority(member.getRole().name()));
 
-		OAuth2User oAuth2User = new DefaultOAuth2User(
-			Collections.singleton(new SimpleGrantedAuthority(member.getRole().name())), memberInfo, "id");
-
-		return new UsernamePasswordAuthenticationToken(
-			oAuth2User, "", oAuth2User.getAuthorities());
+		return new UsernamePasswordAuthenticationToken(member, "", grantedAuthorities);
 	}
 
 	public String resolveToken(HttpServletRequest request) {
@@ -130,33 +114,67 @@ public class TokenService{
 	}
 
 	public boolean validateToken(String token) {
-		Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-		return claims.getExpiration().after(new Date());
+		try {
+			Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+			return claims.getExpiration().after(new Date());
+
+		} catch (ExpiredJwtException e) {
+			return false;
+		}
 	}
 
-	public AccessToken reissueAccessToken(HttpServletRequest request, String refreshToken) {
-		String token = resolveToken(request);
-		Long memberId = getMemberId(token);
-		String redisRefreshToken = redisTemplate.opsForHash().get(memberId, REDIS_REFRESH_TOKEN_KEY).toString();
+	public AccessToken reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String refreshToken = getRefreshToken(request);
+			Long memberId = getMemberIdFromRefreshToken(refreshToken);
+			String redisRefreshToken = redisTemplate.opsForHash().get(memberId, REDIS_REFRESH_TOKEN_KEY).toString();
 
-		Member member = memberRepository.findById(memberId).orElseThrow(
-			() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
+			Member member = memberRepository.findById(memberId).orElseThrow(
+				() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
 
-		if (!redisRefreshToken.equals(refreshToken)) {
+			if (!redisRefreshToken.equals(refreshToken)) {
+				resetHeader(response);
+				throw new CustomException(EXPIRED_REFRESH_TOKEN, UNAUTHORIZED);
+			}
+
+			String accessToken = createToken(member);
+
+			return new AccessToken(accessToken);
+
+		} catch (NullPointerException e) {
+			resetHeader(response);
 			throw new CustomException(EXPIRED_REFRESH_TOKEN, UNAUTHORIZED);
 		}
-
-		String accessToken = createToken(member);
-
-		return new AccessToken(accessToken);
 	}
 
 	public Long getMemberId(String token) {
-		String memberId = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("id").toString();
+		String memberId = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
 		return Long.valueOf(memberId);
 	}
 
-	public Object getNickname(String token) {
-		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("nickname");
+	public Long getMemberIdFromRefreshToken(String refreshToken) {
+		String memberId =
+			Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken).getBody().getSubject();
+		return Long.valueOf(memberId);
+	}
+
+	private String getRefreshToken(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie :  cookies) {
+			if (cookie.getName().equals("refreshToken")) {
+				return cookie.getValue();
+			}
+		}
+		return null;
+	}
+
+	// 만료된 access, refresh token 정보 삭제
+	private void resetHeader(HttpServletResponse response) {
+		response.setHeader("Authorization", null);
+		Cookie cookie = new Cookie("refreshToken", null);
+		cookie.setHttpOnly(true);
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 	}
 }

@@ -3,12 +3,12 @@ package com.example.seatchoice.controller;
 import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.dto.cond.CommentCond;
 import com.example.seatchoice.dto.param.CommentParam;
+import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.CommentService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,10 +26,9 @@ public class CommentController {
 
 	@GetMapping("/comment")
 	public ApiResponse<Void> create(@RequestBody @Valid CommentParam.Create commentParam,
-		@AuthenticationPrincipal OAuth2User oAuth2User) {
-		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
+		@AuthenticationPrincipal Member member) {
 
-		commentService.create(memberId, commentParam);
+		commentService.create(member.getId(), commentParam);
 
 		return new ApiResponse<>();
 	}
@@ -37,21 +36,18 @@ public class CommentController {
 	@PutMapping("/comment/{commentId}")
 	public ApiResponse<Void> modify(@PathVariable Long commentId,
 		@RequestBody @Valid CommentParam.Modify commentParam,
-		@AuthenticationPrincipal OAuth2User oAuth2User) {
+		@AuthenticationPrincipal Member member) {
 
-		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
-
-		commentService.modify(memberId, commentId, commentParam);
+		commentService.modify(member.getId(), commentId, commentParam);
 
 		return new ApiResponse<>();
 	}
 
 	@DeleteMapping("/comment/{commentId}")
 	public ApiResponse<Void> delete(@PathVariable Long commentId,
-		@AuthenticationPrincipal OAuth2User oAuth2User) {
-		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
+		@AuthenticationPrincipal Member member) {
 
-		commentService.delete(memberId, commentId);
+		commentService.delete(member.getId(), commentId);
 
 		return new ApiResponse<>();
 	}
