@@ -7,6 +7,8 @@ import com.example.seatchoice.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +25,9 @@ public class AlarmController {
     private final AlarmService alarmService;
 
     // 알림 리스트 가져오기
-    @GetMapping("/list/{memberId}")
-    public ApiResponse<Page<AlarmCond>> getAlarmList(@PathVariable Long memberId, Pageable pageable) {
+    @GetMapping("/list")
+    public ApiResponse<Page<AlarmCond>> getAlarmList(@AuthenticationPrincipal OAuth2User oAuth2User, Pageable pageable) {
+        Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
         return new ApiResponse<>(alarmService.getAlarmList(memberId, pageable));
     }
 
@@ -35,8 +38,9 @@ public class AlarmController {
     }
 
     // 읽지 않은 알림 전체 읽기
-    @GetMapping("/read-all/{memberId}")
-    public ApiResponse<Void> readAllAlarm(@PathVariable Long memberId) {
+    @GetMapping("/read-all")
+    public ApiResponse<Void> readAllAlarm(@AuthenticationPrincipal OAuth2User oAuth2User) {
+        Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
         alarmService.readAllAlarm(memberId);
         return new ApiResponse<>();
     }
