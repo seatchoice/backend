@@ -5,6 +5,7 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET
 import static org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
@@ -13,6 +14,7 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 import com.example.seatchoice.dto.param.ChattingMessageParam;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.kafka.clients.consumer.StickyAssignor;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.ContainerProperties.AckMode;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -59,6 +62,7 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String, ChattingMessageParam> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, ChattingMessageParam> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.getContainerProperties().setAckMode(AckMode.RECORD);
         return factory;
     }
 
@@ -76,6 +80,7 @@ public class KafkaConfig {
         configurations.put(VALUE_DESERIALIZER_CLASS_CONFIG,  JsonDeserializer.class);
         configurations.put(ENABLE_AUTO_COMMIT_CONFIG, false);
         configurations.put(ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
+        configurations.put(PARTITION_ASSIGNMENT_STRATEGY_CONFIG, StickyAssignor.class);
         configurations.put(GROUP_ID_CONFIG, "seatChoice");
         return configurations;
     }

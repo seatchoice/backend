@@ -23,6 +23,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: 43.200.67.139
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_CREATE_TOPICS: "kafka-chatting:1:1" #topic 실행할 때 설정해줌, 1:1은 각각 파티션, 레플리카 갯수
     ports:
       - "9092:9092"
