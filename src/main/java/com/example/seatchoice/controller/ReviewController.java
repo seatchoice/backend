@@ -38,8 +38,6 @@ public class ReviewController {
 		@AuthenticationPrincipal OAuth2User oAuth2User,
 		@RequestPart(value = "image", required = false) List<MultipartFile> files,
 		@Valid @RequestPart("data") ReviewParam request) {
-		// image file을 선택하지 않았을 때
-		if (files.get(0).getSize() == 0) files = null;
 		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
 		return new ApiResponse<>(reviewService.createReview(memberId, theaterId, files, request));
 	}
@@ -69,10 +67,8 @@ public class ReviewController {
 	public ApiResponse<ReviewModifyCond> createReview(
 		@PathVariable Long reviewId,
 		@RequestPart(value = "image", required = false) List<MultipartFile> files,
-		@Valid @RequestPart(value = "data", required = false) ReviewModifyParam request,
+		@Valid @RequestPart(value = "data") ReviewModifyParam request,
 		@RequestParam(value = "deleteImages", required = false) List<String> deleteImages) {
-		// image file을 선택하지 않았을 때
-		if (files.get(0).getSize() == 0) files = null;
 		return new ApiResponse<>(reviewService.updateReview(reviewId, files, request, deleteImages));
 	}
 
