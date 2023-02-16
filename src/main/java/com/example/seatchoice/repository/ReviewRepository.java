@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
-	List<Review> findAllByTheaterSeatId(Long id);
-
+	boolean existsByTheaterSeatId(Long theaterId);
 	@Modifying
 	@Query("delete from Comment c where c.review.id =:id ")
 	@Transactional

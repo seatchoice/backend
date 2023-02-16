@@ -45,7 +45,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
 	// 동적 쿼리를 위한 BooleanExpression
 	private BooleanExpression ltReviewId(Long reviewId) {
-		if (reviewId == null) {
+		if (reviewId == null) { // 요청이 처음일 때 where 절에 null을 주면 page size만큼 반환
 			return null;
 		}
 		return review.id.lt(reviewId);
