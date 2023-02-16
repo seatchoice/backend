@@ -5,7 +5,6 @@ import static com.example.seatchoice.type.ErrorCode.INVALID_TOKEN;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.example.seatchoice.dto.auth.Token.AccessToken;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.service.oauth.TokenService;
 import io.jsonwebtoken.MalformedJwtException;
@@ -37,10 +36,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				Authentication authentication = tokenService.getAuthentication(token);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			} else { // access_token 유효하지 않을 때 재발급
-				AccessToken accessToken = tokenService.reissueAccessToken((HttpServletRequest) request, (HttpServletResponse) response);
-				System.out.println(accessToken.getAccessToken());
-				((HttpServletResponse) response).setHeader("Authorization", accessToken.toString());
-				Authentication authentication = tokenService.getAuthentication(accessToken.getAccessToken());
+				String accessToken =
+					tokenService.reissueAccessToken((HttpServletRequest) request, (HttpServletResponse) response);
+				((HttpServletResponse) response).setHeader("Authorization", accessToken);
+				Authentication authentication = tokenService.getAuthentication(accessToken);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 

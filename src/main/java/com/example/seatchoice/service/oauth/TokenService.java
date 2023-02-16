@@ -8,7 +8,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.example.seatchoice.dto.auth.Token.AccessToken;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.repository.MemberRepository;
@@ -123,7 +122,7 @@ public class TokenService{
 		}
 	}
 
-	public AccessToken reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+	public String reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			String refreshToken = getRefreshToken(request);
 			Long memberId = getMemberIdFromRefreshToken(refreshToken);
@@ -137,9 +136,7 @@ public class TokenService{
 				throw new CustomException(EXPIRED_REFRESH_TOKEN, UNAUTHORIZED);
 			}
 
-			String accessToken = createToken(member);
-
-			return new AccessToken(accessToken);
+			return createToken(member);
 
 		} catch (NullPointerException e) {
 			resetHeader(response);

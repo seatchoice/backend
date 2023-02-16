@@ -1,7 +1,6 @@
 package com.example.seatchoice.controller;
 
 import com.example.seatchoice.dto.auth.Token;
-import com.example.seatchoice.dto.auth.Token.AccessToken;
 import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.service.MemberService;
 import java.io.IOException;
@@ -28,9 +27,8 @@ public class MemberController {
 		throws IOException, ParseException {
 
 		Token token = memberService.oauthLogin(code, provider);
-		AccessToken accessToken = new AccessToken(token.getAccessToken());
+		response.setHeader("Authorization", token.getAccessToken());
 
-		response.setHeader("Authorization", accessToken.getAccessToken());
 		Cookie cookie = new Cookie(REFRESH_TOKEN_KEY, token.getRefreshToken());
 		cookie.setHttpOnly(true);
 		cookie.setPath("/");
