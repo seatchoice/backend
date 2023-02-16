@@ -23,11 +23,14 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Slice<ReviewInfoCond> searchBySlice(Long lastReviewId,
+	public Slice<ReviewInfoCond> searchBySlice(Long lastReviewId, Long seatId,
 		Pageable pageable) {
 		List<Review> reviews = queryFactory
 			.selectFrom(review)
-			.where(ltReviewId(lastReviewId)) // review.id < lastReviewId
+			.where(
+				ltReviewId(lastReviewId), // review.id < lastReviewId
+				review.theaterSeat.id.eq(seatId)
+			)
 			.orderBy(review.id.desc()) // 최신순으로 보여줌
 			.limit(pageable.getPageSize() + 1) // limit보다 한 개 더 들고온다.
 			.fetch();

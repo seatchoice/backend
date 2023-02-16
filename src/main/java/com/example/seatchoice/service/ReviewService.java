@@ -120,9 +120,9 @@ public class ReviewService {
 		if (CollectionUtils.isEmpty(reviews)) return null;
 
 		// 요청이 처음일 때
-		if (lastReviewId == null) lastReviewId = reviews.get(reviews.size() - 1).getId();
+		if (lastReviewId == null) lastReviewId = reviews.get(reviews.size() - 1).getId() + 1;
 		Slice<ReviewInfoCond> reviewInfoConds = reviewRepository
-			.searchBySlice(lastReviewId, pageable);
+			.searchBySlice(lastReviewId, seatId, pageable);
 
 		return reviewInfoConds;
 	}
