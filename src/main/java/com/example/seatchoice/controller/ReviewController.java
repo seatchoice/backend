@@ -7,6 +7,7 @@ import com.example.seatchoice.dto.cond.ReviewInfoCond;
 import com.example.seatchoice.dto.cond.ReviewModifyCond;
 import com.example.seatchoice.dto.param.ReviewModifyParam;
 import com.example.seatchoice.dto.param.ReviewParam;
+import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.ReviewService;
 import java.util.List;
 import javax.validation.Valid;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,20 +35,20 @@ public class ReviewController {
 	@PostMapping("/theaters/{theaterId}/reviews")
 	public ApiResponse<ReviewCond> createReview(
 		@PathVariable Long theaterId,
-		@AuthenticationPrincipal OAuth2User oAuth2User,
+		@AuthenticationPrincipal Member member,
 		@RequestPart(value = "image", required = false) List<MultipartFile> files,
 		@Valid @RequestPart("data") ReviewParam request) {
-		Long memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
-		return new ApiResponse<>(reviewService.createReview(memberId, theaterId, files, request));
+
+		return new ApiResponse<>(reviewService.createReview(member.getId(), theaterId, files, request));
 	}
 
 	// 리뷰 상세보기
 	@GetMapping("/reviews/{reviewId}")
 	public ApiResponse<ReviewDetailCond> getReview(@PathVariable Long reviewId,
-		@AuthenticationPrincipal OAuth2User oAuth2User) {
+		@AuthenticationPrincipal Member member) {
 		Long memberId = null;
-		if (oAuth2User != null) {
-			memberId = Long.valueOf(oAuth2User.getAttributes().get("id").toString());
+		if (member != null) {
+			memberId = member.getId();
 		}
 
 		return new ApiResponse<>(reviewService.getReview(memberId, reviewId));

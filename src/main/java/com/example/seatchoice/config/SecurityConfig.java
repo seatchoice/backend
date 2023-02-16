@@ -33,7 +33,6 @@ public class SecurityConfig {
 			).permitAll()
 			// 유저 권한이 필요한 api 추가
 			.antMatchers(
-				"/test",
 				"/api/likes/**",
 				"/api/theaters/**/reviews"
 			).hasRole("USER")
