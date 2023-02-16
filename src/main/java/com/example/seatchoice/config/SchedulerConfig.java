@@ -62,13 +62,13 @@ public class SchedulerConfig {
 
 //	@Order(1)
 //	@Scheduled(cron = "0 0 0 * * ?") // 매일 오전 12시마다 삭제가 진행됩니다.
-	public void PerformanceCompleteMySql() {
+	public void deletePerformanceCompleteMySql() {
 		schedulerService.deletePerformanceCompleteMysql();
 	}
 
 //	@Order(2)
 //	@Scheduled(cron = "0 0 0 * * ?") // 매일 오전 12시마다 삭제가 진행됩니다.
-	public void PerformanceCompleteEs() {
+	public void deletePerformanceCompleteEs() {
 		schedulerService.deletePerformanceCompleteEs();
 	}
 
