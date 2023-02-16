@@ -4,17 +4,13 @@ import static com.example.seatchoice.entity.QReview.review;
 
 import com.example.seatchoice.dto.cond.ReviewInfoCond;
 import com.example.seatchoice.entity.Review;
-import com.example.seatchoice.exception.CustomException;
-import com.example.seatchoice.type.ErrorCode;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -35,11 +31,10 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 			.limit(pageable.getPageSize() + 1) // limit보다 한 개 더 들고온다.
 			.fetch();
 
-		if (reviews.size() == 0) {
-			throw new CustomException(ErrorCode.NO_REVIEW_DATA,
-				HttpStatus.BAD_REQUEST);
+		List<ReviewInfoCond> reviewInfoConds = ReviewInfoCond.of(reviews);
+		if (reviewInfoConds == null) {
+			return null;
 		}
-		List<ReviewInfoCond> reviewInfoConds = new ArrayList<>(ReviewInfoCond.of(reviews));
 		return checkLastPage(pageable, reviewInfoConds);
 	}
 

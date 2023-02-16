@@ -114,9 +114,6 @@ public class ReviewService {
 
 	// 리뷰 목록 조회
 	public Slice<ReviewInfoCond> getReviews(Long lastReviewId, Long seatId, Pageable pageable) {
-		// 리뷰가 없을 때, null 반환
-		if (!reviewRepository.existsByTheaterSeatId(seatId)) return null;
-
 		Slice<ReviewInfoCond> reviewInfoConds = reviewRepository
 			.searchBySlice(lastReviewId, seatId, pageable);
 
