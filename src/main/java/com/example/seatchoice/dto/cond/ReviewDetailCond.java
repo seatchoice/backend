@@ -18,7 +18,7 @@ public class ReviewDetailCond {
 	private LocalDateTime createdAt;
 	private Integer floor;
 	private String section;
-	private String row;
+	private String seatRow;
 	private Integer seatNumber;
 	private Integer rating; // 평점
 	private Long likeAmount; // 좋아요 개수
@@ -34,7 +34,7 @@ public class ReviewDetailCond {
 			.createdAt(review.getMember().getCreatedAt())
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
-			.row(review.getTheaterSeat().getSeatRow())
+			.seatRow(review.getTheaterSeat().getSeatRow())
 			.seatNumber(review.getTheaterSeat().getNumber())
 			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())

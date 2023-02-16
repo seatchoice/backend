@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface ReviewRepositoryCustom {
-	Slice<ReviewInfoCond> searchBySlice(Long lastReviewId, Pageable pageable);
+	Slice<ReviewInfoCond> searchBySlice(Long lastReviewId, Long seatId, Pageable pageable);
 }
