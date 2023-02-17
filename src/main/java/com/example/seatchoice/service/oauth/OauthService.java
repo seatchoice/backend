@@ -41,7 +41,7 @@ public class OauthService {
 		return new Token(accessToken, refreshToken);
 	}
 
-	private Member updateMember(OauthAttribute oauthAttribute) {
+	public Member updateMember(OauthAttribute oauthAttribute) {
 		LoginType loginType = oauthAttribute.getLoginType();
 		String oauthId = oauthAttribute.getOauthId();
 		String nickName = oauthAttribute.getNickname();
