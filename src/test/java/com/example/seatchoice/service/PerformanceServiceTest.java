@@ -24,20 +24,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
-class SchedulerServiceTest {
+class PerformanceServiceTest {
 
 	@Mock
 	private PerformanceRepository performanceRepository;
 	@Mock
 	private ElasticsearchOperations elasticsearchOperations;
 	@InjectMocks
-	SchedulerService schedulerService;
+	PerformanceService performanceService;
 
 	@Test
 	@DisplayName("기간 지난 공연 데이터 모두 삭제 - rds(mysql)")
 	void deletePerformanceCompleteMysql() {
 
-		schedulerService.deletePerformanceCompleteMysql();
+		performanceService.deletePerformanceCompleteMysql();
 
 		verify(performanceRepository, times(1)).deleteByEndDate(LocalDate.now());
 
@@ -53,7 +53,7 @@ class SchedulerServiceTest {
 			.willReturn(responseMock);
 
 		// when
-		schedulerService.deletePerformanceCompleteEs();
+		performanceService.deletePerformanceCompleteEs();
 
 		// then
 		verify(elasticsearchOperations, times(1))

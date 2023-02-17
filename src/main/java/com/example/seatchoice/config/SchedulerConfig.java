@@ -1,6 +1,6 @@
 package com.example.seatchoice.config;
 
-import com.example.seatchoice.service.SchedulerService;
+import com.example.seatchoice.service.PerformanceService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class SchedulerConfig {
 
 	private final JobLauncher jobLauncher;
 	private final BatchConfig batchConfig;
-	private final SchedulerService schedulerService;
+	private final PerformanceService performanceService;
 
 //	@Order(3)
 //	@Scheduled(cron = "0 0 0 1 * ?") // 매달 1일 오전 12시마다 업데이트가 진행됩니다.
@@ -63,13 +63,13 @@ public class SchedulerConfig {
 //	@Order(1)
 //	@Scheduled(cron = "0 0 0 * * ?") // 매일 오전 12시마다 삭제가 진행됩니다.
 	public void deletePerformanceCompleteMySql() {
-		schedulerService.deletePerformanceCompleteMysql();
+		performanceService.deletePerformanceCompleteMysql();
 	}
 
 //	@Order(2)
 //	@Scheduled(cron = "0 0 0 * * ?") // 매일 오전 12시마다 삭제가 진행됩니다.
 	public void deletePerformanceCompleteEs() {
-		schedulerService.deletePerformanceCompleteEs();
+		performanceService.deletePerformanceCompleteEs();
 	}
 
 
