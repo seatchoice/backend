@@ -40,12 +40,12 @@ public class PerformanceDocService {
 
 		if (startDate != null && endDate != null) {
 			queryBuilder.withFilter(QueryBuilders.boolQuery()
-				.should(QueryBuilders.rangeQuery("startDate").lte(endDate))
-				.should(QueryBuilders.rangeQuery("endDate").gte(startDate)));
+				.must(QueryBuilders.rangeQuery("startDate").lte(endDate))
+				.must(QueryBuilders.rangeQuery("endDate").gte(startDate)));
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
-			.withQuery(QueryBuilders.matchQuery("name", name))
+			.withQuery(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
 			.withSort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
