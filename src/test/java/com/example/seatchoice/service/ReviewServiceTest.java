@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 
 import com.example.seatchoice.dto.cond.ReviewCond;
 import com.example.seatchoice.dto.param.ReviewParam;
-import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.Theater;
@@ -23,11 +22,6 @@ import com.example.seatchoice.repository.ReviewRepository;
 import com.example.seatchoice.repository.TheaterRepository;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import com.example.seatchoice.type.ErrorCode;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -37,9 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
