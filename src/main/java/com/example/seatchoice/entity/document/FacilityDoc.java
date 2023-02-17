@@ -4,11 +4,13 @@ import com.example.seatchoice.entity.Facility;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -18,7 +18,7 @@ class FacilityDocServiceTest {
 			null, 10, null, null);
 
 		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).getName());
+			System.out.println(list.get(i).getGugun());
 			System.out.println(list.get(i).getSido());
 			System.out.println(list.get(i).getGugun());
 		}
