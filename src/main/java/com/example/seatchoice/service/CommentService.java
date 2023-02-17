@@ -42,18 +42,14 @@ public class CommentService {
 		Review review = reviewRepository.findById(commentParam.getReviewId())
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
 
-		System.out.println("리뷰 찾음");
 		commentRepository.save(Comment.of(review, member, commentParam.getContent()));
-		System.out.println("코멘트 찾음");
 		review.addCommentAmount();
 		reviewRepository.save(review);
-		System.out.println("리뷰 추가");
 
 		String commentsUrl =
 			"https://seatchoice.site/api/review/" + review.getId() + "/comments";
 
 		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
-		System.out.println("알람 생성");
 	}
 
 	@Transactional

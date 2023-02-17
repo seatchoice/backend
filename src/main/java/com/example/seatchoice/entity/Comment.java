@@ -34,7 +34,6 @@ public class Comment extends BaseEntity {
 	private String content;
 
 	public static Comment of(Review review, Member member, String content) {
-		System.out.println("코멘트");
 		return Comment.builder()
 			.review(review)
 			.member(member)
