@@ -18,12 +18,14 @@ import com.example.seatchoice.type.AlarmType;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
 
 	private final MemberRepository memberRepository;
@@ -34,20 +36,22 @@ public class CommentService {
 	@Transactional
 	public void create(Long memberId, CommentParam.Create commentParam) {
 
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
+		Member member =memberRepository.getReferenceById(memberId);
 
 		Review review = reviewRepository.findById(commentParam.getReviewId())
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
 
+		log.info("리뷰 찾음");
 		commentRepository.save(Comment.of(review, member, commentParam.getContent()));
+		log.info("코멘트 저장");
 		review.addCommentAmount();
+		log.info("리뷰 추가");
 
 		String commentsUrl =
 			"https://seatchoice.site/api/review/" + review.getId() + "/comments";
 
 		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
-
+		log.info("알람 생성");
 	}
 
 	@Transactional

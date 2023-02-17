@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Setter
 @Getter
@@ -18,6 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
+@Slf4j
 public class Comment extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -32,6 +34,7 @@ public class Comment extends BaseEntity {
 	private String content;
 
 	public static Comment of(Review review, Member member, String content) {
+		log.info("코멘트");
 		return Comment.builder()
 			.review(review)
 			.member(member)
