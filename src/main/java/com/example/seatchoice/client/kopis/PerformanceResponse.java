@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @XmlRootElement(name = "dbs")
 public class PerformanceResponse {
 
-	private List<Prf> prfList;
+	private List<PerformanceVo> performanceVoList;
 
 	@XmlElement(name="db")
-	public List<Prf> getPrfList() {
-		return prfList;
+	public List<PerformanceVo> getPerformanceVoList() {
+		return performanceVoList;
 	}
 
 	@Getter
@@ -28,7 +28,7 @@ public class PerformanceResponse {
 	@AllArgsConstructor
 	@XmlRootElement(name = "db")
 	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class Prf {
+	public static class PerformanceVo {
 
 		@XmlElement(name = "mt20id")
 		private String mt20id; // 공연ID

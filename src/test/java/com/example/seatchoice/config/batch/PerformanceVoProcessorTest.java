@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 
-import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
+import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.Theater;
 import com.example.seatchoice.repository.PerformanceRepository;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
-class PrfProcessorTest {
+class PerformanceVoProcessorTest {
 
 	@Mock
 	private DataShareBean<Performance> dataShareBean;
@@ -34,16 +34,16 @@ class PrfProcessorTest {
 	@Mock
 	private TheaterRepository theaterRepository;
 
-	private PrfProcessor prfProcessor;
+	private PerformanceVoProcessor performanceVoProcessor;
 
 	@Test
 	@DisplayName("processer 단위 test - null을 리턴하지 않을 때")
 	void processTest_returnNotNull() {
 		// given
-		prfProcessor = new PrfProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
+		performanceVoProcessor = new PerformanceVoProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
 		String facilityOrTheaterName = "예술의 전당 (제로펩시홀)";
 		Theater theater = Theater.builder().name("제로펩시홀").build();
-		Prf prf = Prf.builder()
+		PerformanceVo prf = PerformanceVo.builder()
 			.mt20id("AAA1").prfnm("겨울왕국")
 			.prfpdfrom("2023.07.18").prfpdto("2023.08.15")
 			.poster("http~").genrenm("뮤지컬").openrun("Y")
@@ -60,7 +60,7 @@ class PrfProcessorTest {
 			.when(dataShareBean).addData(anyString(), any());
 
 		// when
-		Performance performance = prfProcessor.process(prf);
+		Performance performance = performanceVoProcessor.process(prf);
 
 		// then
 		assertEquals(performance.getMt20id(), "AAA1");
@@ -71,8 +71,8 @@ class PrfProcessorTest {
 	@DisplayName("processer 단위 test - null을 리턴할 때 - 이미 존재하는 mt20id")
 	void processTest_returnNull_existMt20id() {
 		// given
-		prfProcessor = new PrfProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
-		Prf prf = Prf.builder()
+		performanceVoProcessor = new PerformanceVoProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
+		PerformanceVo prf = PerformanceVo.builder()
 			.mt20id("AAA1").prfnm("겨울왕국")
 			.prfpdfrom("2023.07.18").prfpdto("2023.08.15")
 			.poster("http~").genrenm("뮤지컬").openrun("Y")
@@ -83,7 +83,7 @@ class PrfProcessorTest {
 			.willReturn(true);
 
 		// when
-		Performance performance = prfProcessor.process(prf);
+		Performance performance = performanceVoProcessor.process(prf);
 
 		// then
 		assertNull(performance);
@@ -94,8 +94,8 @@ class PrfProcessorTest {
 	@DisplayName("processer 단위 test - null을 리턴할 때 - open api에서 잘못된 입력값을 넣었을 때")
 	void processTest_returnNull_getTheaterNameThrowException() {
 		// given
-		prfProcessor = new PrfProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
-		Prf prf = Prf.builder()
+		performanceVoProcessor = new PerformanceVoProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
+		PerformanceVo prf = PerformanceVo.builder()
 			.mt20id("AAA1").prfnm("겨울왕국")
 			.prfpdfrom("2023.07.18").prfpdto("2023.08.15")
 			.poster("http~").genrenm("뮤지컬").openrun("Y")
@@ -109,7 +109,7 @@ class PrfProcessorTest {
 			.willReturn(facilityOrTheaterName);
 
 		// when
-		Performance performance = prfProcessor.process(prf);
+		Performance performance = performanceVoProcessor.process(prf);
 
 		// then
 		assertNull(performance);
@@ -120,10 +120,10 @@ class PrfProcessorTest {
 	@DisplayName("processer 단위 test - null을 리턴할 때 - 공연장 정보가 없을 때")
 	void processTest_returnNull_notFoundTheater() {
 		// given
-		prfProcessor = new PrfProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
+		performanceVoProcessor = new PerformanceVoProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
 		String facilityOrTheaterName = "예술의 전당 (제로펩시홀)";
 		Theater theater = Theater.builder().name("제로펩시홀").build();
-		Prf prf = Prf.builder()
+		PerformanceVo prf = PerformanceVo.builder()
 			.mt20id("AAA1").prfnm("겨울왕국")
 			.prfpdfrom("2023.07.18").prfpdto("2023.08.15")
 			.poster("http~").genrenm("뮤지컬").openrun("Y")
@@ -138,7 +138,7 @@ class PrfProcessorTest {
 			.willReturn(null);
 
 		// when
-		Performance performance = prfProcessor.process(prf);
+		Performance performance = performanceVoProcessor.process(prf);
 
 		// then
 		assertNull(performance);

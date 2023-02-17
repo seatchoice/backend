@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
 
-import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
+import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.service.KopisService;
 import java.util.Arrays;
 import java.util.List;
@@ -17,36 +17,36 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
-class PrfItemReaderTest {
+class PerformanceVoItemReaderTest {
 
 	@Mock
 	private KopisService kopisService;
 
-	private PrfItemReader prfItemReader;
-	private List<Prf> prfList;
+	private PerformanceVoItemReader performanceVoItemReader;
+	private List<PerformanceVo> prfList;
 
 	@Test
 	@DisplayName("reader 단위 test")
 	public void readTest() throws Exception {
 		// given
-		prfItemReader = new PrfItemReader(kopisService);
+		performanceVoItemReader = new PerformanceVoItemReader(kopisService);
 		prfList = Arrays.asList(
-			Prf.builder().mt20id("AAA1").build(),
-			Prf.builder().mt20id("AAA2").build(),
-			Prf.builder().mt20id("AAA3").build()
+			PerformanceVo.builder().mt20id("AAA1").build(),
+			PerformanceVo.builder().mt20id("AAA2").build(),
+			PerformanceVo.builder().mt20id("AAA3").build()
 		);
 
-		given(kopisService.getPrfList()).willReturn(prfList);
+		given(kopisService.getPerformanceVoList()).willReturn(prfList);
 
 		// when
 		// then
-		Prf firstPrf = prfItemReader.read();
+		PerformanceVo firstPrf = performanceVoItemReader.read();
 		assertEquals(firstPrf, prfList.get(0));
-		Prf secondPrf = prfItemReader.read();
+		PerformanceVo secondPrf = performanceVoItemReader.read();
 		assertEquals(secondPrf, prfList.get(1));
-		Prf thirdPrf = prfItemReader.read();
+		PerformanceVo thirdPrf = performanceVoItemReader.read();
 		assertEquals(thirdPrf, prfList.get(2));
-		Prf fourthPrf = prfItemReader.read();
+		PerformanceVo fourthPrf = performanceVoItemReader.read();
 		assertNull(fourthPrf);
 	}
 
