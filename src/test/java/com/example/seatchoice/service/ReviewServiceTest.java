@@ -105,5 +105,4 @@ public class ReviewServiceTest {
 		assertEquals(4, reviewCond.getRating());
 		assertEquals("좌석 괜찮습니다!", reviewCond.getContent());
 	}
-
 }
