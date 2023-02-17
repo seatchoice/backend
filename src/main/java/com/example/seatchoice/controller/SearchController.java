@@ -31,7 +31,7 @@ public class SearchController {
 		@RequestParam(required = false) String sido,
 		@RequestParam(required = false) String gugun
 	) {
-		if (type == SearchType.PERFORMANE && sido == null && gugun == null) {
+		if (type == SearchType.PERFORMANCE && sido == null && gugun == null) {
 			return ResponseEntity.ok(performanceDocService
 				.searchPerformance(name, after, size, startDate, endDate));
 		}

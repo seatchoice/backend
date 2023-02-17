@@ -40,8 +40,8 @@ public class PerformanceDocService {
 
 		if (startDate != null && endDate != null) {
 			queryBuilder.withFilter(QueryBuilders.boolQuery()
-				.must(QueryBuilders.rangeQuery("startDate").lte(endDate))
-				.must(QueryBuilders.rangeQuery("endDate").gte(startDate)));
+				.should(QueryBuilders.rangeQuery("startDate").lte(endDate))
+				.should(QueryBuilders.rangeQuery("endDate").gte(startDate)));
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
