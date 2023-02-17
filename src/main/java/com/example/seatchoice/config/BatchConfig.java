@@ -1,10 +1,10 @@
 package com.example.seatchoice.config;
 
-import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
+import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.config.batch.DataShareBean;
 import com.example.seatchoice.config.batch.PerformanceItemWriter;
-import com.example.seatchoice.config.batch.PrfItemReader;
-import com.example.seatchoice.config.batch.PrfProcessor;
+import com.example.seatchoice.config.batch.PerformanceVoItemReader;
+import com.example.seatchoice.config.batch.PerformanceVoProcessor;
 import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.document.PerformanceDoc;
 import com.example.seatchoice.repository.PerformanceRepository;
@@ -49,9 +49,9 @@ public class BatchConfig {
 
 	@Bean
 	@JobScope
-	public Step step1(PrfItemReader reader, PrfProcessor processor, PerformanceItemWriter writer) {
+	public Step step1(PerformanceVoItemReader reader, PerformanceVoProcessor processor, PerformanceItemWriter writer) {
 		return stepBuilderFactory.get("step1")
-			.<Prf, Performance>chunk(10)
+			.<PerformanceVo, Performance>chunk(10)
 			.reader(reader)
 			.processor(processor)
 			.writer(writer)
@@ -72,14 +72,14 @@ public class BatchConfig {
 
 	@Bean
 	@StepScope
-	public PrfItemReader reader() {
-		return new PrfItemReader(kopisService);
+	public PerformanceVoItemReader reader() {
+		return new PerformanceVoItemReader(kopisService);
 	}
 
 	@Bean
 	@StepScope
-	public PrfProcessor processor() {
-		return new PrfProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
+	public PerformanceVoProcessor processor() {
+		return new PerformanceVoProcessor(dataShareBean, kopisService, performanceRepository, theaterRepository);
 	}
 
 	@Bean

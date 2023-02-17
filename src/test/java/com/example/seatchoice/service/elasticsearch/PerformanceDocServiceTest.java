@@ -14,7 +14,8 @@ class PerformanceDocServiceTest {
 
 	@Test
 	void searchPerformanceTest() {
-		List<PerformanceDoc> list = performanceDocService.searchPerformance("", null, 10);
+		List<PerformanceDoc> list = performanceDocService.searchPerformance("",
+			null, 10, null, null);
 
 		Assertions.assertNotNull(list);
 	}

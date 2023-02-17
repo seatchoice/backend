@@ -7,7 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.service.SchedulerService;
+import com.example.seatchoice.service.PerformanceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +32,7 @@ class SchedulerConfigTest {
 	@Mock
 	private BatchConfig batchConfig;
 	@Mock
-	private SchedulerService schedulerService;
+	private PerformanceService performanceService;
 	@InjectMocks
 	private SchedulerConfig schedulerConfig;
 
@@ -56,26 +56,26 @@ class SchedulerConfigTest {
 	void performanceCompleteMySql() {
 		// given
 		doNothing()
-			.when(schedulerService).deletePerformanceCompleteMysql();
+			.when(performanceService).deletePerformanceCompleteMysql();
 
 		// then
 		schedulerConfig.deletePerformanceCompleteMySql();
 
 		// when
-		verify(schedulerService, times(1)).deletePerformanceCompleteMysql();
+		verify(performanceService, times(1)).deletePerformanceCompleteMysql();
 	}
 
 	@Test
 	void performanceCompleteEs() {
 		// given
 		doNothing()
-			.when(schedulerService).deletePerformanceCompleteEs();
+			.when(performanceService).deletePerformanceCompleteEs();
 
 		// then
 		schedulerConfig.deletePerformanceCompleteEs();
 
 		// when
-		verify(schedulerService, times(1)).deletePerformanceCompleteEs();
+		verify(performanceService, times(1)).deletePerformanceCompleteEs();
 
 	}
 }

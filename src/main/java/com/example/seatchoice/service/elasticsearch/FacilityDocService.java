@@ -29,7 +29,8 @@ public class FacilityDocService {
 	/**
 	 * 시설 검색
 	 */
-	public List<FacilityDoc> searchFacility(String name, Long after, int size) {
+	public List<FacilityDoc> searchFacility(
+		String name, Long after, int size, String sido, String gugun) {
 
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 		if (after != null) {
@@ -37,16 +38,19 @@ public class FacilityDocService {
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
-			.withQuery(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
+			.withQuery(QueryBuilders.boolQuery()
+				.must(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
+				.must(sido == null ? QueryBuilders.matchAllQuery() : QueryBuilders.termQuery("sido", sido))
+				.must(gugun == null ? QueryBuilders.matchAllQuery() : QueryBuilders.termQuery("gugun", gugun)))
 			.withSort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
+
 
 		SearchHits<FacilityDoc> searchHits = elasticsearchOperations.search(searchQuery, FacilityDoc.class);
 		return searchHits.stream()
 			.map(SearchHit::getContent)
 			.collect(Collectors.toList());
-
 	}
 
 	/**

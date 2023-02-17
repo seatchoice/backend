@@ -1,6 +1,6 @@
 package com.example.seatchoice.config.batch;
 
-import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
+import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.Theater;
 import com.example.seatchoice.repository.PerformanceRepository;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
 
 @RequiredArgsConstructor
-public class PrfProcessor implements ItemProcessor<Prf, Performance> {
+public class PerformanceVoProcessor implements ItemProcessor<PerformanceVo, Performance> {
 	private final DataShareBean<Performance> dataShareBean;
 
 	private final KopisService kopisService;
@@ -19,7 +19,7 @@ public class PrfProcessor implements ItemProcessor<Prf, Performance> {
 	private final TheaterRepository theaterRepository;
 
 	@Override
-	public Performance process(Prf item) {
+	public Performance process(PerformanceVo item) {
 		boolean isExistMt20id = performanceRepository.existsByMt20id(item.getMt20id());
 		if (isExistMt20id) {
 			return null;

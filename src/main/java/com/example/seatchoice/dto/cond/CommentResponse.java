@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentCond {
+public class CommentResponse {
 	private Long id;
 	private String content;
 	private LocalDate updatedAt;
 	private String nickname;
 
-	public static CommentCond from(Comment comment) {
-		return CommentCond.builder()
+	public static CommentResponse from(Comment comment) {
+		return CommentResponse.builder()
 			.id(comment.getId())
 			.content(comment.getContent())
 			.updatedAt(comment.getUpdatedAt().toLocalDate())

@@ -4,6 +4,7 @@ import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.document.PerformanceDoc;
 import com.example.seatchoice.repository.PerformanceRepository;
 import com.example.seatchoice.repository.elasticsearch.PerformanceDocRepository;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,18 @@ public class PerformanceDocService {
 	/**
 	 * 공연 검색
 	 */
-	public List<PerformanceDoc> searchPerformance(String name, Long after, int size) {
+	public List<PerformanceDoc> searchPerformance(
+		String name, Long after, int size, Date startDate, Date endDate) {
 
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 		if (after != null) {
 			queryBuilder.withSearchAfter(List.of(after));
+		}
+
+		if (startDate != null && endDate != null) {
+			queryBuilder.withFilter(QueryBuilders.boolQuery()
+				.should(QueryBuilders.rangeQuery("startDate").lte(endDate))
+				.should(QueryBuilders.rangeQuery("endDate").gte(startDate)));
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder

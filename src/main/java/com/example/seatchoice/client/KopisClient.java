@@ -13,7 +13,7 @@ public interface KopisClient {
 
 	// 공연 목록
 	@GetMapping("/pblprfr")
-	PerformanceResponse getPrfList(
+	PerformanceResponse getPerformanceVoList(
 		@RequestParam("service") String service,
 		@RequestParam("stdate")  String stdate,
 		@RequestParam("eddate") String eddate,
@@ -23,7 +23,7 @@ public interface KopisClient {
 
 	// 공연 상세 목록
 	@GetMapping("/pblprfr/{mt20id}")
-	PerformanceDetailResponse getPrfDetail(
+	PerformanceDetailResponse getPerformanceDetailVoList(
 		@PathVariable("mt20id") String mt20id,
 		@RequestParam("service") String service);
 

@@ -1,7 +1,7 @@
 package com.example.seatchoice.service;
 
 import com.example.seatchoice.client.KopisClient;
-import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
+import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -17,19 +17,19 @@ public class KopisService {
 	private String kopisKey;
 	private final KopisClient kopisClient;
 
-	public List<Prf> getPrfList() {
+	public List<PerformanceVo> getPerformanceVoList() {
 		LocalDate startDt = LocalDate.now().plusMonths(5);
 		String startDtStr = startDt.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String edDtStr = startDt.plusMonths(1).minusDays(1)
 			.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-		return kopisClient.getPrfList(kopisKey,
-			startDtStr, edDtStr, 1, 500, "01").getPrfList();
+		return kopisClient.getPerformanceVoList(kopisKey,
+			startDtStr, edDtStr, 1, 500, "01").getPerformanceVoList();
 	}
 
 	public String getFacilityOrTheaterName(String mt20id) {
-		return kopisClient.getPrfDetail(mt20id, kopisKey)
-			.getPrfDetail().getFcltynm();
+		return kopisClient.getPerformanceDetailVoList(mt20id, kopisKey)
+			.getPerformanceDetailVo().getFcltynm();
 
 	}
 

@@ -1,6 +1,6 @@
 package com.example.seatchoice.config.batch;
 
-import com.example.seatchoice.client.kopis.PerformanceResponse.Prf;
+import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.service.KopisService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,24 +10,24 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
 @RequiredArgsConstructor
-public class PrfItemReader implements ItemReader<Prf> {
+public class PerformanceVoItemReader implements ItemReader<PerformanceVo> {
 
 	private final KopisService kopisService;
-	private List<Prf> prfList;
+	private List<PerformanceVo> performanceVoList;
 	private int nextPrfIdx;
 
 	@Override
-	public Prf read()
+	public PerformanceVo read()
 		throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 
-		if (prfList == null) {
-			prfList = kopisService.getPrfList();
+		if (performanceVoList == null) {
+			performanceVoList = kopisService.getPerformanceVoList();
 			nextPrfIdx = 0;
 		}
 
-		Prf nextPrf = null;
-		if (nextPrfIdx < prfList.size()) {
-			nextPrf = prfList.get(nextPrfIdx);
+		PerformanceVo nextPrf = null;
+		if (nextPrfIdx < performanceVoList.size()) {
+			nextPrf = performanceVoList.get(nextPrfIdx);
 			nextPrfIdx++;
 		}
 

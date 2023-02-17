@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 
 @XmlRootElement(name = "dbs")
 public class PerformanceDetailResponse {
-	private PrfDetail prfDetail;
+	private PerformanceDetailVo performanceDetailVo;
 
 	@XmlElement(name="db")
-	public PrfDetail getPrfDetail() {
-		return prfDetail;
+	public PerformanceDetailVo getPerformanceDetailVo() {
+		return performanceDetailVo;
 	}
 
 	@Getter
@@ -24,7 +24,7 @@ public class PerformanceDetailResponse {
 	@AllArgsConstructor
 	@XmlRootElement(name = "db")
 	@XmlAccessorType(XmlAccessType.FIELD)
-	public static class PrfDetail {
+	public static class PerformanceDetailVo {
 
 		@XmlElement(name = "mt20id")
 		private String mt20id; // 공연ID
