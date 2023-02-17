@@ -14,7 +14,14 @@ class FacilityDocServiceTest {
 
 	@Test
 	void testSearchFacility() {
-		List<FacilityDoc> list = facilityDocService.searchFacility("", null, 10);
+		List<FacilityDoc> list = facilityDocService.searchFacility("",
+			null, 10, null, null);
+
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getName());
+			System.out.println(list.get(i).getSido());
+			System.out.println(list.get(i).getGugun());
+		}
 
 		Assertions.assertNotNull(list);
 	}
