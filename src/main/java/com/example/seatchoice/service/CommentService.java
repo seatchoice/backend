@@ -36,7 +36,8 @@ public class CommentService {
 	@Transactional
 	public void create(Long memberId, CommentParam.Create commentParam) {
 
-		Member member =memberRepository.getReferenceById(memberId);
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
 		Review review = reviewRepository.findById(commentParam.getReviewId())
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
