@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class CommentParam {
+public class CommentRequest {
 
 	@Getter
 	@AllArgsConstructor

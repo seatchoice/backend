@@ -5,8 +5,8 @@ import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_COMMENT;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_REVIEW;
 
-import com.example.seatchoice.dto.cond.CommentCond;
-import com.example.seatchoice.dto.param.CommentParam;
+import com.example.seatchoice.dto.param.CommentRequest;
+import com.example.seatchoice.dto.cond.CommentResponse;
 import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;
@@ -34,15 +34,15 @@ public class CommentService {
 	private final AlarmService alarmService;
 
 	@Transactional
-	public void create(Long memberId, CommentParam.Create commentParam) {
+	public void create(Long memberId, CommentRequest.Create commentRequest) {
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
-		Review review = reviewRepository.findById(commentParam.getReviewId())
+		Review review = reviewRepository.findById(commentRequest.getReviewId())
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
 
-		commentRepository.save(Comment.of(review, member, commentParam.getContent()));
+		commentRepository.save(Comment.of(review, member, commentRequest.getContent()));
 		review.addCommentAmount();
 		reviewRepository.save(review);
 
@@ -53,7 +53,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void modify(Long memberId, Long commentId, CommentParam.Modify commentParam) {
+	public void modify(Long memberId, Long commentId, CommentRequest.Modify commentRequest) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
@@ -64,7 +64,7 @@ public class CommentService {
 			throw new CustomException(NOT_AUTHORITY_COMMENT, HttpStatus.FORBIDDEN);
 		}
 
-		comment.setContent(commentParam.getContent());
+		comment.setContent(commentRequest.getContent());
 	}
 
 	@Transactional
@@ -84,12 +84,12 @@ public class CommentService {
 
 	}
 
-	public List<CommentCond> list(Long reviewId) {
+	public List<CommentResponse> list(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
 
 		return commentRepository.findAllByReview(review).stream()
-			.map(CommentCond::from).collect(Collectors.toList());
+			.map(CommentResponse::from).collect(Collectors.toList());
 
 	}
 

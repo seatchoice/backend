@@ -1,13 +1,13 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.common.ApiResponse;
-import com.example.seatchoice.dto.cond.CommentCond;
-import com.example.seatchoice.dto.param.CommentParam;
+import com.example.seatchoice.dto.param.CommentRequest;
+import com.example.seatchoice.dto.cond.CommentResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.CommentService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,36 +26,36 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping("/comment")
-	public ApiResponse<Void> create(@RequestBody @Valid CommentParam.Create commentParam,
+	public ResponseEntity<Void> create(@RequestBody @Valid CommentRequest.Create commentRequest,
 		@AuthenticationPrincipal Member member) {
 
-		commentService.create(member.getId(), commentParam);
+		commentService.create(member.getId(), commentRequest);
 
-		return new ApiResponse<>();
+		return ResponseEntity.ok().build();
 	}
 
 	@PutMapping("/comment/{commentId}")
-	public ApiResponse<Void> modify(@PathVariable Long commentId,
-		@RequestBody @Valid CommentParam.Modify commentParam,
+	public ResponseEntity<Void> modify(@PathVariable Long commentId,
+		@RequestBody @Valid CommentRequest.Modify commentRequest,
 		@AuthenticationPrincipal Member member) {
 
-		commentService.modify(member.getId(), commentId, commentParam);
+		commentService.modify(member.getId(), commentId, commentRequest);
 
-		return new ApiResponse<>();
+		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping("/comment/{commentId}")
-	public ApiResponse<Void> delete(@PathVariable Long commentId,
+	public ResponseEntity<Void> delete(@PathVariable Long commentId,
 		@AuthenticationPrincipal Member member) {
 
 		commentService.delete(member.getId(), commentId);
 
-		return new ApiResponse<>();
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/review/{reviewId}/comments")
-	public ApiResponse<List<CommentCond>> list(@PathVariable Long reviewId) {
+	public ResponseEntity<List<CommentResponse>> list(@PathVariable Long reviewId) {
 
-		return new ApiResponse<>(commentService.list(reviewId));
+		return ResponseEntity.ok(commentService.list(reviewId));
 	}
 }
