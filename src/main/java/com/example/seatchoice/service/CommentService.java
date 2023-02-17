@@ -18,12 +18,14 @@ import com.example.seatchoice.type.AlarmType;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
 
 	private final MemberRepository memberRepository;
@@ -42,12 +44,12 @@ public class CommentService {
 
 		commentRepository.save(Comment.of(review, member, commentParam.getContent()));
 		review.addCommentAmount();
+		reviewRepository.save(review);
 
 		String commentsUrl =
 			"https://seatchoice.site/api/review/" + review.getId() + "/comments";
 
 		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
-
 	}
 
 	@Transactional
