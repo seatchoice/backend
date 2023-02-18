@@ -17,6 +17,7 @@ public enum ErrorCode {
 	EMPTY_TOKEN("토큰이 존재하지 않습니다."),
 	AUTHORIZATION_KEY_DOES_NOT_EXIST("Authorization key가 존재하지 않습니다."),
 	NOT_FOUND_MEMBER("해당 유저가 존재하지 않습니다."),
+	NOT_FOUND_FACILITY("해당 시설이 존재하지 않습니다."),
 	NOT_FOUND_THEATER("해당 공연장이 존재하지 않습니다."),
 	NOT_FOUND_CHATROOM("해당 채팅방이 존재하지 않습니다."),
 	NOT_FOUND_SEAT("해당 공연좌석이 존재하지 않습니다."),
