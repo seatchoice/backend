@@ -5,11 +5,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class CommentRequest {
 
 	@Getter
 	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class Create {
 
 		@NotNull(message = "필수 입력입니다.")
@@ -21,6 +23,7 @@ public class CommentRequest {
 	}
 
 	@AllArgsConstructor
+	@NoArgsConstructor
 	@Getter
 	public static class Modify {
 
