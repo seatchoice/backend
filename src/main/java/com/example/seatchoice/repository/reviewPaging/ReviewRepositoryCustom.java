@@ -1,9 +1,9 @@
 package com.example.seatchoice.repository.reviewPaging;
 
-import com.example.seatchoice.dto.cond.ReviewInfoCond;
+import com.example.seatchoice.dto.cond.ReviewInfoResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface ReviewRepositoryCustom {
-	Slice<ReviewInfoCond> searchBySlice(Long lastReviewId, Long seatId, Pageable pageable);
+	Slice<ReviewInfoResponse> searchBySlice(Long lastReviewId, Long seatId, Pageable pageable);
 }

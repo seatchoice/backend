@@ -1,39 +1,37 @@
 package com.example.seatchoice.dto.cond;
 
 import com.example.seatchoice.entity.Review;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.util.CollectionUtils;
 
-@Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewInfoCond {
-	private Double seatRating; // 좌석 평점
-	private Long reviewId;
+public class ReviewDetailResponse {
 	private Long userId;
+	private String nickname;
+	private LocalDateTime createdAt;
 	private Integer floor;
 	private String section;
 	private String seatRow;
 	private Integer seatNumber;
-	private Integer rating; // 개인 평점
+	private Integer rating; // 평점
 	private Long likeAmount; // 좋아요 개수
 	private String content;
-	private String thumbnail;
-	private Long commentAmount;
+	private List<String> images;
+	private Boolean likeChecked;
 
-	public static ReviewInfoCond from(Review review) {
-		return ReviewInfoCond.builder()
-			.seatRating(review.getTheaterSeat().getRating())
-			.reviewId(review.getId())
+
+	public static ReviewDetailResponse from(Review review, List<String> images, Boolean likeChecked) {
+		return ReviewDetailResponse.builder()
 			.userId(review.getMember().getId())
+			.nickname(review.getMember().getNickname())
+			.createdAt(review.getMember().getCreatedAt())
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.seatRow(review.getTheaterSeat().getSeatRow())
@@ -41,17 +39,8 @@ public class ReviewInfoCond {
 			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
-			.thumbnail(review.getThumbnailUrl())
-			.commentAmount(review.getCommentAmount())
+			.images(images)
+			.likeChecked(likeChecked)
 			.build();
-	}
-
-	public static List<ReviewInfoCond> of(List<Review> reviews) {
-		if (CollectionUtils.isEmpty(reviews)) {
-			return null;
-		}
-		return reviews.stream()
-			.map(ReviewInfoCond::from)
-			.collect(Collectors.toList());
 	}
 }

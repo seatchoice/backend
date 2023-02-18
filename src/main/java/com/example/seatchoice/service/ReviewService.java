@@ -1,11 +1,11 @@
 package com.example.seatchoice.service;
 
-import com.example.seatchoice.dto.cond.ReviewCond;
-import com.example.seatchoice.dto.cond.ReviewDetailCond;
-import com.example.seatchoice.dto.cond.ReviewInfoCond;
-import com.example.seatchoice.dto.cond.ReviewModifyCond;
-import com.example.seatchoice.dto.param.ReviewModifyParam;
-import com.example.seatchoice.dto.param.ReviewParam;
+import com.example.seatchoice.dto.cond.ReviewResponse;
+import com.example.seatchoice.dto.cond.ReviewDetailResponse;
+import com.example.seatchoice.dto.cond.ReviewInfoResponse;
+import com.example.seatchoice.dto.cond.ReviewModifyResponse;
+import com.example.seatchoice.dto.param.ReviewModifyRequest;
+import com.example.seatchoice.dto.param.ReviewRequest;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.TheaterSeat;
@@ -46,8 +46,8 @@ public class ReviewService {
 
 
 	// 리뷰 등록
-	public ReviewCond createReview(Long memberId, Long theaterId, List<MultipartFile> files,
-		ReviewParam request) {
+	public ReviewResponse createReview(Long memberId, Long theaterId, List<MultipartFile> files,
+		ReviewRequest request) {
 		// image file을 선택하지 않았을 때
 		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) files = null;
 
@@ -83,11 +83,11 @@ public class ReviewService {
 
 		saveSeatRating(theaterSeat, create, request.getRating(), 0);
 
-		return ReviewCond.from(review, images);
+		return ReviewResponse.from(review, images);
 	}
 
 	// 리뷰 상세 조회
-	public ReviewDetailCond getReview(Long memberId, Long reviewId) {
+	public ReviewDetailResponse getReview(Long memberId, Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
@@ -109,20 +109,20 @@ public class ReviewService {
 			likeChecked = true;
 		}
 
-		return ReviewDetailCond.from(review, images, likeChecked);
+		return ReviewDetailResponse.from(review, images, likeChecked);
 	}
 
 	// 리뷰 목록 조회
-	public Slice<ReviewInfoCond> getReviews(Long lastReviewId, Long seatId, Pageable pageable) {
-		Slice<ReviewInfoCond> reviewInfoConds = reviewRepository
+	public Slice<ReviewInfoResponse> getReviews(Long lastReviewId, Long seatId, Pageable pageable) {
+		Slice<ReviewInfoResponse> reviewInfoResponses = reviewRepository
 			.searchBySlice(lastReviewId, seatId, pageable);
 
-		return reviewInfoConds;
+		return reviewInfoResponses;
 	}
 
 	// 리뷰 수정
-	public ReviewModifyCond updateReview(Long reviewId, List<MultipartFile> files,
-		ReviewModifyParam request, List<String> deleteImages) {
+	public ReviewModifyResponse updateReview(Long reviewId, List<MultipartFile> files,
+		ReviewModifyRequest request, List<String> deleteImages) {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW, HttpStatus.BAD_REQUEST));
@@ -179,7 +179,7 @@ public class ReviewService {
 
 		saveSeatRating(review.getTheaterSeat(), update, oldReviewRating, review.getRating());
 
-		return ReviewModifyCond.from(review, savedImages);
+		return ReviewModifyResponse.from(review, savedImages);
 	}
 
 	// 리뷰 삭제
@@ -206,7 +206,7 @@ public class ReviewService {
 	}
 
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
-	public TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewParam request) {
+	public TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewRequest request) {
 		for (TheaterSeat seat : theaterSeats) {
 			if (seat.getFloor() == request.getFloor() &&
 				seat.getSeatRow().equals(request.getSeatRow()) &&
@@ -252,7 +252,7 @@ public class ReviewService {
 	// 좌석 평점 저장
 	public void saveSeatRating(TheaterSeat theaterSeat, String status,
 		Integer rating, Integer updateRating) {
-		Double total = theaterSeat.getRating() * theaterSeat.getReviewAmount();
+		Double total = Math.round(theaterSeat.getRating() * theaterSeat.getReviewAmount() * 10) / 10.0;
 		Long reviewAmount = theaterSeat.getReviewAmount();
 		if (status.equals("CREATE")) {
 			total += rating;

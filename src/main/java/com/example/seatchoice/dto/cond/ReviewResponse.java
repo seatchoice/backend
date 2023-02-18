@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewCond {
+public class ReviewResponse {
 	private Integer floor;
 	private String section;
 	private String seatRow;
@@ -20,8 +20,8 @@ public class ReviewCond {
 	private Integer rating;
 	List<String> images;
 
-	public static ReviewCond from(Review review, List<String> images) {
-		return ReviewCond.builder()
+	public static ReviewResponse from(Review review, List<String> images) {
+		return ReviewResponse.builder()
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.seatRow(review.getTheaterSeat().getSeatRow())

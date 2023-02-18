@@ -1,37 +1,39 @@
 package com.example.seatchoice.dto.cond;
 
 import com.example.seatchoice.entity.Review;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewDetailCond {
+public class ReviewInfoResponse {
+	private Double seatRating; // 좌석 평점
+	private Long reviewId;
 	private Long userId;
-	private String nickname;
-	private LocalDateTime createdAt;
 	private Integer floor;
 	private String section;
 	private String seatRow;
 	private Integer seatNumber;
-	private Integer rating; // 평점
+	private Integer rating; // 개인 평점
 	private Long likeAmount; // 좋아요 개수
 	private String content;
-	private List<String> images;
-	private Boolean likeChecked;
+	private String thumbnail;
+	private Long commentAmount;
 
-
-	public static ReviewDetailCond from(Review review, List<String> images, Boolean likeChecked) {
-		return ReviewDetailCond.builder()
+	public static ReviewInfoResponse from(Review review) {
+		return ReviewInfoResponse.builder()
+			.seatRating(review.getTheaterSeat().getRating())
+			.reviewId(review.getId())
 			.userId(review.getMember().getId())
-			.nickname(review.getMember().getNickname())
-			.createdAt(review.getMember().getCreatedAt())
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.seatRow(review.getTheaterSeat().getSeatRow())
@@ -39,8 +41,17 @@ public class ReviewDetailCond {
 			.rating(review.getRating())
 			.likeAmount(review.getLikeAmount())
 			.content(review.getContent())
-			.images(images)
-			.likeChecked(likeChecked)
+			.thumbnail(review.getThumbnailUrl())
+			.commentAmount(review.getCommentAmount())
 			.build();
+	}
+
+	public static List<ReviewInfoResponse> of(List<Review> reviews) {
+		if (CollectionUtils.isEmpty(reviews)) {
+			return null;
+		}
+		return reviews.stream()
+			.map(ReviewInfoResponse::from)
+			.collect(Collectors.toList());
 	}
 }
