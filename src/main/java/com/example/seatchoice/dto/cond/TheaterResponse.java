@@ -2,7 +2,6 @@ package com.example.seatchoice.dto.cond;
 
 import com.example.seatchoice.entity.Facility;
 import com.example.seatchoice.entity.Theater;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ public class TheaterResponse {
 
 	private Long facilityId;
 	private String facilityName;
-	private List<TheaterDto> theaterList = new ArrayList<>();
+	private List<TheaterDto> theaterList;
 
 	@Getter
 	@Builder
