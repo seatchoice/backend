@@ -206,7 +206,7 @@ public class ReviewService {
 	}
 
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
-	public TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewRequest request) {
+	private TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewRequest request) {
 		for (TheaterSeat seat : theaterSeats) {
 			if (seat.getFloor() == request.getFloor() &&
 				seat.getSeatRow().equals(request.getSeatRow()) &&
@@ -225,14 +225,14 @@ public class ReviewService {
 		throw new CustomException(ErrorCode.NOT_FOUND_SEAT, HttpStatus.BAD_REQUEST);
 	}
 
-	public Review updateReviewByContentAndRating(Review review, String content, Integer rating) {
+	private Review updateReviewByContentAndRating(Review review, String content, Integer rating) {
 		review.setContent(content);
 		review.setRating(rating);
 		return reviewRepository.save(review);
 	}
 
 	// 이미지 저장
-	public void saveImages(Review review, List<String> images) {
+	private void saveImages(Review review, List<String> images) {
 		for (String img : images) {
 			imageRepository.save(
 				Image.builder()
@@ -242,7 +242,7 @@ public class ReviewService {
 		}
 	}
 
-	public String getModifiedThumbnailUrl(List<Image> savedImages, List<String> uploadImages) {
+	private String getModifiedThumbnailUrl(List<Image> savedImages, List<String> uploadImages) {
 		if (CollectionUtils.isEmpty(savedImages)) {
 			return uploadImages.get(0);
 		}
@@ -250,7 +250,7 @@ public class ReviewService {
 	}
 
 	// 좌석 평점 저장
-	public void saveSeatRating(TheaterSeat theaterSeat, String status,
+	private void saveSeatRating(TheaterSeat theaterSeat, String status,
 		Integer rating, Integer updateRating) {
 		Double total = Math.round(theaterSeat.getRating() * theaterSeat.getReviewAmount() * 10) / 10.0;
 		Long reviewAmount = theaterSeat.getReviewAmount();
