@@ -31,8 +31,6 @@ public class CommentController {
 	public ResponseEntity<Void> create(@RequestBody @Valid CommentRequest.Create commentRequest,
 		@AuthenticationPrincipal Member member) {
 
-		log.info("시작");
-		log.info(String.valueOf(member.getId()));
 		commentService.create(member.getId(), commentRequest);
 
 		return ResponseEntity.ok().build();
