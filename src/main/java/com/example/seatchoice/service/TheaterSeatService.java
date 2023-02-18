@@ -1,10 +1,10 @@
 package com.example.seatchoice.service;
 
-import com.example.seatchoice.dto.cond.TheaterSeatCond;
+import com.example.seatchoice.dto.cond.TheaterSeatResponse;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.repository.TheaterSeatRepository;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -14,20 +14,16 @@ import org.springframework.util.CollectionUtils;
 public class TheaterSeatService {
 
 	private final TheaterSeatRepository theaterSeatRepository;
-	public List<TheaterSeatCond> getSeatsWithReviews(Long theaterId) {
+	public List<TheaterSeatResponse> getSeatsWithReviews(Long theaterId) {
 		List<TheaterSeat> seats = theaterSeatRepository.findAllByTheaterId(theaterId);
 
-		List<TheaterSeatCond> theaterSeatConds = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(seats)) {
-			for (TheaterSeat seat : seats) {
-				if (seat.getReviewAmount() > 0) {
-					theaterSeatConds.add(TheaterSeatCond.from(seat));
-				}
-			}
+			return seats.stream()
+				.filter(t -> t.getReviewAmount() > 0)
+				.map(TheaterSeatResponse::from)
+				.collect(Collectors.toList());
 		} else {
-			theaterSeatConds = null;
+			return null;
 		}
-
-		return theaterSeatConds;
 	}
 }
