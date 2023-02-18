@@ -45,7 +45,7 @@ public class SearchController {
 			for (int i = 0; i < list.size(); i++) {
 				log.info(list.get(i).getName());
 			}
-			return ResponseEntity.ok("good");
+			return ResponseEntity.ok(list);
 		}
 
 		if (type == SearchType.FACILITY && startDate == null && endDate == null) {
