@@ -9,9 +9,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.dto.cond.ReviewResponse;
 import com.example.seatchoice.dto.cond.ReviewDetailResponse;
 import com.example.seatchoice.dto.cond.ReviewInfoResponse;
+import com.example.seatchoice.dto.cond.ReviewResponse;
 import com.example.seatchoice.dto.param.ReviewModifyRequest;
 import com.example.seatchoice.dto.param.ReviewRequest;
 import com.example.seatchoice.entity.Image;
@@ -146,7 +146,6 @@ public class ReviewServiceTest {
 		ReviewModifyRequest request = new ReviewModifyRequest("리뷰 수정입니다.", 3);
 
 		given(reviewRepository.findById(anyLong())).willReturn(Optional.of(review));
-
 
 		// image delete
 		ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
