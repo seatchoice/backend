@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.example.seatchoice.exception.CustomException;
-import com.example.seatchoice.service.oauth.TokenService;
+import com.example.seatchoice.service.auth.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;

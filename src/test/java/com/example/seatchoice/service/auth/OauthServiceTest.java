@@ -1,4 +1,4 @@
-package com.example.seatchoice.service.oauth;
+package com.example.seatchoice.service.auth;
 
 import static com.example.seatchoice.type.LoginType.KAKAO;
 import static com.example.seatchoice.type.MemberRole.ROLE_USER;
