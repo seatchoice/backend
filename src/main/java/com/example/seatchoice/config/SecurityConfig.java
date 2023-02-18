@@ -39,6 +39,8 @@ public class SecurityConfig {
 			.antMatchers(HttpMethod.POST, "/api/reviews/**")
 			.hasRole("USER")
 			.antMatchers(HttpMethod.DELETE, "/api/reviews/**")
+			.hasRole("USER")
+			.antMatchers("/exchange/**", "/pub/**")
 			.hasRole("USER");
 
 		http.addFilterBefore(new JwtAuthenticationFilter(tokenService),

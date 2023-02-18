@@ -26,11 +26,11 @@ public class ChatController {
 
     @MessageMapping("chat.message.{roomId}")
     public void sendMessage(@DestinationVariable Long roomId,
-//                            @AuthenticationPrincipal Member member,
+                            @AuthenticationPrincipal Member member,
                             ChattingMessageParam message) {
 
         message.setRoomId(roomId);
-//        message.setNickname(member.getNickname());
+        message.setNickname(member.getNickname());
         message.setTimeStamp(LocalDateTime.now());
         chatHistory.save(message);
 
