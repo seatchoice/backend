@@ -31,6 +31,13 @@ spring:
     port:
     password:
 
+  rabbitmq:
+    host:
+    port:
+    username:
+    password:
+    virtual-host:
+
   security:
     oauth2:
       client:

@@ -57,14 +57,20 @@ dependencies {
 
 	// websocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-reactor-netty', version: '2.4.6'
 
 	// aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	// querydsl
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // querydsl 라이브러리
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'// querydsl 라이브러리
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	// Guava (goole cache)
+	implementation 'com.google.guava:guava:11.0.2'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

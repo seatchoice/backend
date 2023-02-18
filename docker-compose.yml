@@ -2,33 +2,17 @@ version: '3.4'
 
 services:
 
-  # wurstmeister/zookeeper:3.4.6
-  zookeeper:
-    hostname: zookeeper
-    container_name: zookeeper
-    image: wurstmeister/zookeeper:3.4.6
+  rabbitmq:
+    image: 'pcloud/rabbitmq-stomp'
+    container_name: rabbitmq
     ports:
-      - "2181:2181"
-    networks:
-      - elastic
-
-  # wurstmeister/kafka:2.13-2.8.1 
-  kafka:
-    hostname: kafka
-    container_name: kafka
-    image: wurstmeister/kafka:2.13-2.8.1
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://43.200.67.139:9092 # 외부에서 받는 주소.
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_HOST_NAME: 43.200.67.139
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_DELETE_TOPIC_ENABLE: "true"
-      KAFKA_CREATE_TOPICS: "kafka-chatting:1:1" #topic 실행할 때 설정해줌, 1:1은 각각 파티션, 레플리카 갯수
-    ports:
-      - "9092:9092"
-    depends_on:
-      - zookeeper
+      RABBITMQ_ERLANG_COOKIE:
+      RABBITMQ_DEFAULT_USER:
+      RABBITMQ_DEFAULT_PASS:
     networks:
       - elastic
 
@@ -66,7 +50,6 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - kafka
       - redis
     restart: always
 
