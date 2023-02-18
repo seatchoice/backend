@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChatHistory {
+public class ChatHistoryCache {
 
     private final Cache<UUID, ChattingMessageParam> chatHistoryCache = CacheBuilder.newBuilder()
         .expireAfterWrite(10, TimeUnit.MINUTES)
