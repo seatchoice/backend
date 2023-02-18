@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ExtendWith(MockitoExtension.class)
 public class TheaterSeatServiceTest {
+
 	@Mock
 	private TheaterSeatRepository theaterSeatRepository;
 	@InjectMocks
@@ -28,7 +29,7 @@ public class TheaterSeatServiceTest {
 	@Test
 	@DisplayName("리뷰가 있는 좌석 조회 성공 - 좌석이 있을 경우")
 	void getSeatsWithReviewsSuccess() {
-	    // given
+		// given
 		List<TheaterSeat> seats = Arrays.asList(
 			TheaterSeat.builder()
 				.floor(1)
@@ -50,7 +51,7 @@ public class TheaterSeatServiceTest {
 
 		given(theaterSeatRepository.findAllByTheaterId(anyLong())).willReturn(seats);
 
-	    // when
+		// when
 		List<TheaterSeatResponse> seatsWithReviews = theaterSeatService.getSeatsWithReviews(1L);
 
 		// then
