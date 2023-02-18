@@ -13,6 +13,8 @@ services:
       RABBITMQ_ERLANG_COOKIE:
       RABBITMQ_DEFAULT_USER:
       RABBITMQ_DEFAULT_PASS:
+    env_file:
+      - .env
     networks:
       - elastic
 
