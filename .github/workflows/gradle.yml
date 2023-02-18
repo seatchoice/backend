@@ -22,6 +22,12 @@ env:
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   REDIS_PORT: ${{ secrets.REDIS_PORT }}
   REDIS_PASSWORD: ${{ secrets.REDIS_PW }}
+  # Rabbitmq
+  RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
+  RABBITMQ_PORT: ${{ secrets.RABBITMQ_PORT }}
+  RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
+  RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+  RABBITMQ_VIRTUAL_HOST: ${{ secrets.RABBITMQ_VIRTUAL_HOST }}
   # JWT
   JWT_SECRET_KEY: ${{ secrets.JWT }}
   JWT_REFRESH_SECRET_KEY: ${{ secrets.JWT_REFRESH }}
@@ -78,6 +84,11 @@ jobs:
         spring.redis.password: ${{ env.REDIS_PASSWORD }}
         spring.jwt.token.secret-key: ${{ env.JWT_SECRET_KEY }}
         spring.jwt.token.refresh-secret-key: ${{ env.JWT_REFRESH_SECRET_KEY }}
+        spring.rabbitmq.host: ${{ env.RABBITMQ_HOST }}
+        spring.rabbitmq.port: ${{ env.RABBITMQ_PORT }}
+        spring.rabbitmq.username: ${{ env.RABBITMQ_USERNAME }}
+        spring.rabbitmq.password: ${{ env.RABBITMQ_PASSWORD }}
+        spring.rabbitmq.virtual-host: ${{ env.RABBITMQ_VIRTUAL_HOST }}
         cloud.aws.credentials.access-key: ${{ env.ACCESS_KEY }}
         cloud.aws.credentials.secret-key: ${{ env.SECRET_KEY }}
         cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
