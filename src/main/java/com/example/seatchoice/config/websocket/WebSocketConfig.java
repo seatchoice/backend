@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -17,8 +18,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/api/send");       //클라이언트에서 보낸 메세지를 받을 prefix
-        registry.enableSimpleBroker("/api/chat");    //해당 주소를 구독하고 있는 클라이언트들에게 메세지 전달
+        registry.setPathMatcher(new AntPathMatcher(".")); // url을 chat/room/1 -> chat.room.1으로 참조하기 위한 설정
+        registry.setApplicationDestinationPrefixes("/pub");
+        registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+            .setRelayHost("43.200.67.139")
+            .setVirtualHost("/")
+            .setRelayPort(61613);
     }
 
     @Override
