@@ -1,15 +1,18 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.config.kafka.KafkaSender;
+import com.example.seatchoice.config.ChatHistory;
 import com.example.seatchoice.dto.param.ChattingMessageParam;
 import com.example.seatchoice.entity.Member;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
@@ -17,23 +20,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final KafkaSender kafkaSender;
-    private static String KAFKA_TOPIC = "kafka-chatting"; // kafka 내부 topic
+    private final RabbitTemplate rabbitTemplate;
+    private final String CHAT_EXCHANGE_NAME = "chat.exchange";
+    private final ChatHistory chatHistory;
 
-    // "/api/send/{roomId}"로 들어오는 메시지를 "/api/chat/{roomId}"을 구독하고있는 사람들에게 송신
-    @MessageMapping("/{roomId}")
+    @MessageMapping("chat.message.{roomId}")
     public void sendMessage(@DestinationVariable Long roomId,
-                            @AuthenticationPrincipal Member member,
+//                            @AuthenticationPrincipal Member member,
                             ChattingMessageParam message) {
 
-        // 현재 시간
-        String sendTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-            .format(LocalDateTime.now());
-
         message.setRoomId(roomId);
-        message.setNickname(member.getNickname());
-        message.setTimeStamp(sendTime);
+//        message.setNickname(member.getNickname());
+        message.setTimeStamp(LocalDateTime.now());
+        chatHistory.save(message);
 
-        kafkaSender.send(KAFKA_TOPIC, message);
+        rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + roomId, message);
+    }
+
+    @GetMapping("/api/chat-room/{roomId}")
+    public List<ChattingMessageParam> getChattingHistory(@PathVariable Long roomId) {
+        return chatHistory.get(roomId);
     }
 }
