@@ -30,9 +30,9 @@ public class GlobalExceptionHandler {
 			e.getFieldError().getDefaultMessage(), BAD_REQUEST);
 	}
 
-	@ResponseStatus(INTERNAL_SERVER_ERROR)
+	/*@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler
 	public ResponseEntity<ErrorResponse> handleServerErrorException(Exception e) {
 		return ErrorResponse.from(ERROR_CODE_500, INTERNAL_SERVER_ERROR);
-	}
+	}*/
 }
