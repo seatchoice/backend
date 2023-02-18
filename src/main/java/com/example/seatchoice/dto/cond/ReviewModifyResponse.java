@@ -15,7 +15,7 @@ import org.springframework.util.CollectionUtils;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewModifyCond {
+public class ReviewModifyResponse {
 	private Long userId;
 	private String nickname;
 	private LocalDateTime createdAt;
@@ -29,8 +29,8 @@ public class ReviewModifyCond {
 	private List<String> images;
 
 
-	public static ReviewModifyCond from(Review review, List<Image> images) {
-		return ReviewModifyCond.builder()
+	public static ReviewModifyResponse from(Review review, List<Image> images) {
+		return ReviewModifyResponse.builder()
 			.userId(review.getMember().getId())
 			.nickname(review.getMember().getNickname())
 			.createdAt(review.getMember().getCreatedAt())

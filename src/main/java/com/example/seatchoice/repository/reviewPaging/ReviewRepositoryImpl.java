@@ -2,7 +2,7 @@ package com.example.seatchoice.repository.reviewPaging;
 
 import static com.example.seatchoice.entity.QReview.review;
 
-import com.example.seatchoice.dto.cond.ReviewInfoCond;
+import com.example.seatchoice.dto.cond.ReviewInfoResponse;
 import com.example.seatchoice.entity.Review;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,7 +19,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Slice<ReviewInfoCond> searchBySlice(Long lastReviewId, Long seatId,
+	public Slice<ReviewInfoResponse> searchBySlice(Long lastReviewId, Long seatId,
 		Pageable pageable) {
 		List<Review> reviews = queryFactory
 			.selectFrom(review)
@@ -31,11 +31,11 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 			.limit(pageable.getPageSize() + 1) // limit보다 한 개 더 들고온다.
 			.fetch();
 
-		List<ReviewInfoCond> reviewInfoConds = ReviewInfoCond.of(reviews);
-		if (reviewInfoConds == null) {
+		List<ReviewInfoResponse> reviewInfoResponses = ReviewInfoResponse.of(reviews);
+		if (reviewInfoResponses == null) {
 			return null;
 		}
-		return checkLastPage(pageable, reviewInfoConds);
+		return checkLastPage(pageable, reviewInfoResponses);
 	}
 
 	// 동적 쿼리를 위한 BooleanExpression
@@ -46,7 +46,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 		return review.id.lt(reviewId);
 	}
 
-	private Slice<ReviewInfoCond> checkLastPage(Pageable pageable, List<ReviewInfoCond> results) {
+	private Slice<ReviewInfoResponse> checkLastPage(Pageable pageable, List<ReviewInfoResponse> results) {
 		boolean hasNext = false;
 		// 조회한 결과 개수가 요청한 페이지 사이즈보다 크면 뒤에 더 있음, next = true
 		if (results.size() > pageable.getPageSize()) {
