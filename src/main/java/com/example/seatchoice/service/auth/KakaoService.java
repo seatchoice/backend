@@ -1,4 +1,4 @@
-package com.example.seatchoice.service.oauth;
+package com.example.seatchoice.service.auth;
 
 import static com.example.seatchoice.type.LoginType.KAKAO;
 import static com.example.seatchoice.type.RequestMethod.GET;
@@ -40,6 +40,9 @@ public class KakaoService {
 
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String userInfoUri;
+
+	@Value("${spring.security.oauth2.client.provider.kakao.logout-uri}")
+	private String logoutUri;
 
 	public String getToken(String code) throws IOException, ParseException {
 		URL url = new URL(tokenUri);
@@ -114,4 +117,10 @@ public class KakaoService {
 			.build();
 	}
 
+	public void logout(String accessToken) throws IOException {
+		URL url = new URL(logoutUri);
+		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+		urlConnection.setRequestProperty("Authorization", accessToken);
+		urlConnection.setRequestMethod(POST.name());
+	}
 }
