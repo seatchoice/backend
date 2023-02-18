@@ -36,7 +36,6 @@ spring:
     port:
     username:
     password:
-    virtual-host:
 
   security:
     oauth2:
@@ -96,4 +95,5 @@ kopis:
   api:
     url:
     key:
+
 
