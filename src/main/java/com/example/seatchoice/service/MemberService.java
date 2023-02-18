@@ -5,7 +5,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.example.seatchoice.dto.auth.Token;
 import com.example.seatchoice.exception.CustomException;
-import com.example.seatchoice.service.oauth.OauthService;
+import com.example.seatchoice.service.auth.OauthService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
@@ -23,6 +23,16 @@ public class MemberService {
 		switch (provider) {
 			case KAKAO:
 				return oauthService.kakaoLogin(code);
+			default:
+				throw new CustomException(UNSUPPORTED_PROVIDER, BAD_REQUEST);
+		}
+	}
+
+	public void oauthLogout(Long memberId, String provider) throws IOException {
+		switch (provider) {
+			case KAKAO:
+				oauthService.kakaoLogout(memberId);
+				return;
 			default:
 				throw new CustomException(UNSUPPORTED_PROVIDER, BAD_REQUEST);
 		}

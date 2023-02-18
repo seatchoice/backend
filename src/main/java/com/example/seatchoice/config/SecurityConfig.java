@@ -1,10 +1,12 @@
 package com.example.seatchoice.config;
 
-import com.example.seatchoice.service.oauth.TokenService;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
+import com.example.seatchoice.service.auth.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,22 +28,22 @@ public class SecurityConfig {
 			.formLogin().disable()
 			.authorizeRequests()
 			.antMatchers(
-				"/",
-				"/api/**", // 임시 설정
-				"/api/reissue/refresh-token",
+				POST,
 				"/api/oauth/{provider}/login"
+			).permitAll()
+			.antMatchers(
+				GET,
+				"/api/theaters/**",
+				"/api/search",
+				"/api/reviews",
+				"/api/reviews/**"
 			).permitAll()
 			// 유저 권한이 필요한 api 추가
 			.antMatchers(
-				"/api/likes/**",
-				"/api/theaters/**/reviews"
-			).hasRole("USER")
-			.antMatchers(HttpMethod.POST, "/api/reviews/**")
-			.hasRole("USER")
-			.antMatchers(HttpMethod.DELETE, "/api/reviews/**")
-			.hasRole("USER")
-			.antMatchers("/exchange/**", "/pub/**")
-			.hasRole("USER");
+				"/api/**",
+				"/exchange/**",
+				"/pub/**"
+			).hasRole("USER");
 
 		http.addFilterBefore(new JwtAuthenticationFilter(tokenService),
 			UsernamePasswordAuthenticationFilter.class);

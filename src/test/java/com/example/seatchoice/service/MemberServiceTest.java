@@ -1,14 +1,15 @@
 package com.example.seatchoice.service;
 
 import static com.example.seatchoice.type.ErrorCode.UNSUPPORTED_PROVIDER;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.example.seatchoice.dto.auth.Token;
 import com.example.seatchoice.exception.CustomException;
-import com.example.seatchoice.service.oauth.OauthService;
+import com.example.seatchoice.service.auth.OauthService;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.DisplayName;

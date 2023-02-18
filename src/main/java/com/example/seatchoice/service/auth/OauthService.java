@@ -1,4 +1,4 @@
-package com.example.seatchoice.service.oauth;
+package com.example.seatchoice.service.auth;
 
 import static com.example.seatchoice.type.MemberRole.ROLE_USER;
 
@@ -68,5 +68,16 @@ public class OauthService {
 		}
 
 		return member;
+	}
+
+	public void kakaoLogout(Long memberId) throws IOException {
+		Object kakaoAccessToken = redisTemplate.opsForHash().get(memberId, "accessToken");
+
+		if (kakaoAccessToken == null) {
+			return;
+		}
+
+		kakaoService.logout(kakaoAccessToken.toString());
+		redisTemplate.delete(memberId);
 	}
 }

@@ -1,4 +1,4 @@
-package com.example.seatchoice.service.oauth;
+package com.example.seatchoice.service.auth;
 
 import static com.example.seatchoice.type.ErrorCode.AUTHORIZATION_KEY_DOES_NOT_EXIST;
 import static com.example.seatchoice.type.ErrorCode.EXPIRED_REFRESH_TOKEN;
@@ -166,7 +166,7 @@ public class TokenService{
 	}
 
 	// 만료된 access, refresh token 정보 삭제
-	private void resetHeader(HttpServletResponse response) {
+	public void resetHeader(HttpServletResponse response) {
 		response.setHeader("Authorization", null);
 		Cookie cookie = new Cookie("refreshToken", null);
 		cookie.setHttpOnly(true);
