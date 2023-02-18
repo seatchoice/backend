@@ -22,8 +22,7 @@ public class TheaterSeatService {
 				.filter(t -> t.getReviewAmount() > 0)
 				.map(TheaterSeatResponse::from)
 				.collect(Collectors.toList());
-		} else {
-			return null;
 		}
+		return null;
 	}
 }
