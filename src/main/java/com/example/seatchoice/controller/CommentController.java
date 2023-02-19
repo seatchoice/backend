@@ -27,7 +27,7 @@ public class CommentController {
 
 	private final CommentService commentService;
 
-	@PostMapping("/comment")
+	@PostMapping("/comments")
 	public ResponseEntity<Void> create(@RequestBody @Valid CommentRequest.Create commentRequest,
 		@AuthenticationPrincipal Member member) {
 
@@ -36,7 +36,7 @@ public class CommentController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping("/comment/{commentId}")
+	@PutMapping("/comments/{commentId}")
 	public ResponseEntity<Void> modify(@PathVariable Long commentId,
 		@RequestBody @Valid CommentRequest.Modify commentRequest,
 		@AuthenticationPrincipal Member member) {
@@ -46,7 +46,7 @@ public class CommentController {
 		return ResponseEntity.ok().build();
 	}
 
-	@DeleteMapping("/comment/{commentId}")
+	@DeleteMapping("/comments/{commentId}")
 	public ResponseEntity<Void> delete(@PathVariable Long commentId,
 		@AuthenticationPrincipal Member member) {
 
@@ -55,7 +55,7 @@ public class CommentController {
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping("/review/{reviewId}/comments")
+	@GetMapping("/reviews/{reviewId}/comments")
 	public ResponseEntity<List<CommentResponse>> list(@PathVariable Long reviewId) {
 
 		return ResponseEntity.ok(commentService.list(reviewId));
