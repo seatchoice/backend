@@ -3,8 +3,8 @@ package com.example.seatchoice.service;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_CHATROOM;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_THEATER;
 
-import com.example.seatchoice.dto.cond.ChatRoomCond;
-import com.example.seatchoice.dto.param.TheaterIdParam;
+import com.example.seatchoice.dto.response.ChatRoomResponse;
+import com.example.seatchoice.dto.request.TheaterIdRequest;
 import com.example.seatchoice.entity.ChatRoom;
 import com.example.seatchoice.entity.Theater;
 import com.example.seatchoice.exception.CustomException;
@@ -23,10 +23,10 @@ public class ChatRoomService {
     private final TheaterRepository theaterRepository;
 
     // 방만들기 검증
-    public ChatRoomCond createRoom(TheaterIdParam theaterIdParam) {
-        return ChatRoomCond.from(
-            chatRoomRepository.findByTheaterId(theaterIdParam.getTheaterId()).orElseGet(
-                () -> makeNewChatRoom(theaterIdParam.getTheaterId())));
+    public ChatRoomResponse createRoom(TheaterIdRequest theaterIdRequest) {
+        return ChatRoomResponse.from(
+            chatRoomRepository.findByTheaterId(theaterIdRequest.getTheaterId()).orElseGet(
+                () -> makeNewChatRoom(theaterIdRequest.getTheaterId())));
     }
 
     // 방 삭제

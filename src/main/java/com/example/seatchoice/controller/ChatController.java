@@ -1,7 +1,7 @@
 package com.example.seatchoice.controller;
 
 import com.example.seatchoice.config.ChatHistoryCache;
-import com.example.seatchoice.dto.param.ChattingMessageRequest;
+import com.example.seatchoice.dto.request.ChattingMessageRequest;
 import com.example.seatchoice.entity.Member;
 import java.time.LocalDateTime;
 import java.util.List;

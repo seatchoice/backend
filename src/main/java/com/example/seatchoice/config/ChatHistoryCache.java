@@ -1,6 +1,6 @@
 package com.example.seatchoice.config;
 
-import com.example.seatchoice.dto.param.ChattingMessageRequest;
+import com.example.seatchoice.dto.request.ChattingMessageRequest;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.Comparator;

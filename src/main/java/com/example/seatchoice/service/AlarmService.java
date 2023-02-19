@@ -3,7 +3,7 @@ package com.example.seatchoice.service;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_ALARM;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_MEMBER;
 
-import com.example.seatchoice.dto.cond.AlarmResponse;
+import com.example.seatchoice.dto.response.AlarmResponse;
 import com.example.seatchoice.entity.Alarm;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.exception.CustomException;

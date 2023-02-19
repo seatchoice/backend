@@ -1,4 +1,4 @@
-package com.example.seatchoice.dto.param;
+package com.example.seatchoice.dto.request;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

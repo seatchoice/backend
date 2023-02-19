@@ -13,11 +13,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.dto.cond.AlarmResponse;
-import com.example.seatchoice.dto.cond.CommentResponse;
-import com.example.seatchoice.dto.param.CommentRequest;
-import com.example.seatchoice.dto.param.CommentRequest.Create;
-import com.example.seatchoice.dto.param.CommentRequest.Modify;
+import com.example.seatchoice.dto.response.AlarmResponse;
+import com.example.seatchoice.dto.response.CommentResponse;
+import com.example.seatchoice.dto.request.CommentRequest;
+import com.example.seatchoice.dto.request.CommentRequest.Create;
+import com.example.seatchoice.dto.request.CommentRequest.Modify;
 import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;

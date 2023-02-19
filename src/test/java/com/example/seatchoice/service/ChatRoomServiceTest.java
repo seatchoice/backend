@@ -1,6 +1,5 @@
 package com.example.seatchoice.service;
 
-import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_THEATER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,8 +8,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.dto.cond.ChatRoomCond;
-import com.example.seatchoice.dto.param.TheaterIdParam;
+import com.example.seatchoice.dto.response.ChatRoomResponse;
+import com.example.seatchoice.dto.request.TheaterIdRequest;
 import com.example.seatchoice.entity.ChatRoom;
 import com.example.seatchoice.entity.Theater;
 import com.example.seatchoice.exception.CustomException;
@@ -45,14 +44,14 @@ class ChatRoomServiceTest {
     void createRoomSuccess_makeNewRoom() {
 
         // given
-        TheaterIdParam theaterIdParam = new TheaterIdParam();
-        theaterIdParam.setTheaterId(1L);
+        TheaterIdRequest theaterIdRequest = new TheaterIdRequest();
+        theaterIdRequest.setTheaterId(1L);
         Theater theater = new Theater();
 
         given(theaterRepository.findById(anyLong())).willReturn(Optional.of(theater));
 
         // when
-        ChatRoom chatRoom = chatRoomService.makeNewChatRoom(theaterIdParam.getTheaterId());
+        ChatRoom chatRoom = chatRoomService.makeNewChatRoom(theaterIdRequest.getTheaterId());
 
         // then
         verify(chatRoomRepository, times(1)).save(any());
@@ -63,8 +62,8 @@ class ChatRoomServiceTest {
     void createRoomSuccess_returnRoomInfo() {
 
         // given
-        TheaterIdParam theaterIdParam = new TheaterIdParam();
-        theaterIdParam.setTheaterId(1L);
+        TheaterIdRequest theaterIdRequest = new TheaterIdRequest();
+        theaterIdRequest.setTheaterId(1L);
         Theater theater = new Theater();
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setTheater(theater);
@@ -74,7 +73,7 @@ class ChatRoomServiceTest {
         given(chatRoomRepository.findByTheaterId(anyLong())).willReturn(Optional.of(chatRoom));
 
         // when
-        ChatRoomCond room = chatRoomService.createRoom(theaterIdParam);
+        ChatRoomResponse room = chatRoomService.createRoom(theaterIdRequest);
 
         // then
         verify(chatRoomRepository, times(0)).save(any());
@@ -86,13 +85,13 @@ class ChatRoomServiceTest {
     void createRoomFailed_NotFoundTheaterId() {
 
         // given
-        TheaterIdParam theaterIdParam = new TheaterIdParam();
-        theaterIdParam.setTheaterId(1L);
+        TheaterIdRequest theaterIdRequest = new TheaterIdRequest();
+        theaterIdRequest.setTheaterId(1L);
         given(theaterRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
         CustomException exception = assertThrows(CustomException.class,
-            () -> chatRoomService.createRoom(theaterIdParam));
+            () -> chatRoomService.createRoom(theaterIdRequest));
 
         // then
         assertEquals(ErrorCode.NOT_FOUND_THEATER, exception.getErrorCode());

@@ -1,4 +1,4 @@
-package com.example.seatchoice.dto.cond;
+package com.example.seatchoice.dto.response;
 
 import com.example.seatchoice.entity.ChatRoom;
 import lombok.AllArgsConstructor;
@@ -12,11 +12,11 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatRoomCond {
+public class ChatRoomResponse {
     private Long roomId;
 
-    public static ChatRoomCond from(ChatRoom chatRoom) {
-        return ChatRoomCond.builder()
+    public static ChatRoomResponse from(ChatRoom chatRoom) {
+        return ChatRoomResponse.builder()
             .roomId(chatRoom.getId())
             .build();
     }

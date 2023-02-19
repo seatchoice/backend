@@ -1,7 +1,7 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.cond.AlarmResponse;
-import com.example.seatchoice.dto.param.AlarmCreateParam;
+import com.example.seatchoice.dto.response.AlarmResponse;
+import com.example.seatchoice.dto.request.AlarmCreateRequest;
 import com.example.seatchoice.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,10 +47,10 @@ public class AlarmController {
 
     // 알림 생성
     @PostMapping
-    public ResponseEntity<AlarmResponse> createAlarm(@RequestBody AlarmCreateParam alarmCreateParam) {
-        return ResponseEntity.ok(alarmService.createAlarm(alarmCreateParam.getMemberId(),
-                                                          alarmCreateParam.getType(),
-                                                          alarmCreateParam.getUrl()));
+    public ResponseEntity<AlarmResponse> createAlarm(@RequestBody AlarmCreateRequest alarmCreateRequest) {
+        return ResponseEntity.ok(alarmService.createAlarm(alarmCreateRequest.getMemberId(),
+                                                          alarmCreateRequest.getType(),
+                                                          alarmCreateRequest.getUrl()));
     }
 
     // 알림 삭제

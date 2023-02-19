@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
-import com.example.seatchoice.dto.cond.TheaterResponse;
+import com.example.seatchoice.dto.response.TheaterResponse;
 import com.example.seatchoice.entity.Facility;
 import com.example.seatchoice.entity.Theater;
 import com.example.seatchoice.repository.FacilityRepository;

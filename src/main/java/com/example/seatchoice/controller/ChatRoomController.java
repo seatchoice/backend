@@ -1,7 +1,7 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.cond.ChatRoomCond;
-import com.example.seatchoice.dto.param.TheaterIdParam;
+import com.example.seatchoice.dto.response.ChatRoomResponse;
+import com.example.seatchoice.dto.request.TheaterIdRequest;
 import com.example.seatchoice.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class ChatRoomController {
 
     // 채팅방 등록
     @PostMapping
-    public ResponseEntity<ChatRoomCond> createRoom(@RequestBody TheaterIdParam theaterIdParam) {
-        ChatRoomCond room = chatRoomService.createRoom(theaterIdParam);
+    public ResponseEntity<ChatRoomResponse> createRoom(@RequestBody TheaterIdRequest theaterIdRequest) {
+        ChatRoomResponse room = chatRoomService.createRoom(theaterIdRequest);
         return ResponseEntity.ok(room);
     }
 
