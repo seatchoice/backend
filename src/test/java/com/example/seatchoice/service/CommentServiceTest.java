@@ -13,7 +13,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.dto.cond.AlarmCond;
+import com.example.seatchoice.dto.cond.AlarmResponse;
 import com.example.seatchoice.dto.cond.CommentResponse;
 import com.example.seatchoice.dto.param.CommentRequest;
 import com.example.seatchoice.dto.param.CommentRequest.Create;
@@ -72,7 +72,7 @@ class CommentServiceTest {
 			.willReturn(Optional.of(review));
 		ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
 		given(alarmService.createAlarm(anyLong(), any(), anyString()))
-			.willReturn(AlarmCond.builder().build());
+			.willReturn(AlarmResponse.builder().build());
 
 		// when
 		commentService.create(1L, req);

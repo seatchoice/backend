@@ -1,7 +1,7 @@
 package com.example.seatchoice.controller;
 
 import com.example.seatchoice.config.ChatHistoryCache;
-import com.example.seatchoice.dto.param.ChattingMessageParam;
+import com.example.seatchoice.dto.param.ChattingMessageRequest;
 import com.example.seatchoice.entity.Member;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ChatController {
     @MessageMapping("chat.message.{roomId}")
     public void sendMessage(@DestinationVariable Long roomId,
                             @AuthenticationPrincipal Member member,
-                            ChattingMessageParam message) {
+                            ChattingMessageRequest message) {
 
         message.setRoomId(roomId);
         message.setNickname(member.getNickname());
@@ -37,8 +37,8 @@ public class ChatController {
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + roomId, message);
     }
 
-    @GetMapping("/api/chat-room/{roomId}")
-    public List<ChattingMessageParam> getChattingHistory(@PathVariable Long roomId) {
+    @GetMapping("/api/chat-history/{roomId}")
+    public List<ChattingMessageRequest> getChattingHistory(@PathVariable Long roomId) {
         return chatHistoryCache.get(roomId);
     }
 }

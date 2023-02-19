@@ -1,6 +1,5 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.dto.cond.ChatRoomCond;
 import com.example.seatchoice.dto.param.TheaterIdParam;
 import com.example.seatchoice.service.ChatRoomService;
@@ -22,15 +21,15 @@ public class ChatRoomController {
 
     // 채팅방 등록
     @PostMapping
-    public ApiResponse<ChatRoomCond> createRoom(@RequestBody TheaterIdParam theaterIdParam) {
+    public ResponseEntity<ChatRoomCond> createRoom(@RequestBody TheaterIdParam theaterIdParam) {
         ChatRoomCond room = chatRoomService.createRoom(theaterIdParam);
-        return new ApiResponse<>(room);
+        return ResponseEntity.ok(room);
     }
 
     // 채팅방 삭제
     @DeleteMapping("/{roomId}")
-    public ApiResponse<Void> deleteRoom(@PathVariable Long roomId) {
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
         chatRoomService.deleteRoom(roomId);
-        return new ApiResponse<>();
+        return ResponseEntity.ok().build();
     }
 }

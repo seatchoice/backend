@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ChattingMessageParam implements Serializable {
+public class ChattingMessageRequest implements Serializable {
     private Long roomId;
     private String nickname;
     private String message;

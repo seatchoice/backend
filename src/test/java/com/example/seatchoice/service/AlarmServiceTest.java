@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.dto.cond.AlarmCond;
+import com.example.seatchoice.dto.cond.AlarmResponse;
 import com.example.seatchoice.entity.Alarm;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.exception.CustomException;
@@ -74,7 +74,7 @@ class AlarmServiceTest {
         given(alarmRepository.findByMemberId(anyLong(), any())).willReturn(episodes);
 
         // when
-        Page<AlarmCond> alarmListPage = alarmService.getAlarmList(member.getId(), pageable);
+        Page<AlarmResponse> alarmListPage = alarmService.getAlarmList(member.getId(), pageable);
 
         // then
         assertEquals(false, alarmListPage.getContent().get(0).getCheckAlarm());
@@ -106,13 +106,13 @@ class AlarmServiceTest {
         given(alarmRepository.findById(anyLong())).willReturn(Optional.of(alarm));
 
         // when
-        AlarmCond alarmCond = alarmService.getAlarm(alarmId);
+        AlarmResponse alarmResponse = alarmService.getAlarm(alarmId);
 
         // then
-        assertEquals(2, alarmCond.getId());
-        assertEquals("test", alarmCond.getUrl());
-        assertEquals(AlarmType.LIKE, alarmCond.getType());
-        assertEquals(true, alarmCond.getCheckAlarm());
+        assertEquals(2, alarmResponse.getId());
+        assertEquals("test", alarmResponse.getUrl());
+        assertEquals(AlarmType.LIKE, alarmResponse.getType());
+        assertEquals(true, alarmResponse.getCheckAlarm());
     }
 
     @Test
@@ -181,13 +181,13 @@ class AlarmServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         // when
-        AlarmCond alarmCond = alarmService.createAlarm(member.getId(), alarmType, url);
+        AlarmResponse alarmResponse = alarmService.createAlarm(member.getId(), alarmType, url);
 
         // then
         verify(alarmRepository, times(1)).save(any());
-        assertEquals(false, alarmCond.getCheckAlarm());
-        assertEquals(AlarmType.LIKE, alarmCond.getType());
-        assertEquals("http://localhost:8080/test", alarmCond.getUrl());
+        assertEquals(false, alarmResponse.getCheckAlarm());
+        assertEquals(AlarmType.LIKE, alarmResponse.getType());
+        assertEquals("http://localhost:8080/test", alarmResponse.getUrl());
     }
 
     @Test

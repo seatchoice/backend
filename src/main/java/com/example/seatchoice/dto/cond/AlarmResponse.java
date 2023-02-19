@@ -13,14 +13,14 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlarmCond {
+public class AlarmResponse {
     private Long id;
     private AlarmType type;
     private String url;
     private Boolean checkAlarm;
 
-    public static AlarmCond from(Alarm alarm) {
-        return AlarmCond.builder()
+    public static AlarmResponse from(Alarm alarm) {
+        return AlarmResponse.builder()
             .id(alarm.getId())
             .type(alarm.getType())
             .url(alarm.getUrl())
