@@ -1,9 +1,9 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.common.ApiResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.ReviewLikeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,19 +20,17 @@ public class ReviewLikeController {
 
 	// 좋아요 생성
 	@PostMapping
-	public ApiResponse<Void> createLike(
+	public ResponseEntity<Void> createLike(
 		@RequestParam Long reviewId, @AuthenticationPrincipal Member member) {
-
 		reviewLikeService.createLike(member.getId(), reviewId);
-		return new ApiResponse<>();
+		return ResponseEntity.ok().build();
 	}
 
 	// 좋아요 취소
 	@DeleteMapping
-	public ApiResponse<Void> deleteLike(
+	public ResponseEntity<Void> deleteLike(
 		@RequestParam Long reviewId, @AuthenticationPrincipal Member member) {
-
 		reviewLikeService.deleteLike(member.getId(), reviewId);
-		return new ApiResponse<>();
+		return ResponseEntity.ok().build();
 	}
 }
