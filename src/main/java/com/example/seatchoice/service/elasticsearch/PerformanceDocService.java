@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -38,14 +39,19 @@ public class PerformanceDocService {
 			queryBuilder.withSearchAfter(List.of(after));
 		}
 
+		QueryBuilder dateRangeQuery;
 		if (startDate != null && endDate != null) {
-			queryBuilder.withFilter(QueryBuilders.boolQuery()
-				.should(QueryBuilders.rangeQuery("startDate").lte(endDate))
-				.should(QueryBuilders.rangeQuery("endDate").gte(startDate)));
+			dateRangeQuery = QueryBuilders.boolQuery()
+				.mustNot(QueryBuilders.rangeQuery("startDate").gt(endDate))
+				.mustNot(QueryBuilders.rangeQuery("endDate").lt(startDate));
+		} else {
+			dateRangeQuery = QueryBuilders.matchAllQuery();
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
-			.withQuery(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
+			.withQuery(QueryBuilders.boolQuery()
+				.must(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
+				.must(dateRangeQuery))
 			.withSort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
