@@ -1,8 +1,10 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.common.ApiResponse;
+import com.example.seatchoice.dto.cond.TheaterSeatResponse;
 import com.example.seatchoice.service.TheaterSeatService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,7 @@ public class TheaterSeatController {
 	private final TheaterSeatService theaterSeatService;
 
 	@GetMapping("/theaters/{theaterId}/seats")
-	public ApiResponse<?> getSeatsWithReviews(@PathVariable Long theaterId) {
-		return new ApiResponse<>(theaterSeatService.getSeatsWithReviews(theaterId));
+	public ResponseEntity<List<TheaterSeatResponse>> getSeatsWithReviews(@PathVariable Long theaterId) {
+		return ResponseEntity.ok(theaterSeatService.getSeatsWithReviews(theaterId));
 	}
 }

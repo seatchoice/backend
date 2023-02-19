@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TheaterSeatCond {
+public class TheaterSeatResponse {
 	private Long seatId;
 	private Integer floor;
 	private String section;
@@ -21,8 +21,8 @@ public class TheaterSeatCond {
 	private Long reviewAmount;
 	private Double rating; // 평점
 
-	public static TheaterSeatCond from(TheaterSeat seat) {
-		return TheaterSeatCond.builder()
+	public static TheaterSeatResponse from(TheaterSeat seat) {
+		return TheaterSeatResponse.builder()
 			.seatId(seat.getId())
 			.floor(seat.getFloor())
 			.section(seat.getSection())
