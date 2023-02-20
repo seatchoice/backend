@@ -1,6 +1,6 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.cond.TheaterResponse;
+import com.example.seatchoice.dto.response.TheaterResponse;
 import com.example.seatchoice.service.TheaterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

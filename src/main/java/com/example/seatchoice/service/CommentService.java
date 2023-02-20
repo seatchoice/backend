@@ -5,8 +5,8 @@ import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_COMMENT;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_REVIEW;
 
-import com.example.seatchoice.dto.param.CommentRequest;
-import com.example.seatchoice.dto.cond.CommentResponse;
+import com.example.seatchoice.dto.request.CommentRequest;
+import com.example.seatchoice.dto.response.CommentResponse;
 import com.example.seatchoice.entity.Comment;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;

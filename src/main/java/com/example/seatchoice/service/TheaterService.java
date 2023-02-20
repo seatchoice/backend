@@ -2,7 +2,7 @@ package com.example.seatchoice.service;
 
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_FACILITY;
 
-import com.example.seatchoice.dto.cond.TheaterResponse;
+import com.example.seatchoice.dto.response.TheaterResponse;
 import com.example.seatchoice.entity.Facility;
 import com.example.seatchoice.entity.Theater;
 import com.example.seatchoice.exception.CustomException;

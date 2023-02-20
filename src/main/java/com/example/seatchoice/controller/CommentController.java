@@ -1,7 +1,7 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.param.CommentRequest;
-import com.example.seatchoice.dto.cond.CommentResponse;
+import com.example.seatchoice.dto.request.CommentRequest;
+import com.example.seatchoice.dto.response.CommentResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.CommentService;
 import java.util.List;

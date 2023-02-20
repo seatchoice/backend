@@ -31,7 +31,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/api/websocket") //SockJS 연결 주소
             .setAllowedOriginPatterns("*")
             .withSockJS(); // 리액트 연동시에는 주석 해제. 브라우저 테스트 시에는 주석 처리
-        // 주소 : http://{ip 주소}:8081/chat
     }
 
     @Override

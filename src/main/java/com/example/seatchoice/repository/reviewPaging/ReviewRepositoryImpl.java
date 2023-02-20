@@ -2,7 +2,7 @@ package com.example.seatchoice.repository.reviewPaging;
 
 import static com.example.seatchoice.entity.QReview.review;
 
-import com.example.seatchoice.dto.cond.ReviewInfoResponse;
+import com.example.seatchoice.dto.response.ReviewInfoResponse;
 import com.example.seatchoice.entity.Review;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

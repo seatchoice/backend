@@ -1,4 +1,4 @@
-package com.example.seatchoice.dto.param;
+package com.example.seatchoice.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

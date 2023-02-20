@@ -9,11 +9,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.seatchoice.dto.cond.ReviewDetailResponse;
-import com.example.seatchoice.dto.cond.ReviewInfoResponse;
-import com.example.seatchoice.dto.cond.ReviewResponse;
-import com.example.seatchoice.dto.param.ReviewModifyRequest;
-import com.example.seatchoice.dto.param.ReviewRequest;
+import com.example.seatchoice.dto.response.ReviewDetailResponse;
+import com.example.seatchoice.dto.response.ReviewInfoResponse;
+import com.example.seatchoice.dto.response.ReviewResponse;
+import com.example.seatchoice.dto.request.ReviewModifyRequest;
+import com.example.seatchoice.dto.request.ReviewRequest;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;

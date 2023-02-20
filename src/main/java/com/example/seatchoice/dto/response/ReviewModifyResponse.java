@@ -1,4 +1,4 @@
-package com.example.seatchoice.dto.cond;
+package com.example.seatchoice.dto.response;
 
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;

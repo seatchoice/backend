@@ -1,6 +1,6 @@
 package com.example.seatchoice.config;
 
-import com.example.seatchoice.dto.param.ChattingMessageParam;
+import com.example.seatchoice.dto.request.ChattingMessageRequest;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.Comparator;
@@ -13,18 +13,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatHistoryCache {
 
-    private final Cache<UUID, ChattingMessageParam> chatHistoryCache = CacheBuilder.newBuilder()
+    private final Cache<UUID, ChattingMessageRequest> chatHistoryCache = CacheBuilder.newBuilder()
         .expireAfterWrite(10, TimeUnit.MINUTES)
         .build();
 
-    public void save(ChattingMessageParam chatObj) {
+    public void save(ChattingMessageRequest chatObj) {
         this.chatHistoryCache.put(UUID.randomUUID(), chatObj);
     }
 
-    public List<ChattingMessageParam> get(Long roomId) {
+    public List<ChattingMessageRequest> get(Long roomId) {
         return chatHistoryCache.asMap().values().stream()
             .filter(r -> r.getRoomId().equals(roomId))
-            .sorted(Comparator.comparing(ChattingMessageParam::getTimeStamp))
+            .sorted(Comparator.comparing(ChattingMessageRequest::getTimeStamp))
             .collect(Collectors.toList());
     }
 }

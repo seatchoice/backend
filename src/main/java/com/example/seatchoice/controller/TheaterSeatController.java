@@ -1,6 +1,6 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.cond.TheaterSeatResponse;
+import com.example.seatchoice.dto.response.TheaterSeatResponse;
 import com.example.seatchoice.service.TheaterSeatService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

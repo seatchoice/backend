@@ -1,4 +1,4 @@
-package com.example.seatchoice.dto.param;
+package com.example.seatchoice.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TheaterIdParam {
+public class TheaterIdRequest {
     private Long theaterId;
 }

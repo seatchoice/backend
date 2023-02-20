@@ -1,6 +1,6 @@
 package com.example.seatchoice.service;
 
-import com.example.seatchoice.dto.cond.TheaterSeatResponse;
+import com.example.seatchoice.dto.response.TheaterSeatResponse;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import java.util.List;

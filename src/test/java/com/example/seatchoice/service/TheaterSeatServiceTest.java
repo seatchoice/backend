@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
-import com.example.seatchoice.dto.cond.TheaterSeatResponse;
+import com.example.seatchoice.dto.response.TheaterSeatResponse;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import java.util.Arrays;
