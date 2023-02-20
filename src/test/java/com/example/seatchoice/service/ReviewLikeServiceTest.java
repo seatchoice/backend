@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-import com.example.seatchoice.dto.cond.AlarmCond;
+import com.example.seatchoice.dto.response.AlarmResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.ReviewLike;
@@ -60,7 +60,7 @@ public class ReviewLikeServiceTest {
 			.build());
 		given(reviewRepository.save(any())).willReturn(review);
 		given(alarmService.createAlarm(anyLong(), any(), anyString()))
-			.willReturn(AlarmCond.builder().build());
+			.willReturn(AlarmResponse.builder().build());
 
 		// when
 		reviewLikeService.createLike(1L, 1L);
