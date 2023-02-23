@@ -46,7 +46,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/oauth/{provider}/logout")
-	public ResponseEntity<Void> oauthLogin(
+	public ResponseEntity<Void> oauthLogout(
 		@AuthenticationPrincipal Member member, @PathVariable("provider") String provider, HttpServletResponse response)
 		throws IOException {
 
