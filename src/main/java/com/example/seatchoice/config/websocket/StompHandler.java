@@ -43,16 +43,19 @@ public class StompHandler implements ChannelInterceptor {
                 String token = headerAccessor.getFirstNativeHeader("Authorization");
                 if (tokenService.validateToken(token)) {
                     Long memberId = tokenService.getMemberId(token);
-                    log.info("=========================" + memberId);
+                    log.info("유효한 토큰 멤버 아이디 확인" + memberId);
                     memberRepository.findById(memberId).orElseThrow(
                         () -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
                 } else {
+                    log.info("유효하지 않은 토큰");
                     throw new CustomException(INVALID_TOKEN, UNAUTHORIZED);
                 }
 
             } catch (SignatureException | MalformedJwtException e) {
+                log.info("SignatureException / MalformedJwtException 에러");
                 throw new CustomException(INVALID_TOKEN, UNAUTHORIZED);
             } catch (IllegalArgumentException e) {
+                log.info("IllegalArgumentException 에러");
                 throw new CustomException(EMPTY_TOKEN, BAD_REQUEST);
             }
         }
