@@ -36,7 +36,9 @@ public class SecurityConfig {
 				"/api/theaters/**",
 				"/api/search",
 				"/api/reviews",
-				"/api/reviews/**",
+				"/api/reviews/**"
+			).permitAll()
+			.antMatchers(
 				"/api/websocket"
 			).permitAll()
 			// 유저 권한이 필요한 api 추가
