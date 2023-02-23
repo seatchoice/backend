@@ -38,13 +38,15 @@ public class SecurityConfig {
 				"/api/search",
 				"/api/reviews",
 				"/api/reviews/**",
-				"/api/websocket"
+				"/api/websocket/**"
+			).permitAll()
+			.antMatchers(
+				"/exchange/**",
+				"/pub/**"
 			).permitAll()
 			// 유저 권한이 필요한 api 추가
 			.antMatchers(
-				"/api/**",
-				"/exchange/**",
-				"/pub/**"
+				"/api/**"
 			).hasRole("USER");
 
 		http.addFilterBefore(new JwtAuthenticationFilter(tokenService),
