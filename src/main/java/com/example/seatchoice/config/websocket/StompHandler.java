@@ -43,6 +43,7 @@ public class StompHandler implements ChannelInterceptor {
                 String token = headerAccessor.getFirstNativeHeader("Authorization");
                 if (tokenService.validateToken(token)) {
                     Long memberId = tokenService.getMemberId(token);
+                    log.info("=========================" + memberId);
                     memberRepository.findById(memberId).orElseThrow(
                         () -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
                 } else {
