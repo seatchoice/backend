@@ -36,17 +36,20 @@ public class StompHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
+        log.info("headerAccessor" + headerAccessor);
+        log.info("headerAccessor.getCommand()" + headerAccessor.getCommand());
 
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
 
             try {
                 String token = headerAccessor.getFirstNativeHeader("Authorization");
+                log.info("토큰" + token);
                 if (tokenService.validateToken(token)) {
                     Long memberId = tokenService.getMemberId(token);
                     log.info("유효한 토큰 멤버 아이디 확인" + memberId);
                     memberRepository.findById(memberId).orElseThrow(
                         () -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));
-                } else {
+                } else if (!tokenService.validateToken(token)) {
                     log.info("유효하지 않은 토큰");
                     throw new CustomException(INVALID_TOKEN, UNAUTHORIZED);
                 }
