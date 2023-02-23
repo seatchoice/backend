@@ -58,9 +58,10 @@ public class TokenService{
 	}
 
 	public String createToken(Member member) {
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("id", member.getId());
-		claims.put("nickname", member.getNickname());
+//		Map<String, Object> claims = new HashMap<>();
+//		claims.put("id", member.getId());
+//		claims.put("nickname", member.getNickname());
+		Claims claims = Jwts.claims().setSubject(String.valueOf(member.getId()));
 		Date now = new Date();
 
 		String accessToken = Jwts.builder()
