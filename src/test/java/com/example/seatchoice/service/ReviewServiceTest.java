@@ -26,6 +26,7 @@ import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import com.example.seatchoice.type.ErrorCode;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -188,6 +189,7 @@ public class ReviewServiceTest {
 			.commentAmount(0L)
 			.likeAmount(1L)
 			.build();
+		review.setCreatedAt(LocalDateTime.now());
 		List<Image> images = Arrays.asList(
 			Image.builder()
 				.review(review)
