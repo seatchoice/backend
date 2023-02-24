@@ -15,13 +15,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 	info = @Info(
 		title = "자리어때 ?",
 		version = "1.0",
+
 		description = "자리어때 사이트 API 입니다.",
 		contact = @Contact(
 			name = "zeropepsi",
 			url = "https://github.com/seatchoice"
 		)
 	),
-	servers = @Server(url = "https://seatchoice.site")
+	servers = @Server(url = "/", description = "Default Server URL")
 )
 public class SwaggerConfig {
 
