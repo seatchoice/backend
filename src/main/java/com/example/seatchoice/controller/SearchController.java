@@ -85,17 +85,19 @@ public class SearchController {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> searchFacilityOrPerformance(
 		@Parameter(schema = @Schema(implementation = SearchType.class),
-			example = "FACILITY", description = "[검색 타입 (시설/공연)]  \n Default value : FACILITY")
+			example = "FACILITY", description = "[검색 타입 (시설/공연)]  \n \n Default value : FACILITY")
 		@RequestParam(defaultValue = "FACILITY") SearchType type,
-		@Parameter(description = "[이름 (시설/공연)]", example = "예술의전당")
+		@Parameter(example = "예술의전당", description = "[이름 (시설/공연)]")
 		@RequestParam(defaultValue = "") String name,
-		@Parameter(example = "30", description = "[요청된 응답의 마지막 id (시설/공연)]  \n 입력한 id 다음 리스트를 조회")
+		@Parameter(example = "30", description = "[요청된 응답의 마지막 id (시설/공연)]  \n \n 입력한 id 다음 리스트를 조회")
 		@RequestParam(required = false) Long after,
 		@Parameter(example = "40", description = "[요청 리스트 사이즈 (시설/공연)]")
 		@RequestParam(defaultValue = "30") int size,
-		@Parameter(example = "20230201", description = "[공연 시작날짜 (공연)]  \n yyyyMMdd 형식으로 입력")
+		@Parameter(example = "20230201", description = "[공연 시작날짜 (공연)]  \n \n yyyyMMdd 형식으로 입력",
+			schema = @Schema(type = "Date"))
 		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyyMMdd") Date startDate,
-		@Parameter(example = "20230401", description = "[공연 종료날짜 (공연)]  \n yyyyMMdd 형식으로 입력")
+		@Parameter(example = "20230401", description = "[공연 종료날짜 (공연)]  \n \n yyyyMMdd 형식으로 입력",
+			schema = @Schema(type = "Date"))
 		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyyMMdd") Date endDate,
 		@Parameter(example = "서울", description = "[시설 시도 (시설)]")
 		@RequestParam(required = false) String sido,
