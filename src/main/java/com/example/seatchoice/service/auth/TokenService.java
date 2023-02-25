@@ -3,6 +3,7 @@ package com.example.seatchoice.service.auth;
 import static com.example.seatchoice.type.ErrorCode.AUTHORIZATION_KEY_DOES_NOT_EXIST;
 import static com.example.seatchoice.type.ErrorCode.EXPIRED_REFRESH_TOKEN;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_MEMBER;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -15,6 +16,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -56,11 +58,13 @@ public class TokenService{
 	}
 
 	public String createToken(Member member) {
-//		Map<String, Object> claims = new HashMap<>();
-//		claims.put("id", member.getId());
-//		claims.put("nickname", member.getNickname());
 		Claims claims = Jwts.claims().setSubject(String.valueOf(member.getId()));
-		claims.put("nickname", member.getNickname());
+
+		// nickname utf-8 encoding
+		byte[] bytes = member.getNickname().getBytes(UTF_8);
+		String utf8EncodedNickname = new String(bytes, UTF_8);
+		claims.put("nickname", utf8EncodedNickname);
+
 		Date now = new Date();
 
 		String accessToken = Jwts.builder()
