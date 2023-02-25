@@ -103,7 +103,7 @@ class AlarmServiceTest {
             .checkAlarm(false)
             .alarmMessage("test")
             .type(AlarmType.LIKE)
-            .madeBy(2L)
+            .targetMember("유저1")
             .targetId(2L)
             .build();
         alarm.setId(alarmId);
@@ -112,13 +112,10 @@ class AlarmServiceTest {
         given(alarmRepository.findById(anyLong())).willReturn(Optional.of(alarm));
 
         // when
-        AlarmResponse alarmResponse = alarmService.readAlarm(alarmId);
+        alarmService.readAlarm(alarmId);
 
         // then
-        assertEquals(2, alarmResponse.getId());
-        assertEquals("test", alarmResponse.getAlarmMessage());
-        assertEquals(AlarmType.LIKE, alarmResponse.getType());
-        assertEquals(true, alarmResponse.getCheckAlarm());
+        assertEquals(true, alarm.getCheckAlarm());
     }
 
     @Test
@@ -181,7 +178,7 @@ class AlarmServiceTest {
 
         // given
         Long reviewId = 1L;
-        Long madeBy = 2L;
+        String targetMember = "유저1";
         Member member = new Member();
         member.setId(1L);
         AlarmType alarmType = AlarmType.LIKE;
@@ -189,7 +186,7 @@ class AlarmServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         // when
-        alarmService.createAlarm(member.getId(), alarmType, alarmMessage, reviewId, madeBy);
+        alarmService.createAlarm(member.getId(), alarmType, alarmMessage, reviewId, targetMember);
 
         // then
         verify(alarmRepository, times(1)).save(any());
@@ -201,7 +198,7 @@ class AlarmServiceTest {
 
         // given
         Long reviewId = 2L;
-        Long madeBy = 2L;
+        String targetMember = "유저1";
         Long memberId = 1L;
         AlarmType alarmType = AlarmType.LIKE;
         String alarmMessage = "테스트";
@@ -209,7 +206,7 @@ class AlarmServiceTest {
 
         // when
         CustomException exception = assertThrows(CustomException.class,
-            () -> alarmService.createAlarm(memberId, alarmType, alarmMessage, reviewId, madeBy));
+            () -> alarmService.createAlarm(memberId, alarmType, alarmMessage, reviewId, targetMember));
 
         // then
         assertEquals(ErrorCode.NOT_FOUND_MEMBER, exception.getErrorCode());

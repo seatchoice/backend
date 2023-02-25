@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-import com.example.seatchoice.dto.response.AlarmResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.ReviewLike;

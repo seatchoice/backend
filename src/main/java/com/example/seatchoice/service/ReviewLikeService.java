@@ -43,7 +43,7 @@ public class ReviewLikeService {
 		reviewRepository.save(review);
 
 		// 알람 생성
-		alarmService.createAlarm(memberId, AlarmType.LIKE, "", reviewId, memberId);
+		alarmService.createAlarm(memberId, AlarmType.LIKE, "", reviewId, member.getNickname());
 	}
 
 	public void deleteLike(Long memberId, Long reviewId) {

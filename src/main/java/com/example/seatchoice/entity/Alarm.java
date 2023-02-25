@@ -37,7 +37,7 @@ public class Alarm extends BaseEntity {
 	private Long targetId;
 
 	@NotNull
-	private Long madeBy;
+	private String targetMember;
 
 	@NotNull
 	private Boolean checkAlarm;

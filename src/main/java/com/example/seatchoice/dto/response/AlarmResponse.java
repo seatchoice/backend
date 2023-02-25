@@ -19,7 +19,7 @@ public class AlarmResponse {
     private AlarmType type;
     private String alarmMessage;
     private Long targetId;
-    private Long madeBy;
+    private String targetMember;
     private Boolean checkAlarm;
     private String createdAt;
 
@@ -29,7 +29,7 @@ public class AlarmResponse {
             .type(alarm.getType())
             .alarmMessage(alarm.getAlarmMessage())
             .targetId(alarm.getTargetId())
-            .madeBy(alarm.getMadeBy())
+            .targetMember(alarm.getTargetMember())
             .checkAlarm(alarm.getCheckAlarm())
             .createdAt(alarm.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
             .build();
