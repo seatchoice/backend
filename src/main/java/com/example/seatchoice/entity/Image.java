@@ -21,5 +21,7 @@ public class Image extends BaseEntity {
 	@JoinColumn(name = "review_id")
 	private Review review;
 
+	private Long seatId;
+
 	private String url;
 }

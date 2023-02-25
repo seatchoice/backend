@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
 	List<Image> findAllByReviewId(Long id);
+	List<Image> findAllBySeatId(Long id);
 	@Transactional
 	void deleteByUrl(String url);
 }
