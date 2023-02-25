@@ -71,7 +71,7 @@ class CommentServiceTest {
 		given(reviewRepository.findById(anyLong()))
 			.willReturn(Optional.of(review));
 		ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
-		given(alarmService.createAlarm(anyLong(), any(), anyString()))
+		given(alarmService.createAlarm(anyLong(), any(), anyString(), anyLong(), anyLong()))
 			.willReturn(AlarmResponse.builder().build());
 
 		// when

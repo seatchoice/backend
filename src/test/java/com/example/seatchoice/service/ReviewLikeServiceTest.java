@@ -59,7 +59,7 @@ public class ReviewLikeServiceTest {
 			.review(review)
 			.build());
 		given(reviewRepository.save(any())).willReturn(review);
-		given(alarmService.createAlarm(anyLong(), any(), anyString()))
+		given(alarmService.createAlarm(anyLong(), any(), anyString(), anyLong(), anyLong()))
 			.willReturn(AlarmResponse.builder().build());
 
 		// when
