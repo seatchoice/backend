@@ -1,6 +1,7 @@
 package com.example.seatchoice.dto.response;
 
 import com.example.seatchoice.entity.Comment;
+import com.example.seatchoice.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,17 @@ public class CommentResponse {
 	@Schema(description = "닉네임", example = "코카콜라제로")
 	private String nickname;
 
+	@Schema(description = "유저 id", example = "5")
+	private Long userId;
+
 	public static CommentResponse from(Comment comment) {
+		Member member = comment.getMember();
 		return CommentResponse.builder()
 			.id(comment.getId())
 			.content(comment.getContent())
-			.updatedAt(comment.getUpdatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")))
-			.nickname(comment.getMember().getNickname())
+			.updatedAt(comment.getUpdatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+			.nickname(member.getNickname())
+			.userId(member.getId())
 			.build();
 	}
 
