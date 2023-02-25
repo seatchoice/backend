@@ -31,7 +31,13 @@ public class Alarm extends BaseEntity {
 	private AlarmType type;
 
 	@NotNull
-	private String url;
+	private String alarmMessage;
+
+	@NotNull
+	private Long targetId;
+
+	@NotNull
+	private String targetMember;
 
 	@NotNull
 	private Boolean checkAlarm;

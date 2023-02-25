@@ -5,6 +5,7 @@ import com.example.seatchoice.dto.request.ChattingMessageRequest;
 import com.example.seatchoice.dto.response.ChatLogsResponse;
 import com.example.seatchoice.entity.Member;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -31,7 +32,8 @@ public class ChatController {
                             ChattingMessageRequest message) {
 
         message.setRoomId(roomId);
-        message.setTimeStamp(LocalDateTime.now());
+        message.setTimeStamp(
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         chatHistoryCache.save(message);
 
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + roomId, message);

@@ -13,5 +13,5 @@ public class ChattingMessageRequest implements Serializable {
     private Long roomId;
     private String nickname;
     private String message;
-    private LocalDateTime timeStamp;
+    private String timeStamp;
 }

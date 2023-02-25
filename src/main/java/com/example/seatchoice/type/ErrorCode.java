@@ -33,7 +33,8 @@ public enum ErrorCode {
 	DOUBLE_CHECKED_LIKE("이미 좋아요를 눌렀습니다."),
 	CANNOT_NEGATIVE_COMMENT_AMOUNT("commentAmount는 음수가 될 수 없습니다."),
 	UNSUPPORTED_PROVIDER("지원되지 않는 provider입니다."),
-	NOT_TYPE_REQUEST_PARAMETER("검색 type의 요청 파라미터가 아닙니다.")
+	NOT_TYPE_REQUEST_PARAMETER("검색 type의 요청 파라미터가 아닙니다."),
+	WRONG_ALARM_TYPE("지원하지 않는 알림 타입입니다.")
 	;
 
 	private final String message;
