@@ -41,12 +41,10 @@ public class SecurityConfig {
 				"/api/images/**",
 				"/api/websocket/**"
 			).permitAll()
-			.antMatchers(
-				"/exchange/**",
-				"/pub/**"
-			).permitAll()
 			// 유저 권한이 필요한 api 추가
 			.antMatchers(
+				"/exchange/**",
+				"/pub/**",
 				"/api/**"
 			).hasRole("USER");
 

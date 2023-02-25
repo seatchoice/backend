@@ -1,6 +1,5 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.request.AlarmCreateRequest;
 import com.example.seatchoice.dto.response.AlarmResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.AlarmService;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,24 +29,17 @@ public class AlarmController {
     }
 
     // 알림 조회
-    @GetMapping("/{alarmId}")
-    public ResponseEntity<AlarmResponse> getAlarm(@PathVariable Long alarmId) {
-        return ResponseEntity.ok(alarmService.getAlarm(alarmId));
-    }
-
-    // 읽지 않은 알림 전체 읽기
-    @GetMapping("/read-all")
-    public ResponseEntity<Void> readAllAlarm(@AuthenticationPrincipal Member member) {
-        alarmService.readAllAlarm(member.getId());
+    @PostMapping("/{alarmId}")
+    public ResponseEntity<Void> readAlarm(@PathVariable Long alarmId) {
+        alarmService.readAlarm(alarmId);
         return ResponseEntity.ok().build();
     }
 
-    // 알림 생성
-    @PostMapping
-    public ResponseEntity<AlarmResponse> createAlarm(@RequestBody AlarmCreateRequest alarmCreateRequest) {
-        return ResponseEntity.ok(alarmService.createAlarm(alarmCreateRequest.getMemberId(),
-                                                          alarmCreateRequest.getType(),
-                                                          alarmCreateRequest.getUrl()));
+    // 읽지 않은 알림 전체 읽기
+    @PostMapping("/read-all")
+    public ResponseEntity<Void> readAllAlarm(@AuthenticationPrincipal Member member) {
+        alarmService.readAllAlarm(member.getId());
+        return ResponseEntity.ok().build();
     }
 
     // 알림 삭제

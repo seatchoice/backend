@@ -16,6 +16,7 @@ import com.example.seatchoice.repository.AlarmRepository;
 import com.example.seatchoice.repository.MemberRepository;
 import com.example.seatchoice.type.AlarmType;
 import com.example.seatchoice.type.ErrorCode;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,16 +58,18 @@ class AlarmServiceTest {
             Alarm.builder()
                 .member(member)
                 .type(AlarmType.LIKE)
-                .url("testUrl1")
+                .alarmMessage("testUrl1")
                 .checkAlarm(false)
                 .build(),
             Alarm.builder()
                 .member(member)
                 .type(AlarmType.COMMENT)
-                .url("testUrl2")
+                .alarmMessage("testUrl2")
                 .checkAlarm(true)
                 .build()
         );
+        alarmList.get(0).setCreatedAt(LocalDateTime.now());
+        alarmList.get(1).setCreatedAt(LocalDateTime.now());
 
         Page<Alarm> episodes = new PageImpl<>(alarmList);
         Pageable pageable = PageRequest.of(0, 10);
@@ -79,10 +82,10 @@ class AlarmServiceTest {
         // then
         assertEquals(false, alarmListPage.getContent().get(0).getCheckAlarm());
         assertEquals(AlarmType.LIKE, alarmListPage.getContent().get(0).getType());
-        assertEquals("testUrl1", alarmListPage.getContent().get(0).getUrl());
+        assertEquals("testUrl1", alarmListPage.getContent().get(0).getAlarmMessage());
         assertEquals(true, alarmListPage.getContent().get(1).getCheckAlarm());
         assertEquals(AlarmType.COMMENT, alarmListPage.getContent().get(1).getType());
-        assertEquals("testUrl2", alarmListPage.getContent().get(1).getUrl());
+        assertEquals("testUrl2", alarmListPage.getContent().get(1).getAlarmMessage());
         assertEquals(1, alarmListPage.getTotalPages());
         assertEquals(2, alarmListPage.getTotalElements());
     }
@@ -98,21 +101,21 @@ class AlarmServiceTest {
         Alarm alarm = Alarm.builder()
             .member(member)
             .checkAlarm(false)
-            .url("test")
+            .alarmMessage("test")
             .type(AlarmType.LIKE)
+            .targetMember("유저1")
+            .targetId(2L)
             .build();
         alarm.setId(alarmId);
+        alarm.setCreatedAt(LocalDateTime.now());
 
         given(alarmRepository.findById(anyLong())).willReturn(Optional.of(alarm));
 
         // when
-        AlarmResponse alarmResponse = alarmService.getAlarm(alarmId);
+        alarmService.readAlarm(alarmId);
 
         // then
-        assertEquals(2, alarmResponse.getId());
-        assertEquals("test", alarmResponse.getUrl());
-        assertEquals(AlarmType.LIKE, alarmResponse.getType());
-        assertEquals(true, alarmResponse.getCheckAlarm());
+        assertEquals(true, alarm.getCheckAlarm());
     }
 
     @Test
@@ -125,7 +128,7 @@ class AlarmServiceTest {
 
         // when
         CustomException exception = assertThrows(CustomException.class,
-            () -> alarmService.getAlarm(alarmId));
+            () -> alarmService.readAlarm(alarmId));
 
         // then
         assertEquals(ErrorCode.NOT_FOUND_ALARM, exception.getErrorCode());
@@ -143,13 +146,13 @@ class AlarmServiceTest {
             Alarm.builder()
                 .member(member)
                 .type(AlarmType.LIKE)
-                .url("testUrl1")
+                .alarmMessage("testUrl1")
                 .checkAlarm(false)
                 .build(),
             Alarm.builder()
                 .member(member)
                 .type(AlarmType.COMMENT)
-                .url("testUrl2")
+                .alarmMessage("testUrl2")
                 .checkAlarm(false)
                 .build()
         );
@@ -163,10 +166,10 @@ class AlarmServiceTest {
         verify(alarmRepository, times(1)).saveAll(any());
         assertEquals(true, alarmList.get(0).getCheckAlarm());
         assertEquals(AlarmType.LIKE, alarmList.get(0).getType());
-        assertEquals("testUrl1", alarmList.get(0).getUrl());
+        assertEquals("testUrl1", alarmList.get(0).getAlarmMessage());
         assertEquals(true, alarmList.get(1).getCheckAlarm());
         assertEquals(AlarmType.COMMENT, alarmList.get(1).getType());
-        assertEquals("testUrl2", alarmList.get(1).getUrl());
+        assertEquals("testUrl2", alarmList.get(1).getAlarmMessage());
     }
 
     @Test
@@ -174,20 +177,19 @@ class AlarmServiceTest {
     void createAlarmSuccess() {
 
         // given
+        Long reviewId = 1L;
+        String targetMember = "유저1";
         Member member = new Member();
         member.setId(1L);
         AlarmType alarmType = AlarmType.LIKE;
-        String url = "http://localhost:8080/test";
+        String alarmMessage = "테스트";
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         // when
-        AlarmResponse alarmResponse = alarmService.createAlarm(member.getId(), alarmType, url);
+        alarmService.createAlarm(member.getId(), alarmType, alarmMessage, reviewId, targetMember);
 
         // then
         verify(alarmRepository, times(1)).save(any());
-        assertEquals(false, alarmResponse.getCheckAlarm());
-        assertEquals(AlarmType.LIKE, alarmResponse.getType());
-        assertEquals("http://localhost:8080/test", alarmResponse.getUrl());
     }
 
     @Test
@@ -195,14 +197,16 @@ class AlarmServiceTest {
     void createAlarmFailed_NotFoundMember() {
 
         // given
+        Long reviewId = 2L;
+        String targetMember = "유저1";
         Long memberId = 1L;
         AlarmType alarmType = AlarmType.LIKE;
-        String url = "http://localhost:8080/test";
+        String alarmMessage = "테스트";
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
         CustomException exception = assertThrows(CustomException.class,
-            () -> alarmService.createAlarm(memberId, alarmType, url));
+            () -> alarmService.createAlarm(memberId, alarmType, alarmMessage, reviewId, targetMember));
 
         // then
         assertEquals(ErrorCode.NOT_FOUND_MEMBER, exception.getErrorCode());
