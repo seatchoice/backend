@@ -55,7 +55,7 @@ public class ReviewServiceTest {
 	@Mock
 	private TheaterSeatRepository theaterSeatRepository;
 	@Mock
-	private ImageService imageService;
+	private S3Service s3Service;
 	@Mock
 	private ReviewLikeRepository reviewLikeRepository;
 	@InjectMocks
