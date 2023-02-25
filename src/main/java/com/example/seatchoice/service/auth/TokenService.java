@@ -58,12 +58,8 @@ public class TokenService{
 	}
 
 	public String createToken(Member member) {
-		Claims claims = Jwts.claims().setSubject(String.valueOf(member.getId()));
-
-		// nickname utf-8 encoding
-		byte[] bytes = member.getNickname().getBytes(UTF_8);
-		String utf8EncodedNickname = new String(bytes, UTF_8);
-		claims.put("nickname", utf8EncodedNickname);
+		Claims claims = Jwts.claims().setSubject(member.getNickname());
+		claims.put("memberId", member.getId());
 
 		Date now = new Date();
 
@@ -153,13 +149,13 @@ public class TokenService{
 	}
 
 	public Long getMemberId(String token) {
-		String memberId = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+		String memberId = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("memberId").toString();
 		return Long.valueOf(memberId);
 	}
 
 	public Long getMemberIdFromRefreshToken(String refreshToken) {
 		String memberId =
-			Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken).getBody().getSubject();
+			Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken).getBody().get("memberId").toString();
 		return Long.valueOf(memberId);
 	}
 
