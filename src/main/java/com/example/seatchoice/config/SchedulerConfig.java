@@ -1,5 +1,6 @@
 package com.example.seatchoice.config;
 
+import com.example.seatchoice.batch.BatchConfig;
 import com.example.seatchoice.service.PerformanceService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,7 +40,7 @@ public class SchedulerConfig {
 
 		try {
 			JobExecution jobExecution =
-				jobLauncher.run(batchConfig.job(), jobParameters);
+				jobLauncher.run(batchConfig.newPerformanceJob(), jobParameters);
 
 			log.info("Job Execution: " + jobExecution.getStatus());
 			log.info("Job getJobConfigurationName: " + jobExecution.getJobConfigurationName());

@@ -1,4 +1,4 @@
-package com.example.seatchoice.config.batch;
+package com.example.seatchoice.batch;
 
 import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.service.KopisService;

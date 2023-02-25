@@ -1,4 +1,4 @@
-package com.example.seatchoice.config.batch;
+package com.example.seatchoice.batch;
 
 import com.example.seatchoice.client.kopis.PerformanceResponse.PerformanceVo;
 import com.example.seatchoice.entity.Performance;
@@ -12,7 +12,6 @@ import org.springframework.batch.item.ItemProcessor;
 
 @RequiredArgsConstructor
 public class PerformanceVoProcessor implements ItemProcessor<PerformanceVo, Performance> {
-	private final DataShareBean<Performance> dataShareBean;
 
 	private final KopisService kopisService;
 	private final PerformanceRepository performanceRepository;
@@ -43,12 +42,8 @@ public class PerformanceVoProcessor implements ItemProcessor<PerformanceVo, Perf
 			return null;
 		}
 
-		Performance performance = Performance.of(
+		return Performance.of(
 			item, theater, item.getPrfpdfromDate(), item.getPrfpdtoDate());
-
-		dataShareBean.addData("PERFORMANCE", performance);
-
-		return performance;
 	}
 
 	private String getTheaterName(String mt20id) throws Exception {
