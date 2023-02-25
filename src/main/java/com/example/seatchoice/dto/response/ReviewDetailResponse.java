@@ -1,7 +1,7 @@
 package com.example.seatchoice.dto.response;
 
 import com.example.seatchoice.entity.Review;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ReviewDetailResponse {
 	private Long userId;
 	private String nickname;
-	private LocalDateTime createdAt;
+	private String createdAt;
 	private Integer floor;
 	private String section;
 	private String seatRow;
@@ -31,7 +31,7 @@ public class ReviewDetailResponse {
 		return ReviewDetailResponse.builder()
 			.userId(review.getMember().getId())
 			.nickname(review.getMember().getNickname())
-			.createdAt(review.getMember().getCreatedAt())
+			.createdAt(review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
 			.floor(review.getTheaterSeat().getFloor())
 			.section(review.getTheaterSeat().getSection())
 			.seatRow(review.getTheaterSeat().getSeatRow())

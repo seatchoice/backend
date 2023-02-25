@@ -60,6 +60,7 @@ public class TokenService{
 //		claims.put("id", member.getId());
 //		claims.put("nickname", member.getNickname());
 		Claims claims = Jwts.claims().setSubject(String.valueOf(member.getId()));
+		claims.put("nickname", member.getNickname());
 		Date now = new Date();
 
 		String accessToken = Jwts.builder()
