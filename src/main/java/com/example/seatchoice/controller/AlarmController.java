@@ -29,9 +29,10 @@ public class AlarmController {
     }
 
     // 알림 조회
-    @GetMapping("/{alarmId}")
-    public ResponseEntity<AlarmResponse> readAlarm(@PathVariable Long alarmId) {
-        return ResponseEntity.ok(alarmService.readAlarm(alarmId));
+    @PostMapping("/{alarmId}")
+    public ResponseEntity<Void> readAlarm(@PathVariable Long alarmId) {
+        alarmService.readAlarm(alarmId);
+        return ResponseEntity.ok().build();
     }
 
     // 읽지 않은 알림 전체 읽기
