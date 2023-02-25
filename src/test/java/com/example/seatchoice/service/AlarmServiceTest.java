@@ -16,6 +16,7 @@ import com.example.seatchoice.repository.AlarmRepository;
 import com.example.seatchoice.repository.MemberRepository;
 import com.example.seatchoice.type.AlarmType;
 import com.example.seatchoice.type.ErrorCode;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,8 @@ class AlarmServiceTest {
                 .checkAlarm(true)
                 .build()
         );
+        alarmList.get(0).setCreatedAt(LocalDateTime.now());
+        alarmList.get(1).setCreatedAt(LocalDateTime.now());
 
         Page<Alarm> episodes = new PageImpl<>(alarmList);
         Pageable pageable = PageRequest.of(0, 10);
@@ -100,8 +103,11 @@ class AlarmServiceTest {
             .checkAlarm(false)
             .alarmMessage("test")
             .type(AlarmType.LIKE)
+            .madeBy(2L)
+            .targetId(2L)
             .build();
         alarm.setId(alarmId);
+        alarm.setCreatedAt(LocalDateTime.now());
 
         given(alarmRepository.findById(anyLong())).willReturn(Optional.of(alarm));
 
@@ -183,14 +189,10 @@ class AlarmServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         // when
-        AlarmResponse alarmResponse = alarmService.createAlarm(
-            member.getId(), alarmType, alarmMessage, reviewId, madeBy);
+        alarmService.createAlarm(member.getId(), alarmType, alarmMessage, reviewId, madeBy);
 
         // then
         verify(alarmRepository, times(1)).save(any());
-        assertEquals(false, alarmResponse.getCheckAlarm());
-        assertEquals(AlarmType.LIKE, alarmResponse.getType());
-        assertEquals("http://localhost:8080/test", alarmResponse.getAlarmMessage());
     }
 
     @Test

@@ -56,19 +56,17 @@ public class AlarmService {
     }
 
     // 알림 생성
-    public AlarmResponse createAlarm(Long memberId, AlarmType alarmType, String alarmMessage, Long targetId, Long madeBy) {
+    public void createAlarm(Long memberId, AlarmType alarmType, String alarmMessage, Long targetId, Long madeBy) {
         Member member = memberRepository.findById(memberId).orElseThrow(
             () -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
         if (alarmType == AlarmType.COMMENT) {
             Alarm alarm = new Alarm(member, alarmType, alarmMessage, targetId, madeBy, false);
             alarmRepository.save(alarm);
-            return AlarmResponse.from(alarm);
 
         } else if (alarmType == AlarmType.LIKE) {
             Alarm alarm = new Alarm(member, alarmType, "좋아요를 받았습니다.", targetId, madeBy, false);
             alarmRepository.save(alarm);
-            return AlarmResponse.from(alarm);
 
         } else {
             throw new CustomException(WRONG_ALARM_TYPE, HttpStatus.BAD_REQUEST);
