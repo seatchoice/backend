@@ -1,11 +1,11 @@
 package com.example.seatchoice.service;
 
-import com.example.seatchoice.dto.response.ReviewResponse;
+import com.example.seatchoice.dto.request.ReviewModifyRequest;
+import com.example.seatchoice.dto.request.ReviewRequest;
 import com.example.seatchoice.dto.response.ReviewDetailResponse;
 import com.example.seatchoice.dto.response.ReviewInfoResponse;
 import com.example.seatchoice.dto.response.ReviewModifyResponse;
-import com.example.seatchoice.dto.request.ReviewModifyRequest;
-import com.example.seatchoice.dto.request.ReviewRequest;
+import com.example.seatchoice.dto.response.ReviewResponse;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Review;
 import com.example.seatchoice.entity.TheaterSeat;
@@ -39,7 +39,8 @@ public class ReviewService {
 	private final ImageRepository imageRepository;
 	private final TheaterSeatRepository theaterSeatRepository;
 	private final ReviewLikeRepository reviewLikeRepository;
-	private final ImageService s3Service;
+	private final S3Service s3Service;
+	private final ImageService imageService;
 	private final String create = "CREATE";
 	private final String update = "UPDATE";
 	private final String delete = "DELETE";
@@ -78,7 +79,7 @@ public class ReviewService {
 		);
 
 		if (thumbnail != null) {
-			saveImages(review, images);
+			imageService.saveImages(review, images);
 		}
 
 		saveSeatRating(theaterSeat, create, request.getRating(), 0);
@@ -146,7 +147,7 @@ public class ReviewService {
 					review.setThumbnailUrl(uploadImages.get(0));
 				}
 				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
-				saveImages(review, uploadImages);
+				imageService.saveImages(review, uploadImages);
 				log.info("이미지 삭제없이 추가만 한 경우");
 			}
 
@@ -169,7 +170,7 @@ public class ReviewService {
 			} else { // 삭제한 이미지도 있고, 업로드한 이미지도 있는 경우
 				review.setThumbnailUrl(getModifiedThumbnailUrl(savedImages, uploadImages));
 				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
-				saveImages(review, uploadImages);
+				imageService.saveImages(review, uploadImages);
 				savedImages = imageRepository.findAllByReviewId(reviewId);
 				log.info("삭제한 이미지도 있고, 업로드한 이미지도 있는 경우");
 			}
@@ -229,17 +230,6 @@ public class ReviewService {
 		review.setContent(content);
 		review.setRating(rating);
 		return reviewRepository.save(review);
-	}
-
-	// 이미지 저장
-	private void saveImages(Review review, List<String> images) {
-		for (String img : images) {
-			imageRepository.save(
-				Image.builder()
-					.review(review)
-					.url(img)
-					.build());
-		}
 	}
 
 	private String getModifiedThumbnailUrl(List<Image> savedImages, List<String> uploadImages) {
