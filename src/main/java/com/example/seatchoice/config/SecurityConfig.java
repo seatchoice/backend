@@ -38,6 +38,7 @@ public class SecurityConfig {
 				"/api/search",
 				"/api/reviews",
 				"/api/reviews/**",
+				"/api/images/**",
 				"/api/websocket/**"
 			).permitAll()
 			.antMatchers(
