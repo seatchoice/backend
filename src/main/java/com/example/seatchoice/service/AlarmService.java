@@ -2,6 +2,7 @@ package com.example.seatchoice.service;
 
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_ALARM;
 import static com.example.seatchoice.type.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.seatchoice.type.ErrorCode.WRONG_ALARM_TYPE;
 
 import com.example.seatchoice.dto.response.AlarmResponse;
 import com.example.seatchoice.entity.Alarm;
@@ -33,7 +34,7 @@ public class AlarmService {
     }
 
     // 알림 조회 - 조회시 읽음 처리
-    public AlarmResponse getAlarm(Long alarmId) {
+    public AlarmResponse readAlarm(Long alarmId) {
         Alarm alarm = alarmRepository.findById(alarmId).orElseThrow(
             () -> new CustomException(NOT_FOUND_ALARM, HttpStatus.NOT_FOUND));
         alarm.setCheckAlarm(true);
@@ -55,13 +56,23 @@ public class AlarmService {
     }
 
     // 알림 생성
-    public AlarmResponse createAlarm(Long memberId, AlarmType alarmType, String url) {
+    public AlarmResponse createAlarm(Long memberId, AlarmType alarmType, String alarmMessage, Long targetId, Long madeBy) {
         Member member = memberRepository.findById(memberId).orElseThrow(
             () -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
-        Alarm alarm = new Alarm(member, alarmType, url, false);
-        alarmRepository.save(alarm);
 
-        return AlarmResponse.from(alarm);
+        if (alarmType == AlarmType.COMMENT) {
+            Alarm alarm = new Alarm(member, alarmType, alarmMessage, targetId, madeBy, false);
+            alarmRepository.save(alarm);
+            return AlarmResponse.from(alarm);
+
+        } else if (alarmType == AlarmType.LIKE) {
+            Alarm alarm = new Alarm(member, alarmType, "좋아요를 받았습니다.", targetId, madeBy, false);
+            alarmRepository.save(alarm);
+            return AlarmResponse.from(alarm);
+
+        } else {
+            throw new CustomException(WRONG_ALARM_TYPE, HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 알림 삭제

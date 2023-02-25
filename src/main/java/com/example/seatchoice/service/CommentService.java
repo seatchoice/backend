@@ -46,10 +46,8 @@ public class CommentService {
 		review.addCommentAmount();
 		reviewRepository.save(review);
 
-		String commentsUrl =
-			"https://seatchoice.site/api/review/" + review.getId() + "/comments";
-
-		alarmService.createAlarm(member.getId(), AlarmType.COMMENT, commentsUrl);
+		alarmService.createAlarm(
+			member.getId(), AlarmType.COMMENT, commentRequest.getContent(), review.getId(), memberId);
 	}
 
 	@Transactional

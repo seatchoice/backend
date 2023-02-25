@@ -43,8 +43,7 @@ public class ReviewLikeService {
 		reviewRepository.save(review);
 
 		// 알람 생성
-		String url = "https://seatchoice.site/api/reviews/" + reviewId;
-		alarmService.createAlarm(memberId, AlarmType.LIKE, url);
+		alarmService.createAlarm(memberId, AlarmType.LIKE, "", reviewId, memberId);
 	}
 
 	public void deleteLike(Long memberId, Long reviewId) {
