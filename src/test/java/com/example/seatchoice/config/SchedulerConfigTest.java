@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.seatchoice.batch.BatchConfig;
 import com.example.seatchoice.service.PerformanceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,14 +43,14 @@ class SchedulerConfigTest {
 		// given
 		JobExecution jobExecution = new JobExecution(1L);
 		jobExecution.setStatus(BatchStatus.COMPLETED);
-		given(jobLauncher.run(eq(batchConfig.job()), any(JobParameters.class)))
+		given(jobLauncher.run(eq(batchConfig.newPerformanceJob()), any(JobParameters.class)))
 			.willReturn(jobExecution);
 
 		// when
 		schedulerConfig.updatePerformance();
 
 		// then
-		verify(jobLauncher).run(eq(batchConfig.job()), any(JobParameters.class));
+		verify(jobLauncher).run(eq(batchConfig.newPerformanceJob()), any(JobParameters.class));
 	}
 
 	@Test

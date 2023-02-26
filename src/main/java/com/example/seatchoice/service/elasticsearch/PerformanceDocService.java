@@ -52,7 +52,7 @@ public class PerformanceDocService {
 			.withQuery(QueryBuilders.boolQuery()
 				.must(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
 				.must(dateRangeQuery))
-			.withSort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
+			.withSorts(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
 

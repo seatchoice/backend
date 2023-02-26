@@ -1,4 +1,4 @@
-package com.example.seatchoice.config.batch;
+package com.example.seatchoice.batch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

@@ -282,22 +282,24 @@ class CommentServiceTest {
 	@DisplayName("댓글 조회 성공")
 	void listSuccess() {
 		// given
+		Member member = Member.builder().nickname("제로펩시").build();
+		member.setId(4L);
 		Review review = Review.builder().build();
 		Comment comment1 = Comment.builder()
 			.content("댓글1")
-			.member(Member.builder().nickname("제로펩시").build())
+			.member(member)
 			.build();
 		comment1.setId(1L);
 		comment1.setUpdatedAt(LocalDateTime.now());
 		Comment comment2 = Comment.builder()
 			.content("댓글2")
-			.member(Member.builder().nickname("제로펩시").build())
+			.member(member)
 			.build();
 		comment2.setId(2L);
 		comment2.setUpdatedAt(LocalDateTime.now());
 		Comment comment3 = Comment.builder()
 			.content("댓글3")
-			.member(Member.builder().nickname("제로펩시").build())
+			.member(member)
 			.build();
 		comment3.setId(3L);
 		comment3.setUpdatedAt(LocalDateTime.now());
@@ -315,6 +317,7 @@ class CommentServiceTest {
 
 		// then
 		assertEquals(result.size(), 3);
+		assertEquals(result.get(0).getUserId(), 4);
 		assertEquals(result.get(0).getNickname(), "제로펩시");
 		assertEquals(result.get(0).getContent(), "댓글1");
 		assertEquals(result.get(1).getContent(), "댓글2");

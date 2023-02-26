@@ -40,9 +40,11 @@ public class FacilityDocService {
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
 				.must(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
-				.must(sido == null ? QueryBuilders.matchAllQuery() : QueryBuilders.termQuery("sido", sido))
-				.must(gugun == null ? QueryBuilders.matchAllQuery() : QueryBuilders.termQuery("gugun", gugun)))
-			.withSort(SortBuilders.fieldSort("id").order(SortOrder.ASC))
+				.must(sido == null ? QueryBuilders.matchAllQuery()
+					: QueryBuilders.termQuery("sido", sido))
+				.must(gugun == null ? QueryBuilders.matchAllQuery()
+					: QueryBuilders.termQuery("gugun", gugun)))
+			.withSorts(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
 
