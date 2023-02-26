@@ -100,3 +100,6 @@ kopis:
 springdoc:
   swagger-ui:
     enabled: false
+
+test:
+  ip:

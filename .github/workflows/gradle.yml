@@ -45,6 +45,8 @@ env:
   # kopis
   KOPIS_API_URL: ${{ secrets.KOPIS_URL }}
   KOPIS_API_KEY: ${{ secrets.KOPIS_KEY }}
+  # ip
+  TEST_IP : ${{ secrets.TEST_IP }}
 
 jobs:
   build:
@@ -98,6 +100,7 @@ jobs:
         elasticsearch.port: ${{ env.ELASTIC_SEARCH_PORT }}
         kopis.api.url: ${{ env.KOPIS_API_URL }}
         kopis.api.key: ${{ env.KOPIS_API_KEY }}
+        test.ip: ${{ env.TEST_IP }}
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
