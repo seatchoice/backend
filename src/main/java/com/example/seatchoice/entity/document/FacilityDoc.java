@@ -14,26 +14,19 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(indexName = "facility")
 public class FacilityDoc {
 
 	@Id
-	@Field(type = FieldType.Keyword)
 	private Long id;
 
-	@Field(type = FieldType.Text)
 	private String name;
 
-	@Field(type = FieldType.Integer)
 	private Integer totalSeatCnt;
 
-	@Field(type = FieldType.Keyword)
 	private String sido;
 
-	@Field(type = FieldType.Keyword)
 	private String gugun;
 
-	@Field(type = FieldType.Text)
 	private String address;
 
 	public static FacilityDoc from(Facility f) {
