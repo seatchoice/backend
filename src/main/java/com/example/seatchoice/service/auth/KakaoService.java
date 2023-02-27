@@ -51,25 +51,24 @@ public class KakaoService {
 		urlConnection.setDoOutput(true);
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-		StringBuilder sb = new StringBuilder();
-		sb.append("grant_type=" + grantType);
-		sb.append("&client_id=" + clientId);
-		sb.append("&redirect_uri=" + redirectUri);
-		sb.append("&code=" + code);
-		sb.append("&client_secret=" + clientSecret);
+		String sb = "grant_type=" + grantType
+			+ "&client_id=" + clientId
+			+ "&redirect_uri=" + redirectUri
+			+ "&code=" + code
+			+ "&client_secret=" + clientSecret;
 
-		bw.write(sb.toString());
+		bw.write(sb);
 		bw.flush();
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-		String line = "";
-		String result = "";
+		String line;
+		StringBuilder result = new StringBuilder();
 		while ((line = br.readLine()) != null) {
-			result += line;
+			result.append(line);
 		}
 
 		JSONParser parser = new JSONParser();
-		JSONObject tokenInfo = (JSONObject) parser.parse(result);
+		JSONObject tokenInfo = (JSONObject) parser.parse(result.toString());
 		String accessToken = "Bearer " + tokenInfo.get("access_token").toString();
 
 		br.close();
@@ -86,15 +85,15 @@ public class KakaoService {
 		urlConnection.setRequestMethod(GET.name());
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-		String line = "";
-		String result = "";
+		String line;
+		StringBuilder result = new StringBuilder();
 		while((line = br.readLine()) != null)
 		{
-			result += line;
+			result.append(line);
 		}
 
 		JSONParser parser = new JSONParser();
-		JSONObject userInfo = (JSONObject) parser.parse(result);
+		JSONObject userInfo = (JSONObject) parser.parse(result.toString());
 		JSONObject kakaoAccount = (JSONObject) userInfo.get("kakao_account");
 		JSONObject profile = (JSONObject) kakaoAccount.get("profile");
 
@@ -117,10 +116,10 @@ public class KakaoService {
 			.build();
 	}
 
-	public void logout(String accessToken) throws IOException {
+	public void logout(Object accessToken) throws IOException {
 		URL url = new URL(logoutUri);
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-		urlConnection.setRequestProperty("Authorization", accessToken);
+		urlConnection.setRequestProperty("Authorization", accessToken.toString());
 		urlConnection.setRequestMethod(POST.name());
 	}
 }
