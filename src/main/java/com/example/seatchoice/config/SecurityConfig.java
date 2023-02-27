@@ -33,6 +33,7 @@ public class SecurityConfig {
 			).permitAll()
 			.antMatchers(
 				GET,
+				"/",
 				"/api/auth/tokens",
 				"/api/theaters/**",
 				"/api/search",
