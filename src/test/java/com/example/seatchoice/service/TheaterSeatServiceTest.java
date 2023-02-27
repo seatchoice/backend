@@ -8,6 +8,7 @@ import com.example.seatchoice.dto.response.TheaterSeatResponse;
 import com.example.seatchoice.entity.TheaterSeat;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,9 +28,11 @@ public class TheaterSeatServiceTest {
 	private TheaterSeatService theaterSeatService;
 
 	@Test
-	@DisplayName("리뷰가 있는 좌석 조회 성공 - 좌석이 있을 경우")
-	void getSeatsWithReviewsSuccess() {
+	@DisplayName("전체 좌석 조회 성공 - 좌석이 있을 경우")
+	void getSeatSuccess() {
 		// given
+		List<Integer> floorList = Arrays.asList(1, 2);
+		List<String> sectionList = Arrays.asList("OP", "A");
 		List<TheaterSeat> seats = Arrays.asList(
 			TheaterSeat.builder()
 				.floor(1)
@@ -49,26 +52,29 @@ public class TheaterSeatServiceTest {
 				.build()
 		);
 
+		given(theaterSeatRepository.findDistinctFloorByTheaterId(anyLong())).willReturn(floorList);
+		given(theaterSeatRepository.findDistinctSectionByTheaterId(anyLong())).willReturn(
+			sectionList);
 		given(theaterSeatRepository.findAllByTheaterId(anyLong())).willReturn(seats);
 
 		// when
-		List<TheaterSeatResponse> seatsWithReviews = theaterSeatService.getSeatsWithReviews(1L);
+		List<TheaterSeatResponse> theaterSeatResponses = theaterSeatService.getSeats(1L);
 
 		// then
-		assertEquals(1, seatsWithReviews.size());
-		assertEquals(2, seatsWithReviews.get(0).getFloor());
+		assertEquals(2, theaterSeatResponses.size());
+		assertEquals(1, theaterSeatResponses.get(0).getFloor());
 	}
 
 	@Test
-	@DisplayName("리뷰가 있는 좌석 조회 성공 - 좌석이 없을 경우")
-	void getSeatsWithReviews_noSeats() {
+	@DisplayName("전체 좌석 조회 성공 - 좌석이 없을 경우")
+	void getSeats_noSeats() {
 		// given
-		given(theaterSeatRepository.findAllByTheaterId(anyLong())).willReturn(null);
+		given(theaterSeatRepository.findDistinctFloorByTheaterId(anyLong())).willReturn(null);
 
 		// when
-		List<TheaterSeatResponse> seatsWithReviews = theaterSeatService.getSeatsWithReviews(1L);
+		List<TheaterSeatResponse> seatsWithReviews = theaterSeatService.getSeats(1L);
 
 		// then
-		assertEquals(null, seatsWithReviews);
+		assertEquals(Collections.emptyList(), seatsWithReviews);
 	}
 }
