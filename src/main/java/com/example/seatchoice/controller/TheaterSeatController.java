@@ -18,7 +18,7 @@ public class TheaterSeatController {
 	private final TheaterSeatService theaterSeatService;
 
 	@GetMapping("/theaters/{theaterId}/seats")
-	public ResponseEntity<List<TheaterSeatResponse>> getSeatsWithReviews(@PathVariable Long theaterId) {
-		return ResponseEntity.ok(theaterSeatService.getSeatsWithReviews(theaterId));
+	public ResponseEntity<List<TheaterSeatResponse>> getSeats(@PathVariable Long theaterId) {
+		return ResponseEntity.ok(theaterSeatService.getSeats(theaterId));
 	}
 }
