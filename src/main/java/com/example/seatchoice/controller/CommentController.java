@@ -4,7 +4,6 @@ import com.example.seatchoice.dto.request.CommentRequest;
 import com.example.seatchoice.dto.response.CommentResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.CommentService;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,7 @@ public class CommentController {
 
 	@PutMapping("/comments/{commentId}")
 	public ResponseEntity<Void> modify(
-		@Parameter(description = "[댓글 id]", example = "12") @PathVariable Long commentId,
+		@PathVariable Long commentId,
 		@RequestBody @Valid CommentRequest.Modify commentRequest,
 		@AuthenticationPrincipal Member member) {
 
@@ -50,8 +49,8 @@ public class CommentController {
 
 	@DeleteMapping("/comments/{commentId}")
 	public ResponseEntity<Void> delete(
-		@Parameter(description = "[댓글 id]", example = "14") @PathVariable Long commentId,
-		@Parameter(hidden = true) @AuthenticationPrincipal Member member) {
+		@PathVariable Long commentId,
+		@AuthenticationPrincipal Member member) {
 
 		commentService.delete(member.getId(), commentId);
 
@@ -60,7 +59,6 @@ public class CommentController {
 
 	@GetMapping(value = "/reviews/{reviewId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<CommentResponse>> list(
-		@Parameter(description = "[리뷰 id]", example = "17")
 		@PathVariable Long reviewId) {
 
 		return ResponseEntity.ok(commentService.list(reviewId));
