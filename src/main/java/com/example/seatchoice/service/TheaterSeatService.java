@@ -24,6 +24,11 @@ public class TheaterSeatService {
 			return Collections.emptyList();
 		}
 
+		return getTheaterSeatResponses(floorList, theaterId);
+	}
+
+	private List<TheaterSeatResponse> getTheaterSeatResponses(List<Integer> floorList,
+		Long theaterId) {
 		List<String> sectionList = theaterSeatRepository.findDistinctSectionByTheaterId(theaterId);
 		List<TheaterSeatResponse.Section> sections;
 		List<TheaterSeatResponse> theaterSeatResponses = new ArrayList<>();
