@@ -21,7 +21,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 			name = "zeropepsi",
 			url = "https://github.com/seatchoice"
 		)
-	)
+	),
+	servers = @Server(url = "/", description = "Default Server URL")
 )
 public class SwaggerConfig {
 
