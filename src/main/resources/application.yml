@@ -97,4 +97,9 @@ kopis:
     url:
     key:
 
-
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+    supported-submit-methods: GET, POST, PUT, DELETE, PATCH
+    enable-browser-operations: false
+    display-request-duration: false
