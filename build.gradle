@@ -37,6 +37,7 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.28'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
 	// OAuth
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
