@@ -7,7 +7,6 @@ import com.example.seatchoice.service.CommentService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,7 +56,7 @@ public class CommentController {
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping(value = "/reviews/{reviewId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/reviews/{reviewId}/comments")
 	public ResponseEntity<List<CommentResponse>> list(
 		@PathVariable Long reviewId) {
 

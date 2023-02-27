@@ -14,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +29,7 @@ public class SearchController {
 	private final PerformanceDocService performanceDocService;
 	private final FacilityDocService facilityDocService;
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping
 	public ResponseEntity<?> searchFacilityOrPerformance(
 		@RequestParam(defaultValue = "FACILITY") SearchType type,
 		@RequestParam(defaultValue = "") String name,
