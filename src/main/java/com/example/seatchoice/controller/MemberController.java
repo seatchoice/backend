@@ -1,6 +1,7 @@
 package com.example.seatchoice.controller;
 
-import com.example.seatchoice.dto.auth.Token;
+import com.example.seatchoice.dto.auth.Login;
+import com.example.seatchoice.dto.response.LoginResponse;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.service.MemberService;
 import com.example.seatchoice.service.auth.TokenService;
@@ -27,22 +28,22 @@ public class MemberController {
 	private final MemberService memberService;
 	private final TokenService tokenService;
 
-	private final String REFRESH_TOKEN_KEY = "refreshToken";
-
 	@PostMapping("/oauth/{provider}/login")
-	public ResponseEntity<Void>  oauthLogin(
+	public ResponseEntity<LoginResponse>  oauthLogin(
 		@RequestParam String code, @PathVariable("provider") String provider, HttpServletResponse response)
 		throws IOException, ParseException {
 
-		Token token = memberService.oauthLogin(code, provider);
-		response.setHeader("Authorization", token.getAccessToken());
+		Login login = memberService.oauthLogin(code, provider);
+		response.setHeader("Authorization", login.getAccessToken());
 
-		Cookie cookie = new Cookie(REFRESH_TOKEN_KEY, token.getRefreshToken());
+		Cookie cookie = new Cookie("refreshToken", login.getRefreshToken());
 		cookie.setHttpOnly(true);
 		cookie.setPath("/");
 		response.addCookie(cookie);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(LoginResponse.builder()
+			.nickname(login.getNickname())
+			.build());
 	}
 
 	@PostMapping("/oauth/{provider}/logout")
