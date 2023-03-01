@@ -11,6 +11,7 @@ import com.example.seatchoice.type.ErrorCode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
@@ -30,26 +32,30 @@ public class S3Service {
 
 	public List<String> uploadImage(List<MultipartFile> multipartFile) {
 		if (CollectionUtils.isEmpty(multipartFile)) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<String> fileUrlList = new ArrayList<>();
 
-		multipartFile.forEach(file -> {
+		for (MultipartFile file : multipartFile) {
 			String fileName = createFileName(file.getOriginalFilename());
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			objectMetadata.setContentLength(file.getSize());
 			objectMetadata.setContentType(file.getContentType());
 
-			try(InputStream inputStream = file.getInputStream()) {
-				amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-					.withCannedAcl(CannedAccessControlList.PublicRead));
-			} catch(IOException e) {
+			try (InputStream inputStream = file.getInputStream()) {
+				amazonS3.putObject(
+					new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+						.withCannedAcl(CannedAccessControlList.PublicRead));
+			} catch (IOException e) {
+				if (!CollectionUtils.isEmpty(fileUrlList)) {
+					deleteImage(fileUrlList);
+				}
 				throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL, HttpStatus.BAD_REQUEST);
 			}
 
 			fileUrlList.add(amazonS3.getUrl(bucket, fileName).toString());
-		});
+		}
 
 		return fileUrlList;
 	}
@@ -64,7 +70,7 @@ public class S3Service {
 
 	public void deleteImageFromObject(List<Image> images) {
 		String fileName = "";
-		for (Image img: images) {
+		for (Image img : images) {
 			fileName = img.getUrl().split("/")[3];
 			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
 		}
