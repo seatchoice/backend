@@ -51,7 +51,7 @@ class ChatRoomServiceTest {
         given(theaterRepository.findById(anyLong())).willReturn(Optional.of(theater));
 
         // when
-        ChatRoom chatRoom = chatRoomService.makeNewChatRoom(theaterIdRequest.getTheaterId());
+        chatRoomService.makeNewChatRoom(theaterIdRequest.getTheaterId());
 
         // then
         verify(chatRoomRepository, times(1)).save(any());

@@ -48,9 +48,6 @@ class CommentServiceTest {
 	@Mock
 	private CommentRepository commentRepository;
 
-	@Mock
-	private AlarmService alarmService;
-
 	@InjectMocks
 	private CommentService commentService;
 

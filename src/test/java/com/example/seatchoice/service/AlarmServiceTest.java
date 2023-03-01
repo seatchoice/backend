@@ -104,7 +104,7 @@ class AlarmServiceTest {
             .alarmMessage("test")
             .type(AlarmType.LIKE)
             .targetMember("유저1")
-            .targetId(2L)
+            .targetReviewId(2L)
             .build();
         alarm.setId(alarmId);
         alarm.setCreatedAt(LocalDateTime.now());
