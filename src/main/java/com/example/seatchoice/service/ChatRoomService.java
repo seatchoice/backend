@@ -23,6 +23,7 @@ public class ChatRoomService {
     private final TheaterRepository theaterRepository;
 
     // 방만들기 검증
+    @Transactional
     public ChatRoomResponse createRoom(TheaterIdRequest theaterIdRequest) {
         return ChatRoomResponse.from(
             chatRoomRepository.findByTheaterId(theaterIdRequest.getTheaterId()).orElseGet(
