@@ -33,6 +33,8 @@ public class ReviewLikeServiceTest {
 	private ReviewRepository reviewRepository;
 	@Mock
 	private MemberRepository memberRepository;
+	@Mock
+	private AlarmService alarmService;
 	@InjectMocks
 	private ReviewLikeService reviewLikeService;
 
