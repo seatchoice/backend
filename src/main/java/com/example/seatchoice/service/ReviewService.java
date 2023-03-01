@@ -16,8 +16,10 @@ import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
 import com.example.seatchoice.repository.TheaterSeatRepository;
 import com.example.seatchoice.type.ErrorCode;
+import com.example.seatchoice.type.ReviewStatus;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -41,19 +43,19 @@ public class ReviewService {
 	private final ReviewLikeRepository reviewLikeRepository;
 	private final S3Service s3Service;
 	private final ImageService imageService;
-	private final String create = "CREATE";
-	private final String update = "UPDATE";
-	private final String delete = "DELETE";
-
 
 	// 리뷰 등록
 	public ReviewResponse createReview(Long memberId, Long theaterId, List<MultipartFile> files,
 		ReviewRequest request) {
 		// image file을 선택하지 않았을 때
-		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) files = null;
+		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) {
+			files = null;
+		}
 
 		// 별점 표시 안 할 경우 0점으로 처리
-		if (request.getRating() == null) request.setRating(0);
+		if (request.getRating() == null) {
+			request.setRating(0);
+		}
 
 		List<TheaterSeat> theaterSeats = theaterSeatRepository.findAllByTheaterId(theaterId);
 		TheaterSeat theaterSeat = getTheaterSeat(theaterSeats, request);
@@ -82,7 +84,7 @@ public class ReviewService {
 			imageService.saveImages(review, images);
 		}
 
-		saveSeatRating(theaterSeat, create, request.getRating(), 0);
+		saveSeatRating(theaterSeat, ReviewStatus.CREATE, request.getRating(), 0);
 
 		return ReviewResponse.from(review, images);
 	}
@@ -96,8 +98,8 @@ public class ReviewService {
 		List<Image> imageList = imageRepository.findAllByReviewId(reviewId);
 		List<String> images = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(imageList)) {
-			for (int i = 0; i < imageList.size(); i++) {
-				images.add(imageList.get(i).getUrl());
+			for (Image image : imageList) {
+				images.add(image.getUrl());
 			}
 		} else {
 			images = null;
@@ -105,7 +107,7 @@ public class ReviewService {
 
 		// 로그인 하지 않은 user는 좋아요 non-checked
 		// 로그인 -> 리뷰 상세 보기 -> 그 리뷰에 대해 이미 좋아요를 눌렀다면 checked
-		Boolean likeChecked = false;
+		boolean likeChecked = false;
 		if (reviewLikeRepository.existsByMemberIdAndReviewId(memberId, reviewId)) {
 			likeChecked = true;
 		}
@@ -115,10 +117,8 @@ public class ReviewService {
 
 	// 리뷰 목록 조회
 	public Slice<ReviewInfoResponse> getReviews(Long lastReviewId, Long seatId, Pageable pageable) {
-		Slice<ReviewInfoResponse> reviewInfoResponses = reviewRepository
+		return reviewRepository
 			.searchBySlice(lastReviewId, seatId, pageable);
-
-		return reviewInfoResponses;
 	}
 
 	// 리뷰 수정
@@ -130,23 +130,29 @@ public class ReviewService {
 		Integer oldReviewRating = review.getRating();
 
 		// image file을 선택하지 않았을 때
-		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) files = null;
+		if (CollectionUtils.isEmpty(files) || files.get(0).getSize() == 0) {
+			files = null;
+		}
 
 		// 별점 표시 안 할 경우 0점으로 처리
-		if (request.getRating() == null) request.setRating(0);
+		if (request.getRating() == null) {
+			request.setRating(0);
+		}
 
 		List<String> uploadImages = s3Service.uploadImage(files);
-		List<Image> savedImages = new ArrayList<>();
+		List<Image> savedImages;
 		if (CollectionUtils.isEmpty(deleteImages)) { // 썸네일이 바뀌지 않는 경우
 			if (CollectionUtils.isEmpty(uploadImages)) { // 이미지 수정 안 했을 경우
-				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				review = updateReviewByContentAndRating(review, request.getContent(),
+					request.getRating());
 				log.info("이미지 수정 안 했을 경우");
 			} else { // 이미지 삭제없이 추가만 한 경우
 				savedImages = imageRepository.findAllByReviewId(reviewId);
 				if (CollectionUtils.isEmpty(savedImages)) { // 기존 이미지가 없던 경우는 썸네일 추가
 					review.setThumbnailUrl(uploadImages.get(0));
 				}
-				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				review = updateReviewByContentAndRating(review, request.getContent(),
+					request.getRating());
 				imageService.saveImages(review, uploadImages);
 				log.info("이미지 삭제없이 추가만 한 경우");
 			}
@@ -166,10 +172,12 @@ public class ReviewService {
 					review.setThumbnailUrl(savedImages.get(0).getUrl());
 					log.info("리뷰에 대한 모든 이미지가 삭제된 경우가 아닌 경우");
 				}
-				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				review = updateReviewByContentAndRating(review, request.getContent(),
+					request.getRating());
 			} else { // 삭제한 이미지도 있고, 업로드한 이미지도 있는 경우
 				review.setThumbnailUrl(getModifiedThumbnailUrl(savedImages, uploadImages));
-				review = updateReviewByContentAndRating(review, request.getContent(), request.getRating());
+				review = updateReviewByContentAndRating(review, request.getContent(),
+					request.getRating());
 				imageService.saveImages(review, uploadImages);
 				savedImages = imageRepository.findAllByReviewId(reviewId);
 				log.info("삭제한 이미지도 있고, 업로드한 이미지도 있는 경우");
@@ -178,7 +186,8 @@ public class ReviewService {
 			s3Service.deleteImage(deleteImages);
 		}
 
-		saveSeatRating(review.getTheaterSeat(), update, oldReviewRating, review.getRating());
+		saveSeatRating(review.getTheaterSeat(), ReviewStatus.UPDATE, oldReviewRating,
+			review.getRating());
 
 		return ReviewModifyResponse.from(review, savedImages);
 	}
@@ -198,7 +207,7 @@ public class ReviewService {
 		reviewRepository.delete(review);
 
 		// 좌석 평점 수정
-		saveSeatRating(theaterSeat, delete, rating, 0);
+		saveSeatRating(theaterSeat, ReviewStatus.DELETE, rating, 0);
 
 		// s3에서 이미지 삭제
 		if (!CollectionUtils.isEmpty(images)) {
@@ -209,9 +218,9 @@ public class ReviewService {
 	// 리뷰 등록 시 등록한 좌석 정보로 해당 공연장 좌석 받아오기
 	private TheaterSeat getTheaterSeat(List<TheaterSeat> theaterSeats, ReviewRequest request) {
 		for (TheaterSeat seat : theaterSeats) {
-			if (seat.getFloor() == request.getFloor() &&
+			if (Objects.equals(seat.getFloor(), request.getFloor()) &&
 				seat.getSeatRow().equals(request.getSeatRow()) &&
-				seat.getNumber() == request.getSeatNumber()) {
+				Objects.equals(seat.getNumber(), request.getSeatNumber())) {
 				if (seat.getSection() == null && request.getSection() == null) {
 					return seat;
 				} else if (seat.getSection() != null && request.getSection() != null) {
@@ -240,15 +249,16 @@ public class ReviewService {
 	}
 
 	// 좌석 평점 저장
-	private void saveSeatRating(TheaterSeat theaterSeat, String status,
+	private void saveSeatRating(TheaterSeat theaterSeat, ReviewStatus status,
 		Integer rating, Integer updateRating) {
-		Double total = Math.round(theaterSeat.getRating() * theaterSeat.getReviewAmount() * 10) / 10.0;
+		Double total =
+			Math.round(theaterSeat.getRating() * theaterSeat.getReviewAmount() * 10) / 10.0;
 		Long reviewAmount = theaterSeat.getReviewAmount();
-		if (status.equals("CREATE")) {
+		if (status == ReviewStatus.CREATE) {
 			total += rating;
 			reviewAmount += 1;
 			theaterSeat.setReviewAmount(reviewAmount);
-		} else if (status.equals("UPDATE")) {
+		} else if (status == ReviewStatus.UPDATE) {
 			total -= rating;
 			total += updateRating;
 		} else {

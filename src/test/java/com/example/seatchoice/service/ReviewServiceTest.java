@@ -1,6 +1,8 @@
 package com.example.seatchoice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,11 +11,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.seatchoice.dto.request.ReviewModifyRequest;
+import com.example.seatchoice.dto.request.ReviewRequest;
 import com.example.seatchoice.dto.response.ReviewDetailResponse;
 import com.example.seatchoice.dto.response.ReviewInfoResponse;
 import com.example.seatchoice.dto.response.ReviewResponse;
-import com.example.seatchoice.dto.request.ReviewModifyRequest;
-import com.example.seatchoice.dto.request.ReviewRequest;
 import com.example.seatchoice.entity.Image;
 import com.example.seatchoice.entity.Member;
 import com.example.seatchoice.entity.Review;
@@ -29,6 +31,7 @@ import com.example.seatchoice.type.ErrorCode;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceTest {
+
 	@Mock
 	private ReviewRepository reviewRepository;
 	@Mock
@@ -64,7 +68,7 @@ public class ReviewServiceTest {
 	@Test
 	@DisplayName("리뷰 등록 성공 - 이미지 업로드 안 했을 경우")
 	void createReviewSuccessWithoutImageFiles() {
-	    // given
+		// given
 		Member member = new Member();
 		Theater theater = new Theater();
 		List<TheaterSeat> theaterSeats = Arrays.asList(
@@ -104,20 +108,24 @@ public class ReviewServiceTest {
 
 		ArgumentCaptor<Review> captor = ArgumentCaptor.forClass(Review.class);
 
-	    // when
+		// when
 		ReviewResponse response = reviewService.createReview(7L, 562L, null, request);
 
 		// then
 		verify(reviewRepository, times(1)).save(captor.capture());
 		assertEquals(4, response.getRating());
 		assertEquals("좌석 괜찮습니다!", response.getContent());
-		assertEquals(null, response.getImages());
+		assertNull(response.getImages());
 	}
 
 	@Test
 	@DisplayName("리뷰 수정 성공 - 이미지 업로드 안 했을 경우")
 	void updateReviewSuccessWithoutImageFiles() {
-	    // given
+		// given
+		Member member = Member.builder()
+			.nickname("자리어때")
+			.build();
+		member.setId(1L);
 		TheaterSeat theaterSeat = TheaterSeat.builder()
 			.floor(1)
 			.section("OP")
@@ -127,12 +135,14 @@ public class ReviewServiceTest {
 			.reviewAmount(1L)
 			.build();
 		Review review = Review.builder()
-				.theaterSeat(theaterSeat)
-				.rating(4)
-				.content("좌석 괜찮습니다!")
-				.commentAmount(0L)
-				.likeAmount(0L)
-				.build();
+			.member(member)
+			.theaterSeat(theaterSeat)
+			.rating(4)
+			.content("좌석 괜찮습니다!")
+			.commentAmount(0L)
+			.likeAmount(0L)
+			.build();
+		review.setCreatedAt(LocalDateTime.now());
 		List<Image> images = Arrays.asList(
 			Image.builder()
 				.review(review)
@@ -143,7 +153,7 @@ public class ReviewServiceTest {
 				.url("https2")
 				.build()
 		);
-		List<String> deleteImages = Arrays.asList("https1");
+		List<String> deleteImages = List.of("https1");
 		ReviewModifyRequest request = new ReviewModifyRequest("리뷰 수정입니다.", 3);
 
 		given(reviewRepository.findById(anyLong())).willReturn(Optional.of(review));
@@ -153,22 +163,22 @@ public class ReviewServiceTest {
 		doNothing().when(imageRepository).deleteByUrl(valueCapture.capture());
 		imageRepository.deleteByUrl(deleteImages.get(0));
 
+		Review updateReview = Review.builder()
+			.member(member)
+			.theaterSeat(theaterSeat)
+			.rating(3)
+			.content("리뷰 수정")
+			.build();
+		updateReview.setCreatedAt(LocalDateTime.now());
 		given(imageRepository.findAllByReviewId(anyLong())).willReturn(images);
-		given(reviewRepository.save(any())).willReturn(
-			Review.builder()
-				.member(Member.builder().build())
-				.theaterSeat(theaterSeat)
-				.rating(3)
-				.content("리뷰 수정")
-				.build()
-		);
+		given(reviewRepository.save(any())).willReturn(updateReview);
 
 		ArgumentCaptor<Review> captor = ArgumentCaptor.forClass(Review.class);
 
-	    // when
+		// when
 		reviewService.updateReview(1L, null, request, deleteImages);
 
-	    // then
+		// then
 		verify(reviewRepository, times(1)).save(captor.capture());
 		assertEquals("리뷰 수정입니다.", captor.getValue().getContent());
 		assertEquals(3, captor.getValue().getRating());
@@ -246,7 +256,7 @@ public class ReviewServiceTest {
 				.build()
 		);
 
-		Long id = 3L;
+		long id = 3L;
 		for (Review r : reviews) {
 			r.setId(id--);
 		}
@@ -297,7 +307,7 @@ public class ReviewServiceTest {
 			}
 		};
 		Slice<ReviewInfoResponse> reviewInfos = new SliceImpl<>(
-			ReviewInfoResponse.of(reviews), pageable, true);
+			Objects.requireNonNull(ReviewInfoResponse.of(reviews)), pageable, true);
 
 		given(reviewRepository.searchBySlice(4L, 1L, pageable))
 			.willReturn(reviewInfos);
@@ -307,7 +317,7 @@ public class ReviewServiceTest {
 
 		// then
 		assertEquals(2, response.getSize());
-		assertEquals(false, response.isLast());
+		assertFalse(response.isLast());
 		assertEquals("좌석 괜찮습니다!", response.getContent().get(0).getContent());
 	}
 
@@ -338,7 +348,7 @@ public class ReviewServiceTest {
 	@Test
 	@DisplayName("리뷰 생성 실패 - 좌석이 존재하지 경우")
 	void createReview_notFountSeat() {
-	    // given
+		// given
 		Theater theater = new Theater();
 		theater.setId(1L);
 		List<TheaterSeat> theaterSeats = Arrays.asList(
