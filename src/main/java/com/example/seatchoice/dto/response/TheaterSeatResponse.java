@@ -3,6 +3,7 @@ package com.example.seatchoice.dto.response;
 import com.example.seatchoice.entity.TheaterSeat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,7 +73,7 @@ public class TheaterSeatResponse {
 				return Collections.emptyList();
 			}
 			return theaterSeats.stream()
-				.filter(t -> t.getFloor() == floor && t.getSection().equals(section))
+				.filter(t -> Objects.equals(t.getFloor(), floor) && t.getSection().equals(section))
 				.map(Seat::from)
 				.collect(Collectors.toList());
 		}
