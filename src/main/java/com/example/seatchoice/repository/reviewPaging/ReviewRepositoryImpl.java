@@ -12,10 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 @Repository
 @RequiredArgsConstructor
 public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
+
 	private final JPAQueryFactory queryFactory;
 
 	@Override
@@ -32,8 +34,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 			.fetch();
 
 		List<ReviewInfoResponse> reviewInfoResponses = ReviewInfoResponse.of(reviews);
-		if (reviewInfoResponses == null) {
-			return null;
+		if (CollectionUtils.isEmpty(reviewInfoResponses)) {
+			return new SliceImpl<>(reviewInfoResponses, pageable, false);
 		}
 		return checkLastPage(pageable, reviewInfoResponses);
 	}
@@ -46,7 +48,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 		return review.id.lt(reviewId);
 	}
 
-	private Slice<ReviewInfoResponse> checkLastPage(Pageable pageable, List<ReviewInfoResponse> results) {
+	private Slice<ReviewInfoResponse> checkLastPage(Pageable pageable,
+		List<ReviewInfoResponse> results) {
 		boolean hasNext = false;
 		// 조회한 결과 개수가 요청한 페이지 사이즈보다 크면 뒤에 더 있음, next = true
 		if (results.size() > pageable.getPageSize()) {
