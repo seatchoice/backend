@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -56,22 +57,15 @@ public class TokenService{
 	}
 
 	public String createToken(Member member) {
-//		Map<String, Object> claims = new HashMap<>();
-//		claims.put("id", member.getId());
-//		claims.put("nickname", member.getNickname());
 		Claims claims = Jwts.claims().setSubject(String.valueOf(member.getId()));
-		claims.put("nickname", member.getNickname());
 		Date now = new Date();
 
-		String accessToken = Jwts.builder()
+		return Jwts.builder()
 			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + TOKEN_PERIOD))
 			.signWith(SignatureAlgorithm.HS256, secretKey)
 			.compact();
-
-
-		return accessToken;
 	}
 
 	public String createRefreshToken(Member member) {
@@ -130,7 +124,8 @@ public class TokenService{
 		try {
 			String refreshToken = getRefreshToken(request);
 			Long memberId = getMemberIdFromRefreshToken(refreshToken);
-			String redisRefreshToken = redisTemplate.opsForHash().get(memberId, REDIS_REFRESH_TOKEN_KEY).toString();
+			String redisRefreshToken = Objects.requireNonNull(
+				redisTemplate.opsForHash().get(memberId, REDIS_REFRESH_TOKEN_KEY)).toString();
 
 			Member member = memberRepository.findById(memberId).orElseThrow(
 				() -> new CustomException(NOT_FOUND_MEMBER, NOT_FOUND));

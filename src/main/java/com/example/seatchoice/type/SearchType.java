@@ -4,6 +4,4 @@ public enum SearchType {
 
 	PERFORMANCE,
 	FACILITY
-	;
-
 }
