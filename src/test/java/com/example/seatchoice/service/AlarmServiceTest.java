@@ -19,6 +19,7 @@ import com.example.seatchoice.type.ErrorCode;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +55,7 @@ class AlarmServiceTest {
         // given
         Member member = new Member();
         member.setId(1L);
-        List<Alarm> alarmList = Arrays.asList(
+        List<Alarm> alarms = Arrays.asList(
             Alarm.builder()
                 .member(member)
                 .type(AlarmType.LIKE)
@@ -68,26 +69,29 @@ class AlarmServiceTest {
                 .checkAlarm(true)
                 .build()
         );
-        alarmList.get(0).setCreatedAt(LocalDateTime.now());
-        alarmList.get(1).setCreatedAt(LocalDateTime.now());
 
-        Page<Alarm> episodes = new PageImpl<>(alarmList);
+        alarms.get(0).setCreatedAt(LocalDateTime.now());
+        alarms.get(1).setCreatedAt(LocalDateTime.now());
+
         Pageable pageable = PageRequest.of(0, 10);
+        Long lastAlarmId = 2L;
 
-        given(alarmRepository.findByMemberId(anyLong(), any())).willReturn(episodes);
+        Slice<AlarmResponse> alarmResponses = new SliceImpl<>(
+            Objects.requireNonNull(AlarmResponse.of(alarms)), pageable, true);
+
+        given(alarmRepository.alarmListBySlice(anyLong(), anyLong(), any())).willReturn(alarmResponses);
 
         // when
-        Page<AlarmResponse> alarmListPage = alarmService.getAlarmList(member.getId(), pageable);
+        Slice<AlarmResponse> alarmListSlice = alarmService.getAlarmList(lastAlarmId, member.getId(),
+            pageable);
 
         // then
-        assertEquals(false, alarmListPage.getContent().get(0).getCheckAlarm());
-        assertEquals(AlarmType.LIKE, alarmListPage.getContent().get(0).getType());
-        assertEquals("testUrl1", alarmListPage.getContent().get(0).getAlarmMessage());
-        assertEquals(true, alarmListPage.getContent().get(1).getCheckAlarm());
-        assertEquals(AlarmType.COMMENT, alarmListPage.getContent().get(1).getType());
-        assertEquals("testUrl2", alarmListPage.getContent().get(1).getAlarmMessage());
-        assertEquals(1, alarmListPage.getTotalPages());
-        assertEquals(2, alarmListPage.getTotalElements());
+        assertEquals(false, alarmListSlice.getContent().get(0).getCheckAlarm());
+        assertEquals(AlarmType.LIKE, alarmListSlice.getContent().get(0).getType());
+        assertEquals("testUrl1", alarmListSlice.getContent().get(0).getAlarmMessage());
+        assertEquals(true, alarmListSlice.getContent().get(1).getCheckAlarm());
+        assertEquals(AlarmType.COMMENT, alarmListSlice.getContent().get(1).getType());
+        assertEquals("testUrl2", alarmListSlice.getContent().get(1).getAlarmMessage());
     }
 
     @Test

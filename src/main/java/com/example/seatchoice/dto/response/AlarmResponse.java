@@ -3,11 +3,14 @@ package com.example.seatchoice.dto.response;
 import com.example.seatchoice.entity.Alarm;
 import com.example.seatchoice.type.AlarmType;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 @Getter
 @Setter
@@ -33,5 +36,15 @@ public class AlarmResponse {
             .checkAlarm(alarm.getCheckAlarm())
             .createdAt(alarm.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
             .build();
+    }
+
+    public static List<AlarmResponse> of(List<Alarm> alarms) {
+        if (CollectionUtils.isEmpty(alarms)) {
+            return null;
+        }
+
+        return alarms.stream()
+            .map(AlarmResponse::from)
+            .collect(Collectors.toList());
     }
 }

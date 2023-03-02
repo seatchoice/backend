@@ -14,8 +14,8 @@ import com.example.seatchoice.type.AlarmType;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +28,8 @@ public class AlarmService {
     private final MemberRepository memberRepository;
 
     // 알림 리스트 조회
-    public Page<AlarmResponse> getAlarmList(Long memberId, Pageable pageable) {
-        Page<Alarm> alarmList = alarmRepository.findByMemberId(memberId, pageable);
-        return alarmList.map(AlarmResponse::from);
+    public Slice<AlarmResponse> getAlarmList(Long lastAlarmId, Long memberId, Pageable pageable) {
+        return alarmRepository.alarmListBySlice(lastAlarmId, memberId, pageable);
     }
 
     // 알림 조회 - 조회시 읽음 처리
