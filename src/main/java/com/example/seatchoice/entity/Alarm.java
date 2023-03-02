@@ -34,7 +34,7 @@ public class Alarm extends BaseEntity {
 	private String alarmMessage;
 
 	@NotNull
-	private Long targetId;
+	private Long targetReviewId;
 
 	@NotNull
 	private String targetMember;

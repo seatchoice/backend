@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     private final RabbitTemplate rabbitTemplate;
-    private final String CHAT_EXCHANGE_NAME = "chat.exchange";
     private final ChatHistoryCache chatHistoryCache;
 
     @MessageMapping("chat.message.{roomId}")
@@ -35,6 +34,8 @@ public class ChatController {
         message.setTimeStamp(
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         chatHistoryCache.save(message);
+
+        String CHAT_EXCHANGE_NAME = "chat.exchange";
 
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + roomId, message);
     }

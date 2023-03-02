@@ -28,7 +28,7 @@ public class AlarmResponse {
             .id(alarm.getId())
             .type(alarm.getType())
             .alarmMessage(alarm.getAlarmMessage())
-            .targetId(alarm.getTargetId())
+            .targetId(alarm.getTargetReviewId())
             .targetMember(alarm.getTargetMember())
             .checkAlarm(alarm.getCheckAlarm())
             .createdAt(alarm.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
