@@ -1,10 +1,8 @@
 package com.example.seatchoice.repository;
 
 import static com.example.seatchoice.entity.QAlarm.alarm;
-import static com.example.seatchoice.entity.QReview.review;
 
 import com.example.seatchoice.dto.response.AlarmResponse;
-import com.example.seatchoice.dto.response.ReviewInfoResponse;
 import com.example.seatchoice.entity.Alarm;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 @Repository
 @RequiredArgsConstructor
@@ -35,8 +34,8 @@ public class AlarmRepositoryImpl implements AlarmRepositoryCustom {
             .fetch();
 
         List<AlarmResponse> alarmResponses = AlarmResponse.of(alarms);
-        if (alarmResponses == null) {
-            return null;
+        if (CollectionUtils.isEmpty(alarmResponses)) {
+            return new SliceImpl<>(alarmResponses, pageable, false);
         }
 
         return checkLastPage(pageable, alarmResponses);

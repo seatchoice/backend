@@ -3,6 +3,7 @@ package com.example.seatchoice.dto.response;
 import com.example.seatchoice.entity.Alarm;
 import com.example.seatchoice.type.AlarmType;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class AlarmResponse {
 
     public static List<AlarmResponse> of(List<Alarm> alarms) {
         if (CollectionUtils.isEmpty(alarms)) {
-            return null;
+            return Collections.emptyList();
         }
 
         return alarms.stream()
