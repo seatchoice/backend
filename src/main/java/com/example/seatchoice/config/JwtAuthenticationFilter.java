@@ -44,8 +44,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 			}
 
 		} catch (CustomException e) {
-				request.setAttribute("errorCode", e.getErrorCode());
-				request.setAttribute("httpStatus", e.getHttpStatus());
+			request.setAttribute("errorCode", e.getErrorCode());
+			request.setAttribute("httpStatus", e.getHttpStatus());
 		} catch (SignatureException | MalformedJwtException e) {
 			request.setAttribute("errorCode", INVALID_TOKEN);
 			request.setAttribute("httpStatus", UNAUTHORIZED);
