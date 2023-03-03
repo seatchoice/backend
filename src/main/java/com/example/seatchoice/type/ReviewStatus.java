@@ -9,5 +9,4 @@ public enum ReviewStatus {
 	CREATE,
 	UPDATE,
 	DELETE
-	;
 }

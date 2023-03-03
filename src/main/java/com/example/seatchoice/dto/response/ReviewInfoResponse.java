@@ -1,6 +1,7 @@
 package com.example.seatchoice.dto.response;
 
 import com.example.seatchoice.entity.Review;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewInfoResponse {
+
 	private Double seatRating; // 좌석 평점
 	private Long reviewId;
 	private Long userId;
@@ -48,7 +50,7 @@ public class ReviewInfoResponse {
 
 	public static List<ReviewInfoResponse> of(List<Review> reviews) {
 		if (CollectionUtils.isEmpty(reviews)) {
-			return null;
+			return Collections.emptyList();
 		}
 		return reviews.stream()
 			.map(ReviewInfoResponse::from)
