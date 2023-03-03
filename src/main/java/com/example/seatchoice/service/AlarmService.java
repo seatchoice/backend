@@ -14,8 +14,8 @@ import com.example.seatchoice.type.AlarmType;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +28,8 @@ public class AlarmService {
     private final MemberRepository memberRepository;
 
     // 알림 리스트 조회
-    public Page<AlarmResponse> getAlarmList(Long memberId, Pageable pageable) {
-        Page<Alarm> alarmList = alarmRepository.findByMemberId(memberId, pageable);
-        return alarmList.map(AlarmResponse::from);
+    public Slice<AlarmResponse> getAlarmList(Long lastAlarmId, Long memberId, Pageable pageable) {
+        return alarmRepository.alarmListBySlice(lastAlarmId, memberId, pageable);
     }
 
     // 알림 조회 - 조회시 읽음 처리
@@ -55,16 +54,16 @@ public class AlarmService {
     }
 
     // 알림 생성
-    public void createAlarm(Long memberId, AlarmType alarmType, String alarmMessage, Long targetId, String targetMember) {
+    public void createAlarm(Long memberId, AlarmType alarmType, String alarmMessage, Long targetReviewId, String targetMember) {
         Member member = memberRepository.findById(memberId).orElseThrow(
             () -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
         if (alarmType == AlarmType.COMMENT) {
-            Alarm alarm = new Alarm(member, alarmType, alarmMessage, targetId, targetMember, false);
+            Alarm alarm = new Alarm(member, alarmType, alarmMessage, targetReviewId, targetMember, false);
             alarmRepository.save(alarm);
 
         } else if (alarmType == AlarmType.LIKE) {
-            Alarm alarm = new Alarm(member, alarmType, targetMember + "님이 좋아요를 눌렀습니다.", targetId, targetMember, false);
+            Alarm alarm = new Alarm(member, alarmType, targetMember + "님이 좋아요를 눌렀습니다.", targetReviewId, targetMember, false);
             alarmRepository.save(alarm);
 
         } else {
