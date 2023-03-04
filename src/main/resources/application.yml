@@ -96,7 +96,3 @@ kopis:
   api:
     url:
     key:
-
-#springdoc:
-#  swagger-ui:
-#    enabled: false
