@@ -39,7 +39,7 @@ public class FacilityDocService {
 
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
-				.must(QueryBuilders.queryStringQuery("*" + name + "*").field("name"))
+				.must(QueryBuilders.matchPhraseQuery("name", name))
 				.must(sido == null ? QueryBuilders.matchAllQuery()
 					: QueryBuilders.termQuery("sido", sido))
 				.must(gugun == null ? QueryBuilders.matchAllQuery()
