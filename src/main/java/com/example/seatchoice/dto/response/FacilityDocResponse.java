@@ -25,7 +25,7 @@ public class FacilityDocResponse {
 
 	private String address;
 
-	private float score;
+	private Float score;
 
 	public static FacilityDocResponse from(SearchHit<FacilityDoc> searchHit) {
 		FacilityDoc facilityDoc = searchHit.getContent();

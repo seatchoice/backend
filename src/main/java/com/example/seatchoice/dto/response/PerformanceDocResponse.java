@@ -29,7 +29,8 @@ public class PerformanceDocResponse {
 	private String genrenm;
 
 	private Boolean openrun;
-	private float score;
+
+	private Float score;
 
 	public static PerformanceDocResponse from(SearchHit<PerformanceDoc> searchHit) {
 
