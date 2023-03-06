@@ -14,7 +14,7 @@ class FacilityDocServiceTest {
 
 	@Test
 	void testSearchFacility() {
-		List<FacilityDoc> list = facilityDocService.searchFacility("예술",
+		List<FacilityDoc> list = facilityDocService.searchFacility("서울마포음악창작소(구.뮤지스땅스",
 			null, 10, null, null);
 
 		System.out.println("=============================");
@@ -24,7 +24,7 @@ class FacilityDocServiceTest {
 //			System.out.println(list.get(i).getGugun());
 		}
 
-		List<FacilityDoc> list2 = facilityDocService.searchFacility("아트",
+		List<FacilityDoc> list2 = facilityDocService.searchFacility("서울마포음악창작소(구.뮤지스땅스)",
 			null, 10, null, null);
 
 		System.out.println("=============================");

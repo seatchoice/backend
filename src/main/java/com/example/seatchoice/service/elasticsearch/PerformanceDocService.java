@@ -50,8 +50,8 @@ public class PerformanceDocService {
 
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
-				.must(QueryBuilders.queryStringQuery("*" + QueryParsingUtil.escape(name) + "*").field("name"))
-				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
+				.should(QueryBuilders.queryStringQuery("*" + QueryParsingUtil.escape(name) + "*").field("name"))
+				.must(QueryBuilders.matchQuery("name", name).operator(Operator.OR))
 				.must(dateRangeQuery))
 			.withPageable(PageRequest.of(0, size))
 			.build();
