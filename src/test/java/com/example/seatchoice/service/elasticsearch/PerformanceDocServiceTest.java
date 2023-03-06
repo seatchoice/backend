@@ -14,8 +14,13 @@ class PerformanceDocServiceTest {
 
 	@Test
 	void searchPerformanceTest() {
-		List<PerformanceDoc> list = performanceDocService.searchPerformance("",
+		List<PerformanceDoc> list = performanceDocService.searchPerformance("겨",
 			null, 10, null, null);
+
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getName());
+		}
+
 
 		Assertions.assertNotNull(list);
 	}

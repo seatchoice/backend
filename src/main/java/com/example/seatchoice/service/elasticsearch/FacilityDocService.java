@@ -4,12 +4,12 @@ import com.example.seatchoice.entity.Facility;
 import com.example.seatchoice.entity.document.FacilityDoc;
 import com.example.seatchoice.repository.FacilityRepository;
 import com.example.seatchoice.repository.elasticsearch.FacilityDocRepository;
+import com.example.seatchoice.util.QueryParsingUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -39,12 +39,12 @@ public class FacilityDocService {
 
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
-				.must(QueryBuilders.matchPhraseQuery("name", name))
+				.must(QueryBuilders.queryStringQuery("*" + QueryParsingUtil.escape(name) + "*").field("name"))
+				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
 				.must(sido == null ? QueryBuilders.matchAllQuery()
 					: QueryBuilders.termQuery("sido", sido))
 				.must(gugun == null ? QueryBuilders.matchAllQuery()
 					: QueryBuilders.termQuery("gugun", gugun)))
-			.withSorts(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
 

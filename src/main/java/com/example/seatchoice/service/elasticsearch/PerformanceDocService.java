@@ -4,14 +4,14 @@ import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.document.PerformanceDoc;
 import com.example.seatchoice.repository.PerformanceRepository;
 import com.example.seatchoice.repository.elasticsearch.PerformanceDocRepository;
+import com.example.seatchoice.util.QueryParsingUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -50,9 +50,9 @@ public class PerformanceDocService {
 
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
-				.must(QueryBuilders.matchPhraseQuery("name", name))
+				.must(QueryBuilders.queryStringQuery("*" + QueryParsingUtil.escape(name) + "*").field("name"))
+				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
 				.must(dateRangeQuery))
-			.withSorts(SortBuilders.fieldSort("id").order(SortOrder.ASC))
 			.withPageable(PageRequest.of(0, size))
 			.build();
 
@@ -73,5 +73,4 @@ public class PerformanceDocService {
 			.map(PerformanceDoc::from)
 			.collect(Collectors.toList()));
 	}
-
 }

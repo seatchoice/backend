@@ -14,13 +14,22 @@ class FacilityDocServiceTest {
 
 	@Test
 	void testSearchFacility() {
-		List<FacilityDoc> list = facilityDocService.searchFacility("JTN 아트홀(",
+		List<FacilityDoc> list = facilityDocService.searchFacility("예술",
 			null, 10, null, null);
 
+		System.out.println("=============================");
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i).getName());
-			System.out.println(list.get(i).getSido());
-			System.out.println(list.get(i).getGugun());
+//			System.out.println(list.get(i).getSido());
+//			System.out.println(list.get(i).getGugun());
+		}
+
+		List<FacilityDoc> list2 = facilityDocService.searchFacility("아트",
+			null, 10, null, null);
+
+		System.out.println("=============================");
+		for (int i = 0; i < list2.size(); i++) {
+			System.out.println(list2.get(i).getName());
 		}
 
 		Assertions.assertNotNull(list);
