@@ -1,6 +1,6 @@
 package com.example.seatchoice.service.elasticsearch;
 
-import com.example.seatchoice.entity.document.PerformanceDoc;
+import com.example.seatchoice.dto.response.PerformanceDocResponse;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,13 @@ class PerformanceDocServiceTest {
 
 	@Test
 	void searchPerformanceTest() {
-		List<PerformanceDoc> list = performanceDocService.searchPerformance("",
-			null, 10, null, null);
+		List<PerformanceDocResponse> list = performanceDocService.searchPerformance("겨",
+			2.3f, null, 10, null, null);
+
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getName());
+		}
+
 
 		Assertions.assertNotNull(list);
 	}
