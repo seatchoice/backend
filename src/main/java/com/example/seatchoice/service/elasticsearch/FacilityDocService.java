@@ -49,8 +49,7 @@ public class FacilityDocService {
 					: QueryBuilders.termQuery("gugun", gugun)))
 			.withPageable(PageRequest.of(0, size))
 			.withSorts(
-				SortBuilders.scoreSort().order(SortOrder.DESC),
-				SortBuilders.fieldSort("id").order(SortOrder.ASC)
+				SortBuilders.fieldSort("_score").order(SortOrder.DESC)
 			)
 			.build();
 

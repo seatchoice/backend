@@ -56,7 +56,7 @@ public class PerformanceDocService {
 				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
 				.must(dateRangeQuery))
 			.withSorts(
-				SortBuilders.scoreSort().order(SortOrder.DESC),
+				SortBuilders.fieldSort("_score").order(SortOrder.DESC),
 				SortBuilders.fieldSort("id").order(SortOrder.ASC)
 			)
 			.withPageable(PageRequest.of(0, size))
