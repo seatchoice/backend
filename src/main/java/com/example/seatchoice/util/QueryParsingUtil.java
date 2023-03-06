@@ -12,13 +12,14 @@ public class QueryParsingUtil {
 			// These characters are part of the query syntax and must be escaped
 			if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
 				|| c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
-				|| c == '*' || c == '?' || c == '|' || c == '&' || c == '/')
+				|| c == '*' || c == '?' || c == '|' || c == '&' || c == '/' || c == '.' || c == ',')
 			{
-				sb.append('"').append(c).append('"');
+				sb.append("*").append('\"').append(c).append('\"').append("*");
 			} else {
 				sb.append(c);
 			}
 		}
+		System.out.println(sb);
 		return sb.toString();
 	}
 

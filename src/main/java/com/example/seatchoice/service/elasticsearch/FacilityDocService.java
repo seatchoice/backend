@@ -42,13 +42,16 @@ public class FacilityDocService {
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
 				.should(QueryBuilders.queryStringQuery("*" + QueryParsingUtil.escape(name) + "*").field("name"))
-				.must(QueryBuilders.matchQuery("name", name).operator(Operator.OR))
+				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
 				.must(sido == null ? QueryBuilders.matchAllQuery()
 					: QueryBuilders.termQuery("sido", sido))
 				.must(gugun == null ? QueryBuilders.matchAllQuery()
 					: QueryBuilders.termQuery("gugun", gugun)))
-			.withSorts(SortBuilders.scoreSort().order(SortOrder.DESC))
 			.withPageable(PageRequest.of(0, size))
+			.withSorts(
+				SortBuilders.scoreSort().order(SortOrder.DESC),
+				SortBuilders.fieldSort("id").order(SortOrder.ASC)
+			)
 			.build();
 
 
@@ -68,5 +71,4 @@ public class FacilityDocService {
 			.map(FacilityDoc::from)
 			.collect(Collectors.toList()));
 	}
-
 }

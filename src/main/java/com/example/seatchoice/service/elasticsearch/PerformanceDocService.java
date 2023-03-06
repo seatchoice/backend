@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -51,8 +53,12 @@ public class PerformanceDocService {
 		NativeSearchQuery searchQuery = queryBuilder
 			.withQuery(QueryBuilders.boolQuery()
 				.should(QueryBuilders.queryStringQuery("*" + QueryParsingUtil.escape(name) + "*").field("name"))
-				.must(QueryBuilders.matchQuery("name", name).operator(Operator.OR))
+				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
 				.must(dateRangeQuery))
+			.withSorts(
+				SortBuilders.scoreSort().order(SortOrder.DESC),
+				SortBuilders.fieldSort("id").order(SortOrder.ASC)
+			)
 			.withPageable(PageRequest.of(0, size))
 			.build();
 
