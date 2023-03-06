@@ -1,5 +1,6 @@
 package com.example.seatchoice.service.elasticsearch;
 
+import com.example.seatchoice.dto.response.PerformanceDocResponse;
 import com.example.seatchoice.entity.Performance;
 import com.example.seatchoice.entity.document.PerformanceDoc;
 import com.example.seatchoice.repository.PerformanceRepository;
@@ -16,7 +17,6 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -33,12 +33,12 @@ public class PerformanceDocService {
 	/**
 	 * 공연 검색
 	 */
-	public List<PerformanceDoc> searchPerformance(
-		String name, Long after, int size, Date startDate, Date endDate) {
+	public List<PerformanceDocResponse> searchPerformance(
+		String name, Float score, Long after, int size, Date startDate, Date endDate) {
 
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-		if (after != null) {
-			queryBuilder.withSearchAfter(List.of(after));
+		if (score != null && after != null) {
+			queryBuilder.withSearchAfter(List.of(score, after));
 		}
 
 		QueryBuilder dateRangeQuery;
@@ -56,7 +56,7 @@ public class PerformanceDocService {
 				.should(QueryBuilders.matchQuery("name", name).operator(Operator.AND))
 				.must(dateRangeQuery))
 			.withSorts(
-				SortBuilders.fieldSort("_score").order(SortOrder.DESC),
+				SortBuilders.scoreSort().order(SortOrder.DESC),
 				SortBuilders.fieldSort("id").order(SortOrder.ASC)
 			)
 			.withPageable(PageRequest.of(0, size))
@@ -64,7 +64,7 @@ public class PerformanceDocService {
 
 		SearchHits<PerformanceDoc> searchHits = elasticsearchOperations.search(searchQuery, PerformanceDoc.class);
 		return searchHits.stream()
-			.map(SearchHit::getContent)
+			.map(PerformanceDocResponse::from)
 			.collect(Collectors.toList());
 
 	}

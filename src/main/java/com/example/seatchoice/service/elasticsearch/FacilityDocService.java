@@ -1,5 +1,6 @@
 package com.example.seatchoice.service.elasticsearch;
 
+import com.example.seatchoice.dto.response.FacilityDocResponse;
 import com.example.seatchoice.entity.Facility;
 import com.example.seatchoice.entity.document.FacilityDoc;
 import com.example.seatchoice.repository.FacilityRepository;
@@ -14,7 +15,6 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -29,14 +29,25 @@ public class FacilityDocService {
 	private final FacilityDocRepository facilityDocRepository;
 
 	/**
+	 * mysql에 저장된 facility es에 저장 (초기세팅)
+	 */
+	public void saveFacilities() {
+		List<Facility> facilityList = facilityRepository.findAll();
+
+		facilityDocRepository.saveAll(facilityList.stream()
+			.map(FacilityDoc::from)
+			.collect(Collectors.toList()));
+	}
+
+	/**
 	 * 시설 검색
 	 */
-	public List<FacilityDoc> searchFacility(
-		String name, Long after, int size, String sido, String gugun) {
+	public List<FacilityDocResponse> searchFacility(
+		String name, Float score, Long after, int size, String sido, String gugun) {
 
 		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-		if (after != null) {
-			queryBuilder.withSearchAfter(List.of(after));
+		if (score != null && after != null) {
+			queryBuilder.withSearchAfter(List.of(score, after));
 		}
 
 		NativeSearchQuery searchQuery = queryBuilder
@@ -49,25 +60,15 @@ public class FacilityDocService {
 					: QueryBuilders.termQuery("gugun", gugun)))
 			.withPageable(PageRequest.of(0, size))
 			.withSorts(
-				SortBuilders.fieldSort("_score").order(SortOrder.DESC)
+				SortBuilders.scoreSort().order(SortOrder.DESC),
+				SortBuilders.fieldSort("id").order(SortOrder.ASC)
 			)
 			.build();
 
-
 		SearchHits<FacilityDoc> searchHits = elasticsearchOperations.search(searchQuery, FacilityDoc.class);
+
 		return searchHits.stream()
-			.map(SearchHit::getContent)
+			.map(FacilityDocResponse::from)
 			.collect(Collectors.toList());
-	}
-
-	/**
-	 * mysql에 저장된 facility es에 저장 (초기세팅)
-	 */
-	public void saveFacilities() {
-		List<Facility> facilityList = facilityRepository.findAll();
-
-		facilityDocRepository.saveAll(facilityList.stream()
-			.map(FacilityDoc::from)
-			.collect(Collectors.toList()));
 	}
 }

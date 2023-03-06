@@ -3,8 +3,8 @@ package com.example.seatchoice.controller;
 import static com.example.seatchoice.type.ErrorCode.NOT_TYPE_REQUEST_PARAMETER;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-import com.example.seatchoice.entity.document.FacilityDoc;
-import com.example.seatchoice.entity.document.PerformanceDoc;
+import com.example.seatchoice.dto.response.FacilityDocResponse;
+import com.example.seatchoice.dto.response.PerformanceDocResponse;
 import com.example.seatchoice.exception.CustomException;
 import com.example.seatchoice.service.elasticsearch.FacilityDocService;
 import com.example.seatchoice.service.elasticsearch.PerformanceDocService;
@@ -31,6 +31,7 @@ public class SearchController {
 	public ResponseEntity<?> searchFacilityOrPerformance(
 		@RequestParam(defaultValue = "FACILITY") SearchType type,
 		@RequestParam(defaultValue = "") String name,
+		@RequestParam(required = false) Float score,
 		@RequestParam(required = false) Long after,
 		@RequestParam(defaultValue = "30") int size,
 		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyyMMdd") Date startDate,
@@ -40,14 +41,14 @@ public class SearchController {
 	) {
 
 		if (type == SearchType.PERFORMANCE && sido == null && gugun == null) {
-			List<PerformanceDoc> performanceDocs = performanceDocService
-				.searchPerformance(name, after, size, startDate, endDate);
+			List<PerformanceDocResponse> performanceDocs = performanceDocService
+				.searchPerformance(name, score, after, size, startDate, endDate);
 			return ResponseEntity.ok(performanceDocs);
 		}
 
 		if (type == SearchType.FACILITY && startDate == null && endDate == null) {
-			List<FacilityDoc> facilityDocs = facilityDocService
-				.searchFacility(name, after, size, sido, gugun);
+			List<FacilityDocResponse> facilityDocs = facilityDocService
+				.searchFacility(name, score, after, size, sido, gugun);
 			return ResponseEntity.ok(facilityDocs);
 		}
 

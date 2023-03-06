@@ -10,16 +10,12 @@ public class QueryParsingUtil {
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			// These characters are part of the query syntax and must be escaped
-			if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
-				|| c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
-				|| c == '*' || c == '?' || c == '|' || c == '&' || c == '/' || c == '.' || c == ',')
-			{
+			if (String.valueOf(c).matches("[^a-zA-Z0-9 ㄱ-ㅎㅏ-ㅣ가-힣\\s]")) {
 				sb.append("*").append('\"').append(c).append('\"').append("*");
 			} else {
 				sb.append(c);
 			}
 		}
-		System.out.println(sb);
 		return sb.toString();
 	}
 
