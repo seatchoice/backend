@@ -16,6 +16,7 @@ import com.example.seatchoice.repository.MemberRepository;
 import com.example.seatchoice.repository.ReviewRepository;
 import com.example.seatchoice.type.AlarmType;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +47,11 @@ public class CommentService {
 		review.addCommentAmount();
 		reviewRepository.save(review);
 
-		alarmService.createAlarm(
-			review.getMember().getId(), AlarmType.COMMENT, commentRequest.getContent(), review.getId(), member.getNickname());
+		if (!Objects.equals(review.getMember().getId(), memberId)) {
+			alarmService.createAlarm(
+				review.getMember().getId(), AlarmType.COMMENT, commentRequest.getContent(),
+				review.getId(), member.getNickname());
+		}
 	}
 
 	@Transactional

@@ -9,6 +9,7 @@ import com.example.seatchoice.repository.ReviewLikeRepository;
 import com.example.seatchoice.repository.ReviewRepository;
 import com.example.seatchoice.type.AlarmType;
 import com.example.seatchoice.type.ErrorCode;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,10 @@ public class ReviewLikeService {
 		reviewRepository.save(review);
 
 		// 알람 생성
-		alarmService.createAlarm(review.getMember().getId(), AlarmType.LIKE, "", reviewId, member.getNickname());
+		if (!Objects.equals(review.getMember().getId(), memberId)) {
+			alarmService.createAlarm(review.getMember().getId(), AlarmType.LIKE, "", reviewId,
+				member.getNickname());
+		}
 	}
 
 	public void deleteLike(Long memberId, Long reviewId) {
