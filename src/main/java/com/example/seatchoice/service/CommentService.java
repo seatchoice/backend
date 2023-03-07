@@ -47,7 +47,7 @@ public class CommentService {
 		reviewRepository.save(review);
 
 		alarmService.createAlarm(
-			member.getId(), AlarmType.COMMENT, commentRequest.getContent(), review.getId(), member.getNickname());
+			review.getMember().getId(), AlarmType.COMMENT, commentRequest.getContent(), review.getId(), member.getNickname());
 	}
 
 	@Transactional

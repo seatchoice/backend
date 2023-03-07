@@ -22,7 +22,7 @@ public class AlarmResponse {
     private Long id;
     private AlarmType type;
     private String alarmMessage;
-    private Long targetId;
+    private Long targetReviewId;
     private String targetMember;
     private Boolean checkAlarm;
     private String createdAt;
@@ -32,7 +32,7 @@ public class AlarmResponse {
             .id(alarm.getId())
             .type(alarm.getType())
             .alarmMessage(alarm.getAlarmMessage())
-            .targetId(alarm.getTargetReviewId())
+            .targetReviewId(alarm.getTargetReviewId())
             .targetMember(alarm.getTargetMember())
             .checkAlarm(alarm.getCheckAlarm())
             .createdAt(alarm.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
