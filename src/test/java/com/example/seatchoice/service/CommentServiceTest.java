@@ -61,8 +61,11 @@ class CommentServiceTest {
 		CommentRequest.Create req = new Create(2L, "댓글");
 		Member member = Member.builder().build();
 		member.setId(1L);
+		Member member1 = Member.builder().build();
+		member1.setId(2L);
 		Review review = Review.builder().commentAmount(1L).build();
 		review.setId(2L);
+		review.setMember(member1);
 
 		given(memberRepository.findById(anyLong()))
 			.willReturn(Optional.of(member));

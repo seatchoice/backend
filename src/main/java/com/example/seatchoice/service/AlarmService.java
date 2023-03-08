@@ -54,6 +54,7 @@ public class AlarmService {
     }
 
     // 알림 생성
+    @Transactional
     public void createAlarm(Long memberId, AlarmType alarmType, String alarmMessage, Long targetReviewId, String targetMember) {
         Member member = memberRepository.findById(memberId).orElseThrow(
             () -> new CustomException(NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
