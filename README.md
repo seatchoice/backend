@@ -1,2 +1,11 @@
-[![Java CI with Gradle](https://github.com/seatchoice/backend/actions/workflows/gradle.yml/badge.svg)](https://github.com/seatchoice/backend/actions/workflows/gradle.yml)
-# backend
+# 프로젝트 소개
+
+> 공연 관람시 해당 좌석에서 경험한 시야, 소리 등의 정보를 사진과 함께 리뷰를 작성하는 사이트 입니다.
+
+- 공연/공연시설으로 검색하여 관련 공연장의 좌석 리뷰들을 확인할 수 있습니다.
+- 관람한 좌석의 리뷰를 작성할 수 있습니다.
+- 작성한 리뷰의 댓글, 좋아요를 남기고 이를 알림으로 확인할 수 있습니다.
+
+## 프로젝트 노션 링크
+
+- [Notion 발표 자료](https://seat-choice.notion.site/d764a0c49d364c349e5cd35da124364c)
