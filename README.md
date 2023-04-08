@@ -11,7 +11,7 @@
 - [Notion 발표 자료](https://seat-choice.notion.site/d764a0c49d364c349e5cd35da124364c)
 
 # 팀원
-| 최영준 | 김정아 | 류희주 | 이선주 |
+| 최영준 | 이정아 | 류희주 | 이선주 |
 |--------------|----------|----------|-----------|
 | ![아바타](https://avatars.githubusercontent.com/KindNeighbor) | ![아바타](https://avatars.githubusercontent.com/junga970) | ![아바타](https://avatars.githubusercontent.com/reeruryu) | ![아바타](https://avatars.githubusercontent.com/sunju5402) |
 
