@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-	@EntityGraph(attributePaths = {"member"})
+//	@EntityGraph(attributePaths = {"member"})
 	List<Comment> findAllByReview(Review review);
 
 }
