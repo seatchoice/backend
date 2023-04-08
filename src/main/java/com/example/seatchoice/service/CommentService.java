@@ -90,7 +90,7 @@ public class CommentService {
 		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new CustomException(NOT_FOUND_REVIEW, HttpStatus.NOT_FOUND));
 
-		return commentRepository.findAllByReview(review).stream()
+		return commentRepository.findAllByReview(review.getId()).stream()
 			.map(CommentResponse::from).collect(Collectors.toList());
 
 	}
