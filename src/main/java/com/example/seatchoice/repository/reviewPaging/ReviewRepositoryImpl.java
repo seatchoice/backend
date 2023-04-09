@@ -25,6 +25,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 		Pageable pageable) {
 		List<Review> reviews = queryFactory
 			.selectFrom(review)
+			.join(review.theaterSeat).fetchJoin()
 			.where(
 				ltReviewId(lastReviewId), // review.id < lastReviewId
 				review.theaterSeat.id.eq(seatId)
