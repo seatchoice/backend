@@ -14,6 +14,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
 
   # 이미지 용량
   servlet:
