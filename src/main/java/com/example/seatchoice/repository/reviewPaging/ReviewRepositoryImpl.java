@@ -1,6 +1,7 @@
 package com.example.seatchoice.repository.reviewPaging;
 
 import static com.example.seatchoice.entity.QReview.review;
+import static com.example.seatchoice.entity.QTheaterSeat.theaterSeat;
 
 import com.example.seatchoice.dto.response.ReviewInfoResponse;
 import com.example.seatchoice.entity.Review;
@@ -25,6 +26,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 		Pageable pageable) {
 		List<Review> reviews = queryFactory
 			.selectFrom(review)
+			.leftJoin(review.theaterSeat, theaterSeat).fetchJoin()
+			.distinct()
 			.where(
 				ltReviewId(lastReviewId), // review.id < lastReviewId
 				review.theaterSeat.id.eq(seatId)
